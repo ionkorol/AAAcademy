@@ -1,0 +1,22 @@
+.category {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  button {
+    padding: 1px 5px;
+    background-color: red;
+  }
+}
+
+.categoryInput {
+  position: relative;
+
+  button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    padding: 1px 5px;
+    background-color: green;
+  }
+}

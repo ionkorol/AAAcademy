@@ -1,0 +1,80 @@
+@import "../../styles/variables.scss";
+
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.image {
+  object-fit: cover;
+  position: relative;
+
+  img {
+    display: block;
+    width: 100%;
+    height: 200px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+  .date {
+    background-color: $dark;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    position: absolute;
+    margin: 20px;
+    top: 0;
+    left: 0;
+    svg {
+      margin-right: 5px;
+    }
+  }
+}
+
+.title {
+  background-color: $dark;
+  padding: 10px 20px;
+  text-transform: uppercase;
+  color: white;
+  font-size: 1.3rem;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 20px;
+  background-color: $quaternary;
+  -webkit-box-shadow: 0px 4px 0px 0px $quaternary-dark;
+  -moz-box-shadow: 0px 4px 0px 0px $quaternary-dark;
+  box-shadow: 0px 4px 0px 0px $quaternary-dark;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  color: white;
+
+  .location {
+    display: flex;
+    align-items: center;
+    line-height: 1.5;
+    svg {
+      margin-right: 5px;
+    }
+  }
+  .time {
+    line-height: 1.5;
+    svg {
+      margin-right: 5px;
+    }
+  }
+
+  .hr {
+    display: flex;
+    width: 20%;
+    height: 3px;
+    background-color: white;
+    border-style: none;
+    align-self: flex-start;
+    margin: 20px 0;
+  }
+  .description {
+  }
+}

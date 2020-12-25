@@ -1,0 +1,46 @@
+@import "../../styles/variables.scss";
+
+.container {
+  display: flex;
+  flex-direction: row;
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+.sidebarMenu {
+  width: 20%;
+  height: 100vh;
+  padding: 20px 20px;
+  -webkit-box-shadow: 5px 0px 10px 0px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 5px 0px 10px 0px rgba(0, 0, 0, 0.5);
+  box-shadow: 5px 0px 10px 0px rgba(0, 0, 0, 0.5);
+  
+  .logo {
+    text-align: center;
+    color: $primary;
+  }
+  .active {
+    background-color: $primary;
+    color: white;
+  }
+
+  .menuItem {
+    padding: 20px 20px;
+    margin: 20px 0px;
+    border-radius: 5px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgba(128, 128, 128, 0.2);
+    }
+  }
+
+  @media screen and (max-width: $screen-md) {
+    display: none;
+  }
+}
+
+.content {
+  width: 80%;
+  height: 100vh;
+  padding: 2vh 2vw;
+}

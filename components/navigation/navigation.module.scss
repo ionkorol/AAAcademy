@@ -1,0 +1,48 @@
+@import "../../styles/variables.scss";
+
+.container {
+  display: flex;
+  height: fit-content;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 2vh 2vw;
+  margin: 0 10vw;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  -webkit-box-shadow: 0px 4px 0px 0px rgba(196, 196, 196, 0.5);
+  -moz-box-shadow: 0px 4px 0px 0px rgba(196, 196, 196, 0.5);
+  box-shadow: 0px 4px 0px 0px rgba(196, 196, 196, 0.5);
+  z-index: 2;
+  background-color: white;
+}
+
+.logo {
+  font-size: 2rem;
+  font-weight: bold;
+  color: $secondary;
+  @media screen and (max-width: $screen-md) {
+    span {
+      display: none;
+    }
+    &::after {
+      content: "AAA";
+    }
+  }
+}
+
+.menu {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  column-gap: 10px;
+  justify-items: center;
+  align-items: center;
+
+  .menuItem {
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+
+  @media screen and (max-width: $screen-md) {
+    display: none;
+  }
+}
