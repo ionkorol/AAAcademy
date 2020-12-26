@@ -33,7 +33,7 @@ const AdminLayout: React.FC<Props> = (props) => {
           </div>
         </Link>
         <Link href="/admin/clubs">
-          <div
+          <div  
             className={`${styles.menuItem} ${
               router.pathname.includes("clubs") ? styles.active : null
             }`}
