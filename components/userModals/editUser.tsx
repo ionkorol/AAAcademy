@@ -11,7 +11,6 @@ interface Props {
 
 const EditUserModal: React.FC<Props> = (props) => {
   const { show, handleClose, userData } = props;
-  console.log(userData);
   const [name, setName] = useState(userData.name);
   const [email, setEmail] = useState(userData.email);
   const [type, setType] = useState<"Student" | "Teacher" | string>(
@@ -22,8 +21,8 @@ const EditUserModal: React.FC<Props> = (props) => {
 
   useEffect(() => {
     setName(userData.name);
-    setEmail(userData.email)
-    setType(userData.type)
+    setEmail(userData.email);
+    setType(userData.type);
   }, [userData]);
 
   const editUser = async () => {
@@ -36,7 +35,7 @@ const EditUserModal: React.FC<Props> = (props) => {
         },
         { merge: true }
       );
-      handleClose()
+      handleClose();
     } catch (error) {
       setError(error.message);
     }

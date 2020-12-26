@@ -64,22 +64,20 @@ const UsersContent: React.FC<UsersProps> = (props) => {
             <button onClick={() => setShowAddUser(true)}>Add</button>
           </div>
         </div>
-        <Table bordered hover striped>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Type</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
+        <div className={styles.table}>
+          <div className={styles.tableHead}>
+            <div>Name</div>
+            <div>Email</div>
+            <div>Type</div>
+            <div>Actions</div>
+          </div>
+          <div className={styles.tableBody}>
             {currentUsers.map((user) => (
-              <tr key={user.email}>
-                <td>{user.name}</td>
-                <td>{user.email}</td>
-                <td>{user.type}</td>
-                <td>
+              <div className={styles.tableItem} key={user.email}>
+                <div>{user.name}</div>
+                <div>{user.email}</div>
+                <div>{user.type}</div>
+                <div>
                   <button onClick={() => handleEdit(user)}>V</button>
                   <button
                     style={{ backgroundColor: "#ec7849" }}
@@ -87,11 +85,11 @@ const UsersContent: React.FC<UsersProps> = (props) => {
                   >
                     X
                   </button>
-                </td>
-              </tr>
+                </div>
+              </div>
             ))}
-          </tbody>
-        </Table>
+          </div>
+        </div>
       </div>
       <AddUserModal
         show={showAddUser}

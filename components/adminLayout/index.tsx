@@ -2,23 +2,44 @@ import React from "react";
 import Link from "next/link";
 
 import styles from "./adminLayout.module.scss";
+import { useRouter } from "next/router";
 
 interface Props {}
 
 const AdminLayout: React.FC<Props> = (props) => {
+  const router = useRouter();
+
   return (
     <div className={styles.container}>
       <div className={styles.sidebarMenu}>
         <h2 className={styles.logo}>AAA</h2>
         <hr />
         <Link href="/admin">
-          <div className={`${styles.menuItem} ${styles.active}`}>Dashboard</div>
+          <div
+            className={`${styles.menuItem} ${
+              router.pathname.includes("dashboard") ? styles.active : null
+            }`}
+          >
+            Dashboard
+          </div>
         </Link>
         <Link href="/admin/users">
-          <div className={`${styles.menuItem}`}>Users</div>
+          <div
+            className={`${styles.menuItem} ${
+              router.pathname.includes("users") ? styles.active : null
+            }`}
+          >
+            Users
+          </div>
         </Link>
         <Link href="/admin/clubs">
-          <div className={`${styles.menuItem}`}>Clubs</div>
+          <div
+            className={`${styles.menuItem} ${
+              router.pathname.includes("clubs") ? styles.active : null
+            }`}
+          >
+            Clubs
+          </div>
         </Link>
       </div>
       <div className={styles.content}>{props.children}</div>

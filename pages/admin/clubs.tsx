@@ -85,37 +85,35 @@ const ClubsContent: React.FC<ClubsProps> = (props) => {
             <button onClick={handleAdd}>Add</button>
           </div>
         </div>
-        <Table bordered hover striped>
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Categories</th>
-              <th>Date</th>
-              <th>From</th>
-              <th>To</th>
-              <th>Image</th>
-              <th>Teacher</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
+        <div className={styles.table}>
+          <div className={styles.tableHead}>
+            <div>Title</div>
+            <div>Categories</div>
+            <div>Date</div>
+            <div>From</div>
+            <div>To</div>
+            <div>Image</div>
+            <div>Teacher</div>
+            <div>Actions</div>
+          </div>
+          <div className={styles.tableBody}>
             {currentClubs.map((club) => (
-              <tr key={club.title}>
-                <td>{club.title}</td>
-                <td>{club.categories.toString()}</td>
-                <td>{club.date}</td>
-                <td>{club.time.from}</td>
-                <td>{club.time.to}</td>
-                <td>
+              <div className={styles.tableItem} key={club.title}>
+                <div>{club.title}</div>
+                <div>{club.categories.toString()}</div>
+                <div>{club.date}</div>
+                <div>{club.time.from}</div>
+                <div>{club.time.to}</div>
+                <div>
                   <img
                     src={club.image}
                     alt={club.title}
                     width={50}
                     height={50}
                   />
-                </td>
-                <td>{club.teacher}</td>
-                <td>
+                </div>
+                <div>{club.teacher}</div>
+                <div>
                   <button onClick={() => handleEdit(club)}>V</button>
                   <button
                     style={{ backgroundColor: "#ec7849" }}
@@ -123,11 +121,11 @@ const ClubsContent: React.FC<ClubsProps> = (props) => {
                   >
                     X
                   </button>
-                </td>
-              </tr>
+                </div>
+              </div>
             ))}
-          </tbody>
-        </Table>
+          </div>
+        </div>
       </div>
       <ClubModal
         show={showAddClub}

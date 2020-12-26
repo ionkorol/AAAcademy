@@ -30,8 +30,6 @@ const AddUserModal: React.FC<Props> = (props) => {
     }
   };
 
-  console.log(type);
-
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
