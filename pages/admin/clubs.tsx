@@ -8,6 +8,13 @@ import firebaseAdmin from "../../utils/firebaseAdmin";
 import { ClubProp } from "../../utils/interfaces";
 import { AddUserModal, AdminLayout, EditUserModal } from "../../components";
 import ClubModal from "../../components/clubModals";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faBook,
+  faMusic,
+  faPalette,
+  faVolleyballBall,
+} from "@fortawesome/free-solid-svg-icons";
 
 interface ClubsProps {
   clubsData?: ClubProp[];
@@ -48,6 +55,7 @@ const ClubsContent: React.FC<ClubsProps> = (props) => {
   };
 
   const deleteClub = async (clubData: ClubProp) => {
+    console.log(clubData);
     try {
       await firebase
         .firestore()
@@ -72,6 +80,13 @@ const ClubsContent: React.FC<ClubsProps> = (props) => {
     } catch (error) {
       setError(error.message);
     }
+  };
+
+  const categoryIcon = {
+    Active: faVolleyballBall,
+    Creative: faPalette,
+    Educational: faBook,
+    Musical: faMusic,
   };
 
   return (
@@ -100,7 +115,15 @@ const ClubsContent: React.FC<ClubsProps> = (props) => {
             {currentClubs.map((club) => (
               <div className={styles.tableItem} key={club.title}>
                 <div>{club.title}</div>
-                <div>{club.categories.toString()}</div>
+                <div>
+                  {club.categories.map((category) => (
+                    <FontAwesomeIcon
+                      icon={categoryIcon[category]}
+                      fixedWidth
+                      key={category}
+                    />
+                  ))}
+                </div>
                 <div>{club.date}</div>
                 <div>{club.time.from}</div>
                 <div>{club.time.to}</div>
