@@ -18,10 +18,12 @@ const ClubModal: React.FC<Props> = (props) => {
 
   const [title, setTitle] = useState(clubData ? clubData.title : "");
   const [titleError, setTitleError] = useState(null);
-  const availableCategories = ["Active", "Creative", "Educational", "Musical"];
-  const [categories, setCategories] = useState<string[]>(
-    clubData ? clubData.categories : []
-  );
+  const availableCategories: Array<
+    "Active" | "Creative" | "Educational" | "Musical"
+  > = ["Active", "Creative", "Educational", "Musical"];
+  const [categories, setCategories] = useState<
+    Array<"Active" | "Creative" | "Educational" | "Musical">
+  >(clubData ? clubData.categories : []);
   const [categoriesError, setCategoriesError] = useState(null);
   const [date, setDate] = useState(clubData ? clubData.date : "");
   const [dateError, setDateError] = useState(null);
@@ -45,7 +47,7 @@ const ClubModal: React.FC<Props> = (props) => {
     setTeacher(clubData ? clubData.teacher : "");
   }, [clubData]);
 
-  const handleCategoryClick = (category: string) => {
+  const handleCategoryClick = (category) => {
     console.log("Test");
     if (categories.includes(category)) {
       setCategories(categories.filter((item) => category !== item));
@@ -55,6 +57,12 @@ const ClubModal: React.FC<Props> = (props) => {
   };
 
   const formValidation = async () => {
+    setTitleError(null);
+    setCategories(null);
+    setDateError(null);
+    setTimeError(null);
+    setImageError(null);
+    setTeacherError(null);
     // Title Validation
     // Exists
     const docSnap = await firebaseClient

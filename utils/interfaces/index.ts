@@ -1,6 +1,6 @@
 export interface ClubProp {
   title: string;
-  categories: ("Active" | "Creative" | "Educational" | "Musical")[] | string[];
+  categories: Array<"Active" | "Creative" | "Educational" | "Musical">;
   date: string;
   time: {
     from: string;
