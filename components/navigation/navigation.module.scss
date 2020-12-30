@@ -20,7 +20,16 @@
   font-size: 2rem;
   font-weight: bold;
   color: $secondary;
-  @media screen and (max-width: $screen-md) {
+
+  @media screen and (max-width: $screen-l) {
+    span {
+      display: none;
+    }
+    &::after {
+      content: "Always Active";
+    }
+  }
+  @media screen and (max-width: $screen-m) {
     span {
       display: none;
     }
@@ -42,7 +51,7 @@
     font-weight: bold;
   }
 
-  @media screen and (max-width: $screen-md) {
+  @media screen and (max-width: $screen-m) {
     display: none;
   }
 }

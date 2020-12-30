@@ -37,7 +37,7 @@ const Home: React.FC<Props> = (props) => {
   };
 
   const searchFunctionality = (input: string) => {
-    setActiveCategory(null)
+    setActiveCategory(null);
     setSearch(input);
     setFilteredClubs(
       clubsData.filter((club) =>
@@ -102,7 +102,7 @@ const Home: React.FC<Props> = (props) => {
         </div>
         <div className={styles.clubs}>
           {filteredClubs.map((club) => (
-            <Club data={club} />
+            <Club data={club} key={club.title} />
           ))}
         </div>
         <div className={styles.section}></div>

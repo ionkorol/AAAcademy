@@ -17,23 +17,17 @@ const ClubModal: React.FC<Props> = (props) => {
   const { show, handleClose, clubData, onRun, error } = props;
 
   const [title, setTitle] = useState(clubData ? clubData.title : "");
-  const [titleError, setTitleError] = useState(null);
   const availableCategories: Array<
     "Active" | "Creative" | "Educational" | "Musical"
   > = ["Active", "Creative", "Educational", "Musical"];
   const [categories, setCategories] = useState<
     Array<"Active" | "Creative" | "Educational" | "Musical">
   >(clubData ? clubData.categories : []);
-  const [categoriesError, setCategoriesError] = useState(null);
   const [date, setDate] = useState(clubData ? clubData.date : "");
-  const [dateError, setDateError] = useState(null);
   const [timeTo, setTimeTo] = useState(clubData ? clubData.time.to : "");
   const [timeFrom, setTimeFrom] = useState(clubData ? clubData.time.from : "");
-  const [timeError, setTimeError] = useState(null);
   const [image, setImage] = useState(clubData ? clubData.image : "");
-  const [imageError, setImageError] = useState(null);
   const [teacher, setTeacher] = useState(clubData ? clubData.teacher : "");
-  const [teacherError, setTeacherError] = useState(null);
 
   const [formValidated, setFormValidated] = useState(false);
 
@@ -57,12 +51,7 @@ const ClubModal: React.FC<Props> = (props) => {
   };
 
   const formValidation = async () => {
-    setTitleError(null);
-    setCategories(null);
-    setDateError(null);
-    setTimeError(null);
-    setImageError(null);
-    setTeacherError(null);
+    
     // Title Validation
     // Exists
     const docSnap = await firebaseClient
@@ -112,30 +101,33 @@ const ClubModal: React.FC<Props> = (props) => {
       imageError ||
       teacherError
     ) {
-      console.log(titleError);
-      console.log(categoriesError);
-      console.log(dateError);
-      console.log(timeError);
-      console.log(imageError);
-      console.log(teacherError);
+      console.log("False");
+      // console.log(titleError);
+      // console.log(categoriesError);
+      // console.log(dateError);
+      // console.log(timeError);
+      // console.log(imageError);
+      // console.log(teacherError);
       setFormValidated(false);
       return false;
     } else {
+      console.log("True");
       setFormValidated(true);
-      console.log(titleError);
-      console.log(categoriesError);
-      console.log(dateError);
-      console.log(timeError);
-      console.log(imageError);
-      console.log(teacherError);
+      // console.log(titleError);
+      // console.log(categoriesError);
+      // console.log(dateError);
+      // console.log(timeError);
+      // console.log(imageError);
+      // console.log(teacherError);
       return true;
     }
   };
 
-  const handleSubmit = async () => {
-    await formValidation();
-    console.log(formValidated);
-    if (formValidated) {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    const form = event.currentTarget;
+    event.preventDefault();
+    event.stopPropagation();
+    if (form.checkValidity() && (await formValidation())) {
       onRun({
         title,
         categories,
@@ -158,11 +150,10 @@ const ClubModal: React.FC<Props> = (props) => {
       <Modal.Body>
         {error ? <Alert variant="danger">{error}</Alert> : null}
         <Form
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-          }}
+          id="my-form"
+          onSubmit={handleSubmit}
           validated={formValidated}
+          noValidate
         >
           <Form.Group>
             <Form.Label>Title</Form.Label>
@@ -189,10 +180,15 @@ const ClubModal: React.FC<Props> = (props) => {
                   {category}
                 </ListGroup.Item>
               ))}
-              <Form.Control.Feedback type="invalid">
-                {categoriesError}
-              </Form.Control.Feedback>
             </ListGroup>
+            <Form.Control
+              type="hidden"
+              isInvalid={!!categoriesError}
+              required
+            />
+            <Form.Control.Feedback type="invalid">
+              {categoriesError}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group>
@@ -202,6 +198,8 @@ const ClubModal: React.FC<Props> = (props) => {
               placeholder="Enter Date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
+              isInvalid={!!dateError}
+              required
             />
             <Form.Control.Feedback type="invalid">
               {dateError}
@@ -216,7 +214,11 @@ const ClubModal: React.FC<Props> = (props) => {
                   placeholder="Enter From Time"
                   value={timeTo}
                   onChange={(e) => setTimeTo(e.target.value)}
+                  isInvalid={!!timeError}
                 />
+                <Form.Control.Feedback type="invalid">
+                  {timeError}
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
             <Col>
@@ -227,12 +229,13 @@ const ClubModal: React.FC<Props> = (props) => {
                   placeholder="Enter To Time"
                   value={timeFrom}
                   onChange={(e) => setTimeFrom(e.target.value)}
+                  isInvalid={!!timeError}
                 />
+                <Form.Control.Feedback type="invalid">
+                  {timeError}
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
-            <Form.Control.Feedback type="invalid">
-              {timeError}
-            </Form.Control.Feedback>
           </Form.Row>
           <Form.Group>
             <Form.Label>Image</Form.Label>
@@ -241,7 +244,11 @@ const ClubModal: React.FC<Props> = (props) => {
               placeholder="Enter To Image Url"
               value={image}
               onChange={(e) => setImage(e.target.value)}
+              isInvalid={!!imageError}
             />
+            <Form.Control.Feedback type="invalid">
+              {imageError}
+            </Form.Control.Feedback>
           </Form.Group>
           <Form.Group>
             <Form.Label>Teacher</Form.Label>
@@ -250,12 +257,18 @@ const ClubModal: React.FC<Props> = (props) => {
               placeholder="Enter To Teacher Name"
               value={teacher}
               onChange={(e) => setTeacher(e.target.value)}
+              isInvalid={!!teacherError}
             />
+            <Form.Control.Feedback type="invalid">
+              {teacherError}
+            </Form.Control.Feedback>
           </Form.Group>
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <button onClick={handleSubmit}>Save Changes</button>
+        <button form="my-form" type="submit">
+          Save Changes
+        </button>
       </Modal.Footer>
     </Modal>
   );
