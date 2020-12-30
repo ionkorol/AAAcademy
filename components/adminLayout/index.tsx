@@ -12,7 +12,11 @@ const AdminLayout: React.FC<Props> = (props) => {
   return (
     <div className={styles.container}>
       <div className={styles.sidebarMenu}>
-        <h2 className={styles.logo}>AAA</h2>
+        <Link href="/" passHref>
+          <a>
+            <h2 className={styles.logo}>AAA</h2>
+          </a>
+        </Link>
         <hr />
         <Link href="/admin">
           <div
@@ -33,7 +37,7 @@ const AdminLayout: React.FC<Props> = (props) => {
           </div>
         </Link>
         <Link href="/admin/clubs">
-          <div  
+          <div
             className={`${styles.menuItem} ${
               router.pathname.includes("clubs") ? styles.active : null
             }`}

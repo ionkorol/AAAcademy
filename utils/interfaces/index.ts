@@ -12,7 +12,7 @@ export interface ClubProp {
 
 export interface UserProp {
   name: string;
-  type: "Teacher" | "Student";
+  type: "Teacher" | "Student" | string;
   email: string;
-  id: string;
+  id?: string;
 }

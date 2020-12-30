@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Form, Alert, ListGroup, Col } from "react-bootstrap";
-import firebaseClient from "../../utils/firebase";
+import firebaseClient from "../../utils/firebaseClient";
 import { ClubProp } from "../../utils/interfaces";
 
 import styles from "./clubModal.module.scss";
@@ -11,10 +11,11 @@ interface Props {
   handleClose: () => void;
   onRun: (clubData: ClubProp) => void;
   error: string;
+  action: "edit" | "add";
 }
 
 const ClubModal: React.FC<Props> = (props) => {
-  const { show, handleClose, clubData, onRun, error } = props;
+  const { show, handleClose, clubData, onRun, error, action } = props;
 
   const [title, setTitle] = useState(clubData ? clubData.title : "");
   const availableCategories: Array<
@@ -29,20 +30,47 @@ const ClubModal: React.FC<Props> = (props) => {
   const [image, setImage] = useState(clubData ? clubData.image : "");
   const [teacher, setTeacher] = useState(clubData ? clubData.teacher : "");
 
-  const [formValidated, setFormValidated] = useState(false);
+  const [errors, setErrors] = useState({
+    title: null,
+    categories: null,
+    date: null,
+    fromTime: null,
+    toTime: null,
+    image: null,
+    teacher: null,
+  });
 
+  // Change info when opening new
   useEffect(() => {
-    setTitle(clubData ? clubData.title : "");
-    setCategories(clubData ? clubData.categories : []);
-    setDate(clubData ? clubData.date : "");
-    setTimeTo(clubData ? clubData.time.to : "");
-    setTimeFrom(clubData ? clubData.time.from : "");
-    setImage(clubData ? clubData.image : "");
-    setTeacher(clubData ? clubData.teacher : "");
-  }, [clubData]);
+    if (clubData) {
+      setTitle(clubData.title);
+      setCategories(clubData.categories);
+      setDate(clubData.date);
+      setTimeTo(clubData.time.to);
+      setTimeFrom(clubData.time.from);
+      setImage(clubData.image);
+      setTeacher(clubData.teacher);
+    } else {
+      setTitle("");
+      setCategories([]);
+      setDate("");
+      setTimeTo("");
+      setTimeFrom("");
+      setImage("");
+      setTeacher("");
+    }
+    setErrors({
+      title: null,
+      categories: null,
+      date: null,
+      fromTime: null,
+      toTime: null,
+      image: null,
+      teacher: null,
+    });
+  }, [clubData, show]);
 
   const handleCategoryClick = (category) => {
-    console.log("Test");
     if (categories.includes(category)) {
       setCategories(categories.filter((item) => category !== item));
     } else {
@@ -51,83 +79,99 @@ const ClubModal: React.FC<Props> = (props) => {
   };
 
   const formValidation = async () => {
-    
     // Title Validation
+    // Empty
+    if (!title) {
+      setErrors((prevState) => ({
+        ...prevState,
+        title: "Title has not been set!",
+      }));
+      return false;
+    }
     // Exists
-    const docSnap = await firebaseClient
-      .firestore()
-      .collection("clubs")
-      .doc("title")
-      .get();
-    if (docSnap.exists) {
-      setTitleError("Club with the same title already exists!");
+    if (action === "add") {
+      const docSnap = await firebaseClient
+        .firestore()
+        .collection("clubs")
+        .doc(title)
+        .get();
+      if (docSnap.exists) {
+        setErrors((prevState) => ({
+          ...prevState,
+          title: "Club already Exists",
+        }));
+        return false;
+      }
     }
 
     // Categories Validation
     // Empty
     if (categories.length === 0) {
-      setCategoriesError("No categories have been added!");
+      setErrors((prevState) => ({
+        ...prevState,
+        categories: "No categories have been added!",
+      }));
+      return false;
     }
 
     // Date Validation
     // Empty
     if (!date) {
-      setDateError("Date has not been set!");
+      setErrors((prevState) => ({
+        ...prevState,
+        date: "Date has not been set!",
+      }));
+      return false;
     }
 
-    // Time Validation
+    // From Time Validation
     // Empty
-    if (!timeFrom || !timeTo) {
-      setTimeError("Time has not been set!");
+    if (!timeFrom) {
+      setErrors((prevState) => ({
+        ...prevState,
+        fromTime: "Time has not been set!",
+      }));
+      return false;
+    }
+
+    // To Time Validation
+    // Empty
+    if (!timeTo) {
+      setErrors((prevState) => ({
+        ...prevState,
+        toTime: "Time has not been set!",
+      }));
+      return false;
     }
 
     // Image Validation
     // Empty
     if (!image) {
-      setImageError("Image has not been set!");
+      setErrors((prevState) => ({
+        ...prevState,
+        image: "Image has not been set!",
+      }));
+      return false;
     }
 
     // Teacher Validation
     // Empty
     if (!teacher) {
-      setTeacherError("Teacher has not been set!");
+      setErrors((prevState) => ({
+        ...prevState,
+        teacher: "Teacher has not been set!",
+      }));
+      return false;
     }
 
-    if (
-      titleError ||
-      categoriesError ||
-      dateError ||
-      timeError ||
-      imageError ||
-      teacherError
-    ) {
-      console.log("False");
-      // console.log(titleError);
-      // console.log(categoriesError);
-      // console.log(dateError);
-      // console.log(timeError);
-      // console.log(imageError);
-      // console.log(teacherError);
-      setFormValidated(false);
-      return false;
-    } else {
-      console.log("True");
-      setFormValidated(true);
-      // console.log(titleError);
-      // console.log(categoriesError);
-      // console.log(dateError);
-      // console.log(timeError);
-      // console.log(imageError);
-      // console.log(teacherError);
-      return true;
-    }
+    return true;
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    const form = event.currentTarget;
     event.preventDefault();
     event.stopPropagation();
-    if (form.checkValidity() && (await formValidation())) {
+    const test = await formValidation();
+    if (test) {
       onRun({
         title,
         categories,
@@ -149,12 +193,7 @@ const ClubModal: React.FC<Props> = (props) => {
       </Modal.Header>
       <Modal.Body>
         {error ? <Alert variant="danger">{error}</Alert> : null}
-        <Form
-          id="my-form"
-          onSubmit={handleSubmit}
-          validated={formValidated}
-          noValidate
-        >
+        <Form id="my-form" onSubmit={handleSubmit} noValidate>
           <Form.Group>
             <Form.Label>Title</Form.Label>
             <Form.Control
@@ -162,10 +201,11 @@ const ClubModal: React.FC<Props> = (props) => {
               placeholder="Enter Title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              isInvalid={!!errors.title}
               required
             />
             <Form.Control.Feedback type="invalid">
-              {titleError}
+              {errors.title}
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group>
@@ -183,11 +223,11 @@ const ClubModal: React.FC<Props> = (props) => {
             </ListGroup>
             <Form.Control
               type="hidden"
-              isInvalid={!!categoriesError}
+              isInvalid={!!errors.categories}
               required
             />
             <Form.Control.Feedback type="invalid">
-              {categoriesError}
+              {errors.categories}
             </Form.Control.Feedback>
           </Form.Group>
 
@@ -198,11 +238,11 @@ const ClubModal: React.FC<Props> = (props) => {
               placeholder="Enter Date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              isInvalid={!!dateError}
+              isInvalid={!!errors.date}
               required
             />
             <Form.Control.Feedback type="invalid">
-              {dateError}
+              {errors.date}
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Row>
@@ -212,12 +252,12 @@ const ClubModal: React.FC<Props> = (props) => {
                 <Form.Control
                   type="text"
                   placeholder="Enter From Time"
-                  value={timeTo}
-                  onChange={(e) => setTimeTo(e.target.value)}
-                  isInvalid={!!timeError}
+                  value={timeFrom}
+                  onChange={(e) => setTimeFrom(e.target.value)}
+                  isInvalid={!!errors.fromTime}
                 />
                 <Form.Control.Feedback type="invalid">
-                  {timeError}
+                  {errors.fromTime}
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
@@ -227,12 +267,12 @@ const ClubModal: React.FC<Props> = (props) => {
                 <Form.Control
                   type="text"
                   placeholder="Enter To Time"
-                  value={timeFrom}
-                  onChange={(e) => setTimeFrom(e.target.value)}
-                  isInvalid={!!timeError}
+                  value={timeTo}
+                  onChange={(e) => setTimeTo(e.target.value)}
+                  isInvalid={!!errors.toTime}
                 />
                 <Form.Control.Feedback type="invalid">
-                  {timeError}
+                  {errors.toTime}
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
@@ -244,10 +284,10 @@ const ClubModal: React.FC<Props> = (props) => {
               placeholder="Enter To Image Url"
               value={image}
               onChange={(e) => setImage(e.target.value)}
-              isInvalid={!!imageError}
+              isInvalid={!!errors.image}
             />
             <Form.Control.Feedback type="invalid">
-              {imageError}
+              {errors.image}
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group>
@@ -257,10 +297,10 @@ const ClubModal: React.FC<Props> = (props) => {
               placeholder="Enter To Teacher Name"
               value={teacher}
               onChange={(e) => setTeacher(e.target.value)}
-              isInvalid={!!teacherError}
+              isInvalid={!!errors.teacher}
             />
             <Form.Control.Feedback type="invalid">
-              {teacherError}
+              {errors.teacher}
             </Form.Control.Feedback>
           </Form.Group>
         </Form>

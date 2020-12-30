@@ -1,13 +1,11 @@
 import { GetServerSideProps } from "next";
 import React, { useEffect, useState } from "react";
-import { Alert, Table, Toast } from "react-bootstrap";
-import { useRouter } from "next/router";
-import firebase from "../../utils/firebase";
+import { Alert } from "react-bootstrap";
+import firebase from "../../utils/firebaseClient";
 import styles from "./Clubs.module.scss";
 import firebaseAdmin from "../../utils/firebaseAdmin";
 import { ClubProp } from "../../utils/interfaces";
-import { AddUserModal, AdminLayout, EditUserModal } from "../../components";
-import ClubModal from "../../components/clubModals";
+import { AdminLayout, ClubModal } from "../../components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBook,
@@ -16,21 +14,14 @@ import {
   faVolleyballBall,
 } from "@fortawesome/free-solid-svg-icons";
 
-interface ClubsProps {
-  clubsData?: ClubProp[];
-}
+interface ClubsProps {}
 const ClubsContent: React.FC<ClubsProps> = (props) => {
-  const { clubsData } = props;
-
-  const [currentClubs, setCurrentClubs] = useState<ClubProp[]>(clubsData);
-  const [showAddClub, setShowAddClub] = useState(false);
-  const [showEditClub, setShowEditClub] = useState(false);
-  const [showClubCreated, setShowClubCreated] = useState(true);
-  const [selectedClub, setSelectedClub] = useState<ClubProp | null>(null);
+  const [currentClubs, setCurrentClubs] = useState<ClubProp[]>([]);
+  const [showClubModal, setShowClubModal] = useState(false);
+  const [selectedClub, setSelectedClub] = useState<ClubProp>(null);
+  const [modalAction, setModalAction] = useState<"edit" | "add">("add");
 
   const [error, setError] = useState(null);
-
-  const router = useRouter();
 
   // Real Time Updates
   useEffect(() => {
@@ -46,40 +37,63 @@ const ClubsContent: React.FC<ClubsProps> = (props) => {
 
   const handleAdd = () => {
     setSelectedClub(null);
-    setShowAddClub(true);
+    setModalAction("add");
+    setShowClubModal(true);
   };
 
   const handleEdit = (clubData: ClubProp) => {
     setSelectedClub(clubData);
-    setShowAddClub(true);
+    setModalAction("edit");
+    setShowClubModal(true);
   };
 
   const deleteClub = async (clubData: ClubProp) => {
-    console.log(clubData);
     try {
-      await firebase
-        .firestore()
-        .collection("users")
-        .doc(clubData.title)
-        .delete();
+      const res = await fetch("/api/clubs", {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(clubData),
+      });
+      console.log(await res.json());
     } catch (error) {
-      setError(error.message);
+      setError(error);
     }
   };
 
   const modifyClub = async (clubData: ClubProp) => {
-    try {
-      await firebase
-        .firestore()
-        .collection("clubs")
-        .doc(clubData.title)
-        .set({
-          ...clubData,
+    if (modalAction === "edit") {
+      try {
+        const res = await fetch("/api/clubs", {
+          method: "PATCH",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(clubData),
         });
-      setShowAddClub(false);
-    } catch (error) {
-      setError(error.message);
+        console.log(await res.json());
+      } catch (error) {
+        setError(error);
+      }
+    } else {
+      try {
+        const res = await fetch("/api/clubs", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(clubData),
+        });
+        console.log(await res.json());
+      } catch (error) {
+        setError(error);
+      }
     }
+    setShowClubModal(false)
   };
 
   const categoryIcon = {
@@ -151,36 +165,15 @@ const ClubsContent: React.FC<ClubsProps> = (props) => {
         </div>
       </div>
       <ClubModal
-        show={showAddClub}
-        handleClose={() => setShowAddClub(false)}
+        show={showClubModal}
+        handleClose={() => setShowClubModal(false)}
         clubData={selectedClub}
         onRun={modifyClub}
         error={error}
+        action={modalAction}
       />
     </AdminLayout>
   );
 };
 
 export default ClubsContent;
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  try {
-    const clubsQuery = await firebaseAdmin
-      .firestore()
-      .collection("clubs")
-      .get();
-    const clubsData = clubsQuery.docs.map((clubSnap) => clubSnap.data());
-
-    return {
-      props: {
-        clubsData,
-      },
-    };
-  } catch (error) {
-    return {
-      props: {
-        error,
-      },
-    };
-  }
-};

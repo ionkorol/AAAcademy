@@ -1,32 +1,24 @@
 import { GetServerSideProps } from "next";
 import React, { useEffect, useState } from "react";
-import { Alert, Table, Toast } from "react-bootstrap";
+import { Alert } from "react-bootstrap";
 import { useRouter } from "next/router";
-import firebase from "../../utils/firebase";
+import firebaseClient from "../../utils/firebaseClient";
 import styles from "./Users.module.scss";
 import firebaseAdmin from "../../utils/firebaseAdmin";
 import { UserProp } from "../../utils/interfaces";
-import { AddUserModal, AdminLayout, EditUserModal } from "../../components";
+import { AdminLayout, UserModal } from "../../components";
 
-interface UsersProps {
-  usersData?: UserProp[];
-}
+interface UsersProps {}
 const UsersContent: React.FC<UsersProps> = (props) => {
-  const { usersData } = props;
-
-  const [currentUsers, setCurrentUsers] = useState<UserProp[]>(usersData);
-  const [showAddUser, setShowAddUser] = useState(false);
-  const [showEditUser, setShowEditUser] = useState(false);
-  const [showUserCreated, setShowUserCreated] = useState(true);
-  const [selectedUser, setSelectedUser] = useState<UserProp>(usersData[0]);
-
+  const [currentUsers, setCurrentUsers] = useState<UserProp[]>([]);
+  const [showUserModal, setShowUserModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<UserProp>(null);
+  const [modalAction, setModalAction] = useState<"edit" | "add">("add");
   const [error, setError] = useState(null);
-
-  const router = useRouter();
 
   // Real Time Updates
   useEffect(() => {
-    const usnsub = firebase
+    const usnsub = firebaseClient
       .firestore()
       .collection("users")
       .onSnapshot((data) => {
@@ -36,21 +28,69 @@ const UsersContent: React.FC<UsersProps> = (props) => {
     return () => usnsub();
   }, []);
 
+  const handleAdd = () => {
+    setSelectedUser(null);
+    setModalAction("add");
+    setShowUserModal(true);
+  };
+
   const handleEdit = (userData: UserProp) => {
     setSelectedUser(userData);
-    setShowEditUser(true);
+    setModalAction("edit");
+    setShowUserModal(true);
+  };
+
+  // TODO: Figure the id or the add part of it
+  const modifyUser = async (userData: UserProp) => {
+    console.log(userData);
+    if (modalAction === "edit") {
+      try {
+        const res = await fetch("/api/users", {
+          method: "PATCH",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userData),
+        });
+        console.log(await res.json());
+      } catch (error) {
+        setError(error);
+      }
+    } else {
+      try {
+        const res = await fetch("/api/users", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userData),
+        });
+        console.log(await res.json());
+      } catch (error) {
+        console.log(error);
+        setError(error);
+      }
+    }
+    setShowUserModal(false);
   };
 
   const deleteUser = async (userData: UserProp) => {
     try {
-      await firebase.firestore().collection("users").doc(userData.id).delete();
+      const res = await fetch("/api/users", {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
+
+      console.log(await res.json());
     } catch (error) {
       setError(error.message);
     }
-  };
-
-  const onSuccess = () => {
-    router.push("/admin/users", undefined, { shallow: true });
   };
 
   return (
@@ -61,7 +101,7 @@ const UsersContent: React.FC<UsersProps> = (props) => {
         <div className={styles.controls}>
           <div className={styles.filter}></div>
           <div className={styles.actions}>
-            <button onClick={() => setShowAddUser(true)}>Add</button>
+            <button onClick={handleAdd}>Add</button>
           </div>
         </div>
         <div className={styles.table}>
@@ -91,39 +131,16 @@ const UsersContent: React.FC<UsersProps> = (props) => {
           </div>
         </div>
       </div>
-      <AddUserModal
-        show={showAddUser}
-        handleClose={() => setShowAddUser(false)}
-      />
-      <EditUserModal
-        show={showEditUser}
-        handleClose={() => setShowEditUser(false)}
+      <UserModal
+        show={showUserModal}
+        handleClose={() => setShowUserModal(false)}
         userData={selectedUser}
+        onRun={modifyUser}
+        error={error}
+        action={modalAction}
       />
     </AdminLayout>
   );
 };
 
 export default UsersContent;
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  try {
-    const usersQuery = await firebaseAdmin
-      .firestore()
-      .collection("users")
-      .get();
-    const usersData = usersQuery.docs.map((userSnap) => userSnap.data());
-
-    return {
-      props: {
-        usersData,
-      },
-    };
-  } catch (error) {
-    return {
-      props: {
-        error,
-      },
-    };
-  }
-};
