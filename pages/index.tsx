@@ -8,8 +8,7 @@ import {
   faBook,
   faMusic,
 } from "@fortawesome/free-solid-svg-icons";
-import firebase from "../utils/firebase";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useState } from "react";
 import { GetServerSideProps } from "next";
 import firebaseAdmin from "../utils/firebaseAdmin";
 import { ClubProp } from "../utils/interfaces";
