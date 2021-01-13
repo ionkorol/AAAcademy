@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 
-import styles from "./adminLayout.module.scss";
+import styles from "./AdminLayout.module.scss";
 import { useRouter } from "next/router";
 
 interface Props {}

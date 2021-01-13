@@ -6,7 +6,7 @@ import firebaseClient from "../../utils/firebaseClient";
 import styles from "./Users.module.scss";
 import firebaseAdmin from "../../utils/firebaseAdmin";
 import { UserProp } from "../../utils/interfaces";
-import { AdminLayout, UserModal } from "../../components";
+import { AdminLayout, UserModal } from "../../components/admin";
 
 interface UsersProps {}
 const UsersContent: React.FC<UsersProps> = (props) => {

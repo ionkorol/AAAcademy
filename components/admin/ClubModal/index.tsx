@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Form, Alert, ListGroup, Col } from "react-bootstrap";
-import firebaseClient from "../../utils/firebaseClient";
-import { ClubProp } from "../../utils/interfaces";
+import firebaseClient from "utils/firebaseClient";
+import { ClubProp } from "utils/interfaces";
 
 import styles from "./clubModal.module.scss";
 

@@ -1,6 +1,6 @@
 import { GetServerSideProps } from "next";
 import React from "react";
-import { AdminLayout } from "../../components";
+import { AdminLayout } from "../../components/admin";
 
 import styles from "./Dashboard.module.scss";
 

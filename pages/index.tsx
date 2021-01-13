@@ -1,4 +1,4 @@
-import { Club, Layout } from "../components";
+import { Layout } from "../components/common";
 import styles from "../styles/Home.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -12,6 +12,7 @@ import { useState } from "react";
 import { GetServerSideProps } from "next";
 import firebaseAdmin from "../utils/firebaseAdmin";
 import { ClubProp } from "../utils/interfaces";
+import { ClubCard } from "../components/ui";
 
 interface Props {
   clubsData: ClubProp[];
@@ -82,6 +83,15 @@ const Home: React.FC<Props> = (props) => {
           </div>
           <div
             className={`${styles.category} ${
+              activeCategory == "Musical" ? styles.active : null
+            }`}
+            onClick={() => filterClubsByCategory("Musical")}
+          >
+            <FontAwesomeIcon icon={faMusic} fixedWidth />
+            Music
+          </div>
+          <div
+            className={`${styles.category} ${
               activeCategory == "Educational" ? styles.active : null
             }`}
             onClick={() => filterClubsByCategory("Educational")}
@@ -89,19 +99,10 @@ const Home: React.FC<Props> = (props) => {
             <FontAwesomeIcon icon={faBook} fixedWidth />
             Educational
           </div>
-          <div
-            className={`${styles.category} ${
-              activeCategory == "Musical" ? styles.active : null
-            }`}
-            onClick={() => filterClubsByCategory("Musical")}
-          >
-            <FontAwesomeIcon icon={faMusic} fixedWidth />
-            Musical
-          </div>
         </div>
         <div className={styles.clubs}>
           {filteredClubs.map((club) => (
-            <Club data={club} key={club.title} />
+            <ClubCard data={club} key={club.title} />
           ))}
         </div>
         <div className={styles.section}></div>

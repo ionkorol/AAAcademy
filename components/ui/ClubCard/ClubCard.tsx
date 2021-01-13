@@ -7,13 +7,13 @@ import {
 import React from "react";
 
 import styles from "./club.module.scss";
-import { ClubProp } from "../../utils/interfaces";
+import { ClubProp } from "utils/interfaces";
 
 interface Props {
   data: ClubProp;
 }
 
-const Club: React.FC<Props> = (props) => {
+const ClubCard: React.FC<Props> = (props) => {
   const { data } = props;
 
   return (
@@ -47,4 +47,4 @@ const Club: React.FC<Props> = (props) => {
   );
 };
 
-export default Club;
+export default ClubCard;

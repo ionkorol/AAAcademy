@@ -3,9 +3,8 @@ import React, { useEffect, useState } from "react";
 import { Alert } from "react-bootstrap";
 import firebase from "../../utils/firebaseClient";
 import styles from "./Clubs.module.scss";
-import firebaseAdmin from "../../utils/firebaseAdmin";
 import { ClubProp } from "../../utils/interfaces";
-import { AdminLayout, ClubModal } from "../../components";
+import { AdminLayout, ClubModal } from "../../components/admin";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBook,

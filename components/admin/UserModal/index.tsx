@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Form, Alert } from "react-bootstrap";
-import firebase from "../../utils/firebaseClient";
-import { UserProp } from "../../utils/interfaces";
+import { UserProp } from "utils/interfaces";
 
 interface Props {
   userData: UserProp;
@@ -30,9 +29,9 @@ const UserModal: React.FC<Props> = (props) => {
       setEmail(userData.email);
       setType(userData.type);
     } else {
-      setName('')
-      setEmail('')
-      setType('')
+      setName("");
+      setEmail("");
+      setType("");
     }
     setErrors({
       name: null,

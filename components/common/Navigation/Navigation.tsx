@@ -40,6 +40,11 @@ const Navigation: React.FC<Props> = (props) => {
             <button>Sign In</button>
           </Link>
         </div>
+        <div className={styles.menuItem}>
+          <Link href="/signup">
+            <button>Sign Up</button>
+          </Link>
+        </div>
       </div>
     </div>
   );
