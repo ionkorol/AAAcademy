@@ -14,3 +14,4 @@
   - [x] Users
   - [x] Clubs
 - [ ] Authentication system
+- [ ] Fix Add Club and Edit API

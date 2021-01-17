@@ -1,32 +1,22 @@
+@import "/styles/variables.scss";
+
 .container {
   display: flex;
+  flex-direction: column;
+  .nextButton {
+    margin: 0 20vw;
+  }
 }
 
 .slider {
   margin-top: -86px;
-  position: relative;
   height: 500px;
-
-  img {
-    height: 100%;
-    width: fit-content;
-    object-fit: cover;
-    object-position: right bottom;
-  }
-
-  .content {
-    padding-top: 86px;
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    width: 100%;
-    top: 0;
-    left: 0;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url("../../public/slide/img2.jpg");
+  background-position: top;
+  background-size: cover;
 }
 
-.form {
-  margin: 0 10vw;
-}
+

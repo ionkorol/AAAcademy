@@ -8,11 +8,17 @@ export interface ClubProp {
   };
   image: string;
   teacher: string;
+  id: string;
 }
 
 export interface UserProp {
-  name: string;
-  type: "Teacher" | "Student" | string;
+  firstName: string;
+  lastName: string;
+  type: "Teacher" | "Student" | "Parent" | string;
   email: string;
+  phone: string;
   id?: string;
+  children?: string[];
+  clubs?: string[];
+  dob?: string;
 }

@@ -182,6 +182,7 @@ const ClubModal: React.FC<Props> = (props) => {
         },
         image,
         teacher,
+        id: clubData.id,
       });
     }
   };

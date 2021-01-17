@@ -12,6 +12,8 @@ import {
   faPalette,
   faVolleyballBall,
 } from "@fortawesome/free-solid-svg-icons";
+import firebaseAdmin from "utils/firebaseAdmin";
+import firebaseClient from "../../utils/firebaseClient";
 
 interface ClubsProps {}
 const ClubsContent: React.FC<ClubsProps> = (props) => {
@@ -92,7 +94,7 @@ const ClubsContent: React.FC<ClubsProps> = (props) => {
         setError(error);
       }
     }
-    setShowClubModal(false)
+    setShowClubModal(false);
   };
 
   const categoryIcon = {
@@ -126,7 +128,7 @@ const ClubsContent: React.FC<ClubsProps> = (props) => {
           </div>
           <div className={styles.tableBody}>
             {currentClubs.map((club) => (
-              <div className={styles.tableItem} key={club.title}>
+              <div className={styles.tableItem} key={club.id}>
                 <div>{club.title}</div>
                 <div>
                   {club.categories.map((category) => (
