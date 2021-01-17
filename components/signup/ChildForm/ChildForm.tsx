@@ -1,4 +1,3 @@
-import { Navigation } from "components/common";
 import React, { useEffect, useRef, useState } from "react";
 import { Col, Form, Row } from "react-bootstrap";
 import firebaseClient from "utils/firebaseClient";
@@ -10,7 +9,7 @@ import styles from "./ChildForm.module.scss";
 interface Props {
   navigation: React.Dispatch<any>;
   handleData: React.Dispatch<any>;
-  handleSignup: () => any;
+  handleSignup: () => Promise<boolean>;
 }
 
 const ChildForm: React.FC<Props> = (props) => {
@@ -36,7 +35,9 @@ const ChildForm: React.FC<Props> = (props) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     handleData(children);
-    await handleSignup();
+    if (await handleSignup()) {
+      navigation("Success");
+    }
   };
 
   return (

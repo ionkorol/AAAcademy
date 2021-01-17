@@ -114,7 +114,7 @@ const UsersContent: React.FC<UsersProps> = (props) => {
           <div className={styles.tableBody}>
             {currentUsers.map((user) => (
               <div className={styles.tableItem} key={user.email}>
-                <div>{user.name}</div>
+                <div>{user.firstName} {user.lastName}</div>
                 <div>{user.email}</div>
                 <div>{user.type}</div>
                 <div>
