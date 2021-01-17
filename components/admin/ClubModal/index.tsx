@@ -29,6 +29,9 @@ const ClubModal: React.FC<Props> = (props) => {
   const [timeFrom, setTimeFrom] = useState(clubData ? clubData.time.from : "");
   const [image, setImage] = useState(clubData ? clubData.image : "");
   const [teacher, setTeacher] = useState(clubData ? clubData.teacher : "");
+  const [description, setDescription] = useState(
+    clubData ? clubData.description : ""
+  );
 
   const [errors, setErrors] = useState({
     title: null,
@@ -38,6 +41,7 @@ const ClubModal: React.FC<Props> = (props) => {
     toTime: null,
     image: null,
     teacher: null,
+    description: null,
   });
 
   // Change info when opening new
@@ -50,6 +54,7 @@ const ClubModal: React.FC<Props> = (props) => {
       setTimeFrom(clubData.time.from);
       setImage(clubData.image);
       setTeacher(clubData.teacher);
+      setDescription(clubData.description);
     } else {
       setTitle("");
       setCategories([]);
@@ -58,6 +63,7 @@ const ClubModal: React.FC<Props> = (props) => {
       setTimeFrom("");
       setImage("");
       setTeacher("");
+      setDescription("");
     }
     setErrors({
       title: null,
@@ -67,6 +73,7 @@ const ClubModal: React.FC<Props> = (props) => {
       toTime: null,
       image: null,
       teacher: null,
+      description: null,
     });
   }, [clubData, show]);
 
@@ -163,6 +170,16 @@ const ClubModal: React.FC<Props> = (props) => {
       }));
       return false;
     }
+    
+    // Description Validation
+    // Empty
+    if (!description) {
+      setErrors((prevState) => ({
+        ...prevState,
+        description: "Description has not been set!",
+      }));
+      return false;
+    }
 
     return true;
   };
@@ -183,6 +200,7 @@ const ClubModal: React.FC<Props> = (props) => {
         image,
         teacher,
         id: clubData.id,
+        description,
       });
     }
   };
@@ -302,6 +320,20 @@ const ClubModal: React.FC<Props> = (props) => {
             />
             <Form.Control.Feedback type="invalid">
               {errors.teacher}
+            </Form.Control.Feedback>
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>Description</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={4}
+              placeholder="Enter To description Name"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              isInvalid={!!errors.description}
+            />
+            <Form.Control.Feedback type="invalid">
+              {errors.description}
             </Form.Control.Feedback>
           </Form.Group>
         </Form>

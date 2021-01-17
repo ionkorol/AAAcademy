@@ -1,3 +1,4 @@
+import React from "react";
 import { Layout } from "../components/common";
 import styles from "../styles/Home.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,6 +10,7 @@ import {
   faMusic,
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
+
 import { GetServerSideProps } from "next";
 import firebaseAdmin from "../utils/firebaseAdmin";
 import { ClubProp } from "../utils/interfaces";

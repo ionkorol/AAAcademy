@@ -10,10 +10,12 @@ interface Props {}
 const Navigation: React.FC<Props> = (props) => {
   return (
     <div className={styles.container}>
-      <div className={styles.logo}>
-        <FontAwesomeIcon icon={faAppleAlt} color="#ec7849" fixedWidth />
-        <span>Always Active Academy</span>
-      </div>
+      <Link href="/">
+        <a className={styles.logo}>
+          <FontAwesomeIcon icon={faAppleAlt} color="#ec7849" fixedWidth />
+          <span>Always Active Academy</span>
+        </a>
+      </Link>
       <div className={styles.menu}>
         <div className={styles.menuItem}>
           <Link href="/">

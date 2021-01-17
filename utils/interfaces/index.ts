@@ -8,6 +8,7 @@ export interface ClubProp {
   };
   image: string;
   teacher: string;
+  description: string
   id: string;
 }
 

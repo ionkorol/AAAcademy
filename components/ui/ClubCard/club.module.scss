@@ -44,11 +44,6 @@
   flex-direction: column;
   padding: 10px 20px;
   background-color: $quaternary;
-  -webkit-box-shadow: 0px 4px 0px 0px $quaternary-dark;
-  -moz-box-shadow: 0px 4px 0px 0px $quaternary-dark;
-  box-shadow: 0px 4px 0px 0px $quaternary-dark;
-  border-bottom-right-radius: 5px;
-  border-bottom-left-radius: 5px;
   color: white;
 
   .location {
@@ -75,6 +70,10 @@
     align-self: flex-start;
     margin: 20px 0;
   }
-  .description {
-  }
+}
+
+.more {
+border-top-left-radius: 0;
+border-top-right-radius: 0;
+background-color: $dark;
 }

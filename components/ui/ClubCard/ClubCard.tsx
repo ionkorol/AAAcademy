@@ -3,6 +3,8 @@ import {
   faThumbtack,
   faClock,
   faCalendar,
+  faInfo,
+  faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 
@@ -38,11 +40,11 @@ const ClubCard: React.FC<Props> = (props) => {
           {data.time.to}
         </div>
         <hr className={styles.hr} />
-        <div className={styles.description}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque
-          tincidunt rutrum.
-        </div>
       </div>
+      <button className={styles.more}>
+        <FontAwesomeIcon icon={faInfoCircle} fixedWidth />
+        More Info
+      </button>
     </div>
   );
 };
