@@ -49,7 +49,7 @@ const Home: React.FC<Props> = (props) => {
   };
 
   return (
-    <Layout>
+    <Layout title="Home">
       <div className={styles.container}>
         <div className={styles.search}>
           <form>

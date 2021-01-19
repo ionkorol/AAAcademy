@@ -22,7 +22,7 @@ const Club: React.FC<Props> = (props) => {
   const { data } = props;
 
   return (
-    <Layout>
+    <Layout title={`${data.title} Club`}>
       <div className={styles.container}>
         <div className={styles.slider}>
           <h1>{data.title}</h1>

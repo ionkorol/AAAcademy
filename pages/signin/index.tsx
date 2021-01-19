@@ -22,7 +22,7 @@ const SignIn: React.FC<Props> = (props) => {
   };
 
   return (
-    <Layout>
+    <Layout title="Sign In">
       <div className={styles.container}>
         <div className={styles.slider}>
           <h1>Sign In</h1>

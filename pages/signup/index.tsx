@@ -42,7 +42,7 @@ const SignUp: React.FC<Props> = (props) => {
   };
 
   return (
-    <Layout>
+    <Layout title="Sign Up for Clubs">
       <div className={styles.container}>
         <div className={styles.slider}>
           <h1>Sign Up</h1>
