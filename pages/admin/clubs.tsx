@@ -1,10 +1,10 @@
 import { GetServerSideProps } from "next";
 import React, { useEffect, useState } from "react";
 import { Alert } from "react-bootstrap";
-import firebase from "../../utils/firebaseClient";
+import firebase from "utils/firebaseClient";
 import styles from "./Clubs.module.scss";
-import { ClubProp } from "../../utils/interfaces";
-import { AdminLayout, ClubModal } from "../../components/admin";
+import { ClubProp } from "utils/interfaces";
+import { AdminLayout, ClubModal } from "components/admin";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBook,
@@ -13,7 +13,8 @@ import {
   faVolleyballBall,
 } from "@fortawesome/free-solid-svg-icons";
 import firebaseAdmin from "utils/firebaseAdmin";
-import firebaseClient from "../../utils/firebaseClient";
+import firebaseClient from "utils/firebaseClient";
+import nookies from "nookies";
 
 interface ClubsProps {}
 const ClubsContent: React.FC<ClubsProps> = (props) => {
@@ -178,3 +179,19 @@ const ClubsContent: React.FC<ClubsProps> = (props) => {
 };
 
 export default ClubsContent;
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { token } = nookies.get(ctx);
+  try {
+    const { email } = await firebaseAdmin.auth().verifyIdToken(token);
+    return {
+      props: {},
+    };
+  } catch (error) {
+    ctx.res.writeHead(302, { Location: "/" });
+    ctx.res.end();
+    return {
+      props: {} as never,
+    };
+  }
+};

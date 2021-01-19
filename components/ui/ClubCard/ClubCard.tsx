@@ -10,6 +10,7 @@ import React from "react";
 
 import styles from "./club.module.scss";
 import { ClubProp } from "utils/interfaces";
+import Link from "next/link";
 
 interface Props {
   data: ClubProp;
@@ -41,10 +42,12 @@ const ClubCard: React.FC<Props> = (props) => {
         </div>
         <hr className={styles.hr} />
       </div>
-      <button className={styles.more}>
-        <FontAwesomeIcon icon={faInfoCircle} fixedWidth />
-        More Info
-      </button>
+      <Link href={`/club/${data.id}`}>
+        <button className={styles.more}>
+          <FontAwesomeIcon icon={faInfoCircle} fixedWidth />
+          More Info
+        </button>
+      </Link>
     </div>
   );
 };

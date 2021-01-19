@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import firebaseAdmin from "../../utils/firebaseAdmin";
-import { ClubProp } from "../../utils/interfaces";
+import firebaseAdmin from "utils/firebaseAdmin";
+import { ClubProp } from "utils/interfaces";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // Add Club

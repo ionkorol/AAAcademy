@@ -2,11 +2,12 @@ import { GetServerSideProps } from "next";
 import React, { useEffect, useState } from "react";
 import { Alert } from "react-bootstrap";
 import { useRouter } from "next/router";
-import firebaseClient from "../../utils/firebaseClient";
+import firebaseClient from "utils/firebaseClient";
 import styles from "./Users.module.scss";
-import firebaseAdmin from "../../utils/firebaseAdmin";
-import { UserProp } from "../../utils/interfaces";
-import { AdminLayout, UserModal } from "../../components/admin";
+import firebaseAdmin from "utils/firebaseAdmin";
+import { UserProp } from "utils/interfaces";
+import { AdminLayout, UserModal } from "components/admin";
+import nookies from "nookies";
 
 interface UsersProps {}
 const UsersContent: React.FC<UsersProps> = (props) => {
@@ -114,7 +115,9 @@ const UsersContent: React.FC<UsersProps> = (props) => {
           <div className={styles.tableBody}>
             {currentUsers.map((user) => (
               <div className={styles.tableItem} key={user.email}>
-                <div>{user.firstName} {user.lastName}</div>
+                <div>
+                  {user.firstName} {user.lastName}
+                </div>
                 <div>{user.email}</div>
                 <div>{user.type}</div>
                 <div>
@@ -144,3 +147,19 @@ const UsersContent: React.FC<UsersProps> = (props) => {
 };
 
 export default UsersContent;
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { token } = nookies.get(ctx);
+  try {
+    const { email } = await firebaseAdmin.auth().verifyIdToken(token);
+    return {
+      props: {},
+    };
+  } catch (error) {
+    ctx.res.writeHead(302, { Location: "/" });
+    ctx.res.end();
+    return {
+      props: {} as never,
+    };
+  }
+};

@@ -4,10 +4,13 @@ import Link from "next/link";
 import styles from "./navigation.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAppleAlt } from "@fortawesome/free-solid-svg-icons";
+import useAuth from "hooks/useAuth";
 
 interface Props {}
 
 const Navigation: React.FC<Props> = (props) => {
+  const auth = useAuth();
+
   return (
     <div className={styles.container}>
       <Link href="/">
@@ -38,9 +41,13 @@ const Navigation: React.FC<Props> = (props) => {
           </Link>
         </div>
         <div className={styles.menuItem}>
-          <Link href="/signin">
-            <button>Sign In</button>
-          </Link>
+          {auth.user ? (
+            <button onClick={auth.signOut}>Sign Out</button>
+          ) : (
+            <Link href="/signin">
+              <button>Sign In</button>
+            </Link>
+          )}
         </div>
         <div className={styles.menuItem}>
           <Link href="/signup">

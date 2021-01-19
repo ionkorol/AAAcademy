@@ -1,3 +1,4 @@
+
 export interface ClubProp {
   title: string;
   categories: Array<"Active" | "Creative" | "Educational" | "Musical">;
@@ -8,7 +9,7 @@ export interface ClubProp {
   };
   image: string;
   teacher: string;
-  description: string
+  description: string;
   id: string;
 }
 
@@ -22,4 +23,9 @@ export interface UserProp {
   children?: string[];
   clubs?: string[];
   dob?: string;
+}
+
+export interface UserWithCredProp {
+  credentials: any;
+  data: UserProp
 }

@@ -1,0 +1,137 @@
+@import "/styles/variables.scss";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  margin-top: -10vh;
+}
+
+.slider {
+  display: flex;
+  background-image: url("../../public/slide/img3.jpg");
+  background-size: cover;
+  height: 400px;
+  padding-top: 10vh;
+  padding-left: 10vw;
+  padding-right: 10vw;
+  align-items: center;
+  justify-content: center;
+  h1 {
+    font-size: 4rem;
+    font-weight: bold;
+    color: $dark;
+    text-transform: uppercase;
+  }
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  margin: 0vh 10vw;
+
+  .info {
+    background-color: $light;
+    box-shadow: 0 4px 0 0 $light-dark;
+    border-radius: 5px;
+    display: grid;
+    grid-template-columns: repeat(4, 25%);
+    justify-items: center;
+    margin-top: 2vh;
+    div {
+      display: flex;
+      padding: 20px;
+      text-transform: uppercase;
+      align-items: center;
+
+      span {
+        margin-left: 10px;
+        font-weight: bold;
+      }
+    }
+    .location {
+    }
+    .time {
+    }
+    .contact {
+    }
+    .teacher {
+    }
+
+    @media screen and (max-width: $screen-s) {
+      grid-template-columns: 1fr;
+      justify-items: start;
+    }
+  }
+  .description {
+    display: grid;
+    grid-template-columns: 45% 45%;
+    column-gap: 10%;
+    margin-top: 5vh;
+
+    .text {
+      h2 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+    }
+
+    .reqs {
+      display: flex;
+      flex-direction: column;
+
+      h2 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .table {
+        display: flex;
+        flex-direction: column;
+        background-color: $light;
+        box-shadow: 0 4px 0 0 $light-dark;
+        border-radius: 5px;
+
+        .tRow {
+          display: grid;
+          grid-template-columns: auto 100px;
+
+          > div {
+            display: flex;
+            border: 1px solid $light-dark;
+            padding: 10px 30px;
+            height: 100%;
+            align-items: center;
+          }
+
+          &:first-child {
+            color: white;
+            font-weight: bold;
+            > div {
+              background-color: $primary;
+              &:first-child {
+                border-top-left-radius: 5px;
+              }
+              &:nth-child(2) {
+                border-top-right-radius: 5px;
+              }
+            }
+          }
+          &:last-child {
+            > div {
+              &:first-child {
+                border-bottom-left-radius: 5px;
+              }
+              &:nth-child(2) {
+                border-bottom-right-radius: 5px;
+              }
+            }
+          }
+        }
+      }
+    }
+    @media screen and (max-width: $screen-s) {
+      grid-template-columns: 1fr;
+      justify-items: start;
+    }
+  }
+}
