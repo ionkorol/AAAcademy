@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Form, Alert, ListGroup, Col } from "react-bootstrap";
+import {
+  Modal,
+  Form,
+  Alert,
+  ListGroup,
+  Col,
+  InputGroup,
+  Button,
+  ListGroupItem,
+} from "react-bootstrap";
 import firebaseClient from "utils/firebaseClient";
 import { ClubProp } from "utils/interfaces";
 
@@ -18,6 +27,7 @@ const ClubModal: React.FC<Props> = (props) => {
   const { show, handleClose, clubData, onRun, error, action } = props;
 
   const [title, setTitle] = useState(clubData ? clubData.title : "");
+  const [price, setPrice] = useState(clubData ? clubData.price : 0);
   const availableCategories: Array<
     "Active" | "Creative" | "Educational" | "Musical"
   > = ["Active", "Creative", "Educational", "Musical"];
@@ -32,9 +42,12 @@ const ClubModal: React.FC<Props> = (props) => {
   const [description, setDescription] = useState(
     clubData ? clubData.description : ""
   );
+  const [requirements, setRequirements] = useState([]);
+  const [requirement, setRequirement] = useState("");
 
   const [errors, setErrors] = useState({
     title: null,
+    price: null,
     categories: null,
     date: null,
     fromTime: null,
@@ -42,12 +55,16 @@ const ClubModal: React.FC<Props> = (props) => {
     image: null,
     teacher: null,
     description: null,
+    requirements: null,
   });
+
+  console.log(requirements);
 
   // Change info when opening new
   useEffect(() => {
     if (clubData) {
       setTitle(clubData.title);
+      setPrice(clubData.price);
       setCategories(clubData.categories);
       setDate(clubData.date);
       setTimeTo(clubData.time.to);
@@ -55,8 +72,10 @@ const ClubModal: React.FC<Props> = (props) => {
       setImage(clubData.image);
       setTeacher(clubData.teacher);
       setDescription(clubData.description);
+      setRequirements(clubData.requirements ? clubData.requirements : []);
     } else {
       setTitle("");
+      setPrice(0);
       setCategories([]);
       setDate("");
       setTimeTo("");
@@ -64,9 +83,12 @@ const ClubModal: React.FC<Props> = (props) => {
       setImage("");
       setTeacher("");
       setDescription("");
+      setRequirements([]);
     }
+    setRequirement("");
     setErrors({
       title: null,
+      price: null,
       categories: null,
       date: null,
       fromTime: null,
@@ -74,6 +96,7 @@ const ClubModal: React.FC<Props> = (props) => {
       image: null,
       teacher: null,
       description: null,
+      requirements: null,
     });
   }, [clubData, show]);
 
@@ -170,7 +193,7 @@ const ClubModal: React.FC<Props> = (props) => {
       }));
       return false;
     }
-    
+
     // Description Validation
     // Empty
     if (!description) {
@@ -201,8 +224,19 @@ const ClubModal: React.FC<Props> = (props) => {
         teacher,
         id: clubData.id,
         description,
+        requirements,
+        price,
       });
     }
+  };
+
+  const handleAddRequirement = () => {
+    setRequirements((prevState) => [...prevState, requirement]);
+    setRequirement("");
+  };
+
+  const handleDeleteRequirement = (req: string) => {
+    setRequirements((prevState) => prevState.filter((item) => item !== req));
   };
 
   return (
@@ -225,6 +259,20 @@ const ClubModal: React.FC<Props> = (props) => {
             />
             <Form.Control.Feedback type="invalid">
               {errors.title}
+            </Form.Control.Feedback>
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>Price</Form.Label>
+            <Form.Control
+              type="number"
+              placeholder="Enter Price"
+              value={price}
+              onChange={(e) => setPrice(Number(e.target.value))}
+              isInvalid={!!errors.price}
+              required
+            />
+            <Form.Control.Feedback type="invalid">
+              {errors.price}
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group>
@@ -318,6 +366,47 @@ const ClubModal: React.FC<Props> = (props) => {
               onChange={(e) => setTeacher(e.target.value)}
               isInvalid={!!errors.teacher}
             />
+            <Form.Control.Feedback type="invalid">
+              {errors.teacher}
+            </Form.Control.Feedback>
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>Requirements</Form.Label>
+            <InputGroup className="mb-3">
+              <Form.Control
+                type="text"
+                placeholder="Add Requirement"
+                value={requirement}
+                onChange={(e) => setRequirement(e.target.value)}
+              />
+              <InputGroup.Append>
+                <Button
+                  variant="outline-success"
+                  onClick={handleAddRequirement}
+                >
+                  Add
+                </Button>
+              </InputGroup.Append>
+            </InputGroup>
+            <ListGroup>
+              {requirements
+                ? requirements.map((req, index) => (
+                    <ListGroupItem
+                      className="d-flex justify-content-between"
+                      key={index}
+                    >
+                      <div>{req}</div>
+                      <Button
+                        variant="danger"
+                        size="sm"
+                        onClick={() => handleDeleteRequirement(req)}
+                      >
+                        x
+                      </Button>
+                    </ListGroupItem>
+                  ))
+                : null}
+            </ListGroup>
             <Form.Control.Feedback type="invalid">
               {errors.teacher}
             </Form.Control.Feedback>

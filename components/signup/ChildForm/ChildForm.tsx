@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Col, Form, Row } from "react-bootstrap";
 import firebaseClient from "utils/firebaseClient";
-import { ClubProp, UserProp } from "utils/interfaces";
+import { ChildProp, ClubProp, UserProp } from "utils/interfaces";
 import Select from "react-select";
 
 import styles from "./ChildForm.module.scss";
@@ -9,76 +9,17 @@ import styles from "./ChildForm.module.scss";
 interface Props {
   navigation: React.Dispatch<any>;
   handleData: React.Dispatch<any>;
-  handleSignup: () => Promise<boolean>;
+  data: ChildProp[];
 }
 
 const ChildForm: React.FC<Props> = (props) => {
-  const { navigation, handleData, handleSignup } = props;
+  const { navigation, handleData, data } = props;
 
-  const [children, setChildren] = useState({
-    1: {
-      firstName: "",
-      lastName: "",
-      dob: "",
-    },
-  });
-  const [childrenNumber, setChildrenNumber] = useState(1);
+  const [children, setChildren] = useState(data);
 
-  const handleAddChild = () => {
-    setChildrenNumber((prevState) => prevState + 1);
-  };
-
-  const handleCFISubmit = (data) => {
-    setChildren((prevState) => ({ ...prevState, ...data }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    handleData(children);
-    if (await handleSignup()) {
-      navigation("Success");
-    }
-  };
-
-  return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>Child Information</h1>
-      <Form id="currentForm" onSubmit={handleSubmit}>
-        <button onClick={handleAddChild} className={styles.addChild}>
-          Add Child
-        </button>
-        {new Array(childrenNumber).fill(undefined).map((child, index) => (
-          <div key={index}>
-            <div className={styles.childNumber}>Child {index + 1}</div>
-            <ChildFormItem
-              handleSubmit={handleCFISubmit}
-              childNumber={index + 1}
-            />
-          </div>
-        ))}
-      </Form>
-    </div>
-  );
-};
-
-export default ChildForm;
-
-interface CFIProps {
-  handleSubmit: (data: any) => void;
-  childNumber: number;
-}
-
-const ChildFormItem: React.FC<CFIProps> = (props) => {
-  const { handleSubmit, childNumber } = props;
-
-  const [firstName, setFirstName] = useState("");
-  const [firstNameError, setFirstNameError] = useState(null);
-  const [lastName, setLastName] = useState("");
-  const [lastNameError, setLastNameError] = useState(null);
-  const [date, setDate] = useState("");
   const [clubList, setClubList] = useState<ClubProp[]>([]);
-  const [selectedClubs, setSelectedClubs] = useState([]);
-  const [clubInput, setClubInput] = useState("");
+
+  // const [children, setChildren] = useState([]);
 
   useEffect(() => {
     fetch("/api/clubs")
@@ -88,20 +29,98 @@ const ChildFormItem: React.FC<CFIProps> = (props) => {
       });
   }, []);
 
-  console.log(date);
-
-  useEffect(() => {
-    handleSubmit({
-      [childNumber]: {
-        firstName,
-        lastName,
-        dob: date,
-        email: "",
+  const handleAddChild = () => {
+    setChildren([
+      ...children,
+      {
+        firstName: "",
+        lastName: "",
+        dob: "",
+        type: "Student",
+        email: "student@gmail.com",
         phone: "",
-        clubs: selectedClubs,
-      } as UserProp,
-    });
-  }, [firstName, lastName]);
+        clubs: [],
+      },
+    ]);
+  };
+
+  const handleRemoveChild = (child: ChildProp) => {
+    setChildren((prevState) =>
+      prevState.filter(
+        (item) =>
+          item.firstName !== child.firstName && item.lastName !== child.lastName
+      )
+    );
+  };
+
+  console.log(children);
+
+  const handleCFISubmit = (field, data, childIndex) => {
+    setChildren((prevState) =>
+      prevState.map((item, index) =>
+        index === childIndex ? { ...item, [field]: data } : item
+      )
+    );
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    handleData(children);
+    navigation("Payment");
+  };
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.title}>
+        <h1>Child Information</h1>
+        <button onClick={() => navigation("ParentForm")}>Back</button>
+      </div>
+      <Form id="currentForm" onSubmit={handleSubmit}>
+        <button
+          type="button"
+          onClick={handleAddChild}
+          className={styles.addChild}
+        >
+          Add Child
+        </button>
+        {children.map((child, index) => (
+          <div className={styles.cfiContainer} key={index}>
+            <div className={styles.childNumber}>Child {index + 1}</div>
+            <button
+              type="button"
+              onClick={() => handleRemoveChild(child)}
+              className={styles.removeButton}
+            >
+              x
+            </button>
+            <ChildFormItem
+              handleSubmit={handleCFISubmit}
+              childNumber={index}
+              data={child}
+              clubList={clubList}
+            />
+          </div>
+        ))}
+        <button type="submit">Next</button>
+      </Form>
+    </div>
+  );
+};
+
+export default ChildForm;
+
+interface CFIProps {
+  handleSubmit: (field: string, data: any, childIndex: number) => void;
+  childNumber: number;
+  data: ChildProp;
+  clubList: ClubProp[];
+}
+
+const ChildFormItem: React.FC<CFIProps> = (props) => {
+  const { handleSubmit, childNumber, data, clubList } = props;
+
+  const [firstNameError, setFirstNameError] = useState(null);
+  const [lastNameError, setLastNameError] = useState(null);
 
   return (
     <>
@@ -111,8 +130,10 @@ const ChildFormItem: React.FC<CFIProps> = (props) => {
             <Form.Label>First Name</Form.Label>
             <Form.Control
               type="text"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
+              value={data.firstName}
+              onChange={(e) =>
+                handleSubmit("firstName", e.target.value, childNumber)
+              }
               isInvalid={!!firstNameError}
               required
             />
@@ -126,14 +147,16 @@ const ChildFormItem: React.FC<CFIProps> = (props) => {
             <Form.Label>Last Name</Form.Label>
             <Form.Control
               type="text"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
+              value={data.lastName}
+              onChange={(e) =>
+                handleSubmit("lastName", e.target.value, childNumber)
+              }
               isInvalid={!!lastNameError}
               required
             />
             <Form.Control.Feedback type="invalid">
               {!!lastNameError}
-            </Form.Control.Feedback>{" "}
+            </Form.Control.Feedback>
           </Form.Group>
         </Col>
       </Row>
@@ -141,20 +164,33 @@ const ChildFormItem: React.FC<CFIProps> = (props) => {
         <Form.Label>Date of Birth</Form.Label>
         <Form.Control
           type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
+          value={data.dob}
+          onChange={(e) => handleSubmit("dob", e.target.value, childNumber)}
           required
         />
       </Form.Group>
       <Form.Group>
         <Form.Label>Clubs</Form.Label>
         <Select
+          value={
+            clubList.length &&
+            data.clubs.map((selectedClub) => ({
+              value: selectedClub,
+              label: selectedClub.title,
+            }))
+          }
           options={clubList.map((club) => ({
-            value: club.id,
+            value: club,
             label: club.title,
           }))}
           isMulti
-          onChange={(e) => setSelectedClubs(e.map((item) => item.value))}
+          onChange={(e) =>
+            handleSubmit(
+              "clubs",
+              e.map((item) => item.value),
+              childNumber
+            )
+          }
         />
       </Form.Group>
     </>

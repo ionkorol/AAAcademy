@@ -19,6 +19,10 @@
   }
 
   .title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
     background-color: $tertiary;
     margin: -5vh -5vw 5vh -5vw;
     padding: 20px 5vw;
@@ -29,9 +33,18 @@
   }
 }
 
-.childNumber {
-  margin-top: 20px;
-  margin-bottom: 20px;
-  font-weight: bold;
-  font-size: 1.3rem;
+.cfiContainer {
+  position: relative;
+  .childNumber {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    font-size: 1.3rem;
+  }
+
+  .removeButton {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
 }

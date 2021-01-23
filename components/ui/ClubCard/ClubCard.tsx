@@ -41,6 +41,11 @@ const ClubCard: React.FC<Props> = (props) => {
           {data.time.to}
         </div>
         <hr className={styles.hr} />
+        <div className={styles.description}>
+          {data.description
+            ? data.description.slice(0, 200) + "..."
+            : "Coming Soon ..."}
+        </div>
       </div>
       <Link href={`/club/${data.id}`}>
         <button className={styles.more}>

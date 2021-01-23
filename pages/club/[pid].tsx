@@ -87,24 +87,14 @@ const Club: React.FC<Props> = (props) => {
                   <div>COURSE REQUIREMENTS</div>
                   <div></div>
                 </div>
-                <div className={styles.tRow}>
-                  <div>PERSONAL COMPUTER FOR EACH KIDS</div>
-                  <div>
-                    <Icon icon={faCheck} size="1x" bgColor="quaternary" />
+                {data.requirements.map((req, index) => (
+                  <div className={styles.tRow} key={index}>
+                    <div>{req}</div>
+                    <div>
+                      <Icon icon={faCheck} size="1x" bgColor="quaternary" />
+                    </div>
                   </div>
-                </div>
-                <div className={styles.tRow}>
-                  <div>PERSONAL COMPUTER FOR EACH KIDS</div>
-                  <div>
-                    <Icon icon={faCheck} size="1x" bgColor="quaternary" />
-                  </div>
-                </div>
-                <div className={styles.tRow}>
-                  <div>PERSONAL COMPUTER FOR EACH KIDS</div>
-                  <div>
-                    <Icon icon={faCheck} size="1x" bgColor="quaternary" />
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>

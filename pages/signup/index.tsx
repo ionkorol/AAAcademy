@@ -1,4 +1,4 @@
-import { ChildForm, ParentForm, Success } from "components/signup";
+import { ChildForm, ParentForm, Payment, Success } from "components/signup";
 import React, { useEffect, useState } from "react";
 import firebaseClient from "utils/firebaseClient";
 import { UserProp } from "utils/interfaces";
@@ -9,12 +9,18 @@ import styles from "./SignUp.module.scss";
 interface Props {}
 
 const SignUp: React.FC<Props> = (props) => {
-  const [page, setPage] = useState<"ParentForm" | "ChildForm" | "Success">(
-    "ParentForm"
-  );
+  const [page, setPage] = useState<
+    "ParentForm" | "ChildForm" | "Payment" | "Success"
+  >("ParentForm");
 
-  const [parent, setParent] = useState<UserProp>(null);
-  const [children, setChildren] = useState({});
+  const [parent, setParent] = useState<UserProp>({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    type: "Parent",
+  });
+  const [children, setChildren] = useState([]);
 
   useEffect(() => {
     console.log(parent, children);
@@ -48,24 +54,19 @@ const SignUp: React.FC<Props> = (props) => {
           <h1>Sign Up</h1>
         </div>
         {page === "ParentForm" ? (
-          <ParentForm navigation={setPage} handleData={setParent} />
+          <ParentForm navigation={setPage} handleData={setParent} data={parent} />
         ) : page === "ChildForm" ? (
-          <ChildForm
+          <ChildForm navigation={setPage} handleData={setChildren} data={children} />
+        ) : page === "Payment" ? (
+          <Payment
             navigation={setPage}
-            handleData={setChildren}
+            parentData={parent}
+            childData={children}
             handleSignup={handleSubmit}
           />
         ) : page === "Success" ? (
           <Success />
         ) : null}
-        <button
-          form="currentForm"
-          type="submit"
-          className={styles.nextButton}
-          style={page === "Success" ? { display: "none" } : null}
-        >
-          Next
-        </button>
       </div>
     </Layout>
   );

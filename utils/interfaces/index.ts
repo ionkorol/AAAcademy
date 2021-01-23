@@ -1,4 +1,3 @@
-
 export interface ClubProp {
   title: string;
   categories: Array<"Active" | "Creative" | "Educational" | "Musical">;
@@ -11,6 +10,8 @@ export interface ClubProp {
   teacher: string;
   description: string;
   id: string;
+  price: number;
+  requirements: string[];
 }
 
 export interface UserProp {
@@ -25,7 +26,19 @@ export interface UserProp {
   dob?: string;
 }
 
+export interface ChildProp {
+  firstName: string;
+  lastName: string;
+  type: "Teacher" | "Student" | "Parent" | string;
+  email: string;
+  phone: string;
+  id?: string;
+  children?: string[];
+  clubs?: ClubProp[];
+  dob?: string;
+}
+
 export interface UserWithCredProp {
   credentials: any;
-  data: UserProp
+  data: UserProp;
 }

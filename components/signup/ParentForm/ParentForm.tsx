@@ -7,18 +7,19 @@ import styles from "./ParentForm.module.scss";
 interface Props {
   navigation: React.Dispatch<any>;
   handleData: React.Dispatch<any>;
+  data: UserProp;
 }
 
 const ParentForm: React.FC<Props> = (props) => {
-  const { navigation, handleData } = props;
+  const { navigation, handleData, data } = props;
 
-  const [firstName, setFirstName] = useState("");
+  const [firstName, setFirstName] = useState(data.firstName);
   const [firstNameError, setFirstNameError] = useState(null);
-  const [lastName, setLastName] = useState("");
+  const [lastName, setLastName] = useState(data.lastName);
   const [lastNameError, setLastNameError] = useState(null);
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(data.email);
   const [emailError, setEmailError] = useState(null);
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState(data.phone);
   const [phoneError, setPhoneError] = useState(null);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -35,7 +36,9 @@ const ParentForm: React.FC<Props> = (props) => {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Parent Info</h1>
+      <div className={styles.title}>
+        <h1>Parent Information</h1>
+      </div>
       <Form id="currentForm" onSubmit={handleSubmit}>
         <Row>
           <Col>
@@ -100,6 +103,7 @@ const ParentForm: React.FC<Props> = (props) => {
             {phoneError}
           </Form.Control.Feedback>
         </Form.Group>
+        <button type="submit">Next</button>
       </Form>
     </div>
   );
