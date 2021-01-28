@@ -5,13 +5,13 @@ import { UserProp } from "../../utils/interfaces";
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // Add User
   if (req.method === "POST") {
-    const { email, name, type } = req.body;
+    const userData = req.body as UserProp;
     try {
       const user = await firebaseAdmin.auth().createUser({
-        email: email,
+        email: userData.email,
         emailVerified: false,
         password: "password",
-        displayName: name,
+        displayName: `${userData.firstName} ${userData.lastName}`,
       });
       const writeResult = await firebaseAdmin
         .firestore()
@@ -19,15 +19,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         .doc(user.uid)
         .set(
           {
-            name,
-            email,
-            type,
+            ...userData,
             id: user.uid,
           },
           { merge: true }
         );
       res.statusCode = 200;
-      res.json({ status: true, data: writeResult });
+      res.json({ status: true, data: user.uid });
     } catch (error) {
       res.statusCode = 200;
       res.json({ status: false, error });

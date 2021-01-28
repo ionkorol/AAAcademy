@@ -42,3 +42,10 @@ export interface UserWithCredProp {
   credentials: any;
   data: UserProp;
 }
+
+export interface OrderProp {
+  id: string;
+  userId: string;
+  totalPrice: string;
+  children: ChildProp[];
+}

@@ -130,7 +130,7 @@ const ClubsContent: React.FC<ClubsProps> = (props) => {
           <div className={styles.tableBody}>
             {currentClubs.map((club) => (
               <div className={styles.tableItem} key={club.id}>
-                <div>{club.title}</div>
+                <div>{club.title}<small style={{color: 'red'}}>{club.price}</small></div>
                 <div>
                   {club.categories.map((category) => (
                     <FontAwesomeIcon

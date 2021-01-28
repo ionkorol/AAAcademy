@@ -27,6 +27,7 @@ const ClubCard: React.FC<Props> = (props) => {
           <FontAwesomeIcon icon={faCalendar} fixedWidth />
           {data.date}
         </div>
+        <div className={styles.price}>${data.price.toFixed(2)}</div>
       </div>
       <div className={styles.title}>{data.title}</div>
       <div className={styles.body}>
@@ -42,9 +43,7 @@ const ClubCard: React.FC<Props> = (props) => {
         </div>
         <hr className={styles.hr} />
         <div className={styles.description}>
-          {data.description
-            ? data.description.slice(0, 200) + "..."
-            : "Coming Soon ..."}
+          {data.description.slice(0, 200)}
         </div>
       </div>
       <Link href={`/club/${data.id}`}>

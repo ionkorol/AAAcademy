@@ -29,17 +29,27 @@ const SignUp: React.FC<Props> = (props) => {
   const handleSubmit = async () => {
     try {
       const childrenIds = [];
-      Object.keys(children).map(async (childIndex) => {
-        const ref = await firebaseClient
-          .firestore()
-          .collection("users")
-          .add({ ...children[childIndex] });
-        childrenIds.push(ref.id);
+      children.map(async (child) => {
+        const res = await fetch("/api/users", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(child),
+        });
+        const childId = (await res.json()).data.id;
+        childrenIds.push(childId);
       });
-      await firebaseClient
-        .firestore()
-        .collection("users")
-        .add({ ...parent, children: childrenIds } as UserProp);
+
+      await fetch("/api/users", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...parent, children: childrenIds }),
+      });
 
       return true;
     } catch (error) {
@@ -54,9 +64,17 @@ const SignUp: React.FC<Props> = (props) => {
           <h1>Sign Up</h1>
         </div>
         {page === "ParentForm" ? (
-          <ParentForm navigation={setPage} handleData={setParent} data={parent} />
+          <ParentForm
+            navigation={setPage}
+            handleData={setParent}
+            data={parent}
+          />
         ) : page === "ChildForm" ? (
-          <ChildForm navigation={setPage} handleData={setChildren} data={children} />
+          <ChildForm
+            navigation={setPage}
+            handleData={setChildren}
+            data={children}
+          />
         ) : page === "Payment" ? (
           <Payment
             navigation={setPage}

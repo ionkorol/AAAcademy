@@ -1,7 +1,9 @@
+import { faDivide } from "@fortawesome/free-solid-svg-icons";
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Form, InputGroup, ListGroup, Alert } from "react-bootstrap";
+import { PayPalButton } from "react-paypal-button-v2";
 import { ChildProp, ClubProp, UserProp } from "utils/interfaces";
-import { CreateOrderObj } from "./interfaces";
+import { GetOrderObj } from "./functions";
 
 import styles from "./Payment.module.scss";
 
@@ -18,23 +20,32 @@ const Payment: React.FC<Props> = (props) => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [coupon, setCoupon] = useState("");
   const [priceDiscounted, setPriceDiscounted] = useState(false);
-
+  const [orderObj, setOrderObj] = useState(null);
   const [paid, setPaid] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const paypal = useRef(null);
 
+  const handleOrderObj = async () => {
+    setOrderObj(await GetOrderObj(childData, parentData, coupon));
+  };
+
+  useEffect(() => {
+    handleOrderObj();
+  }, [childData, parentData, coupon]);
+
+  console.log(orderObj);
+
+  // Render Paypal Buttons
   useEffect(() => {
     const script = document.createElement("script");
     script.type = "text/javascript";
     script.src = `https://www.paypal.com/sdk/js?client-id=${process.env.NEXT_PUBLIC_PAYPAL_API_KEY}`;
     //For head
     document.head.appendChild(script);
-    script.onload = () => {
-      onRun(childData, parentData, handleSubmit, paypal);
-    };
-  }, []);
+  }, [childData, parentData]);
 
+  // Handle Payment Form Submit
   const handleSubmit = async () => {
     if (await handleSignup()) {
       navigation("Success");
@@ -45,18 +56,30 @@ const Payment: React.FC<Props> = (props) => {
     if (coupon === "123") {
       setTotalPrice((prevState) => prevState / 2);
       setPriceDiscounted(true);
+      // onRun(childData, parentData, coupon, handleSubmit, paypal);
     }
   };
 
-  useEffect(() => {
+  // Calculate Total Price
+  const handleTotalPrice = () => {
     setTotalPrice(0);
     childData.forEach((child) => {
       child.clubs.forEach((club) => {
-        setTotalPrice((prevState) => prevState + 20); // Club Price
+        if (coupon === "123") {
+          setTotalPrice((prevState) => prevState + club.price / 2);
+        } else {
+          setTotalPrice((prevState) => prevState + club.price); // Club Price
+        }
       });
     });
-    setTotalPrice((prevState) => prevState + 35);
-    handleCheckCoupon()
+    setTotalPrice(
+      (prevState) =>
+        prevState + Number(process.env.NEXT_PUBLIC_REGISTRATION_FEE)
+    );
+  };
+
+  useEffect(() => {
+    handleTotalPrice();
   }, [childData]);
 
   return (
@@ -69,7 +92,14 @@ const Payment: React.FC<Props> = (props) => {
         Faiful members of the church can receive 50% off. Please contact us at
         000-000-0000
       </Alert>
-      <Form>
+      <Form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleTotalPrice();
+          console.log("Test");
+          // onRun(childData, parentData, coupon, handleSubmit, paypal);
+        }}
+      >
         <Form.Group>
           <InputGroup className="mb-3">
             <Form.Control
@@ -79,7 +109,7 @@ const Payment: React.FC<Props> = (props) => {
               onChange={(e) => setCoupon(e.target.value)}
             />
             <InputGroup.Append>
-              <Button onClick={handleCheckCoupon} variant="outline-success">
+              <Button type="submit" variant="outline-success">
                 Submit
               </Button>
             </InputGroup.Append>
@@ -91,7 +121,7 @@ const Payment: React.FC<Props> = (props) => {
           Children
         </ListGroup.Item>
         {childData.map((child, index) => (
-          <>
+          <React.Fragment key={index}>
             <ListGroup.Item variant="info" className="font-weight-bold  pl-4">
               {child.firstName} {child.lastName}
             </ListGroup.Item>
@@ -104,7 +134,7 @@ const Payment: React.FC<Props> = (props) => {
                 <div>$20</div>
               </ListGroup.Item>
             ))}
-          </>
+          </React.Fragment>
         ))}
         <ListGroup.Item
           variant="warning"
@@ -130,112 +160,35 @@ const Payment: React.FC<Props> = (props) => {
       </ListGroup>
 
       <div className="mt-5">
-        <div ref={paypal}></div>
+        <PayPalButton
+          amount={totalPrice}
+          // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
+          createOrder={(data, actions) => {
+            return actions.order.create(orderObj);
+          }}
+          onSuccess={async (details, data) => {
+            alert("Transaction completed by " + details.payer.name.given_name);
+
+            const res = await fetch("/api/users", {
+              method: "POST",
+              body: JSON.stringify(parentData),
+            });
+            const jsonData = await res.json();
+
+            // OPTIONAL: Call your server to save the transaction
+            return fetch("/api/orders", {
+              method: "POST",
+              body: JSON.stringify({
+                userId: jsonData.data,
+                totalPrice: totalPrice,
+                children: childData,
+              }),
+            });
+          }}
+        />
       </div>
     </div>
   );
 };
 
 export default Payment;
-
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const onRun = async (
-  childData: ChildProp[],
-  parentData: UserProp,
-  onPaid: () => any,
-  paypal: React.MutableRefObject<any>
-) => {
-  // Calculate Total Price
-  let totalPrice = 0;
-  childData.forEach((child) => {
-    child.clubs.forEach((club) => {
-      totalPrice += 20; // club.price
-    });
-  });
-
-  // Format Items
-  const itemsData = [];
-  childData.forEach((child) => {
-    child.clubs.forEach((club) => {
-      itemsData.push({
-        name: `${club.title} - ${child.firstName} ${child.lastName}`,
-        unit_amount: {
-          currency_code: "USD",
-          value: String(20), // club.price
-        },
-        quantity: "1",
-        sku: club.id,
-        category: "DIGITAL_GOODS",
-      });
-    });
-  });
-
-  const paypalCreateOrderOptions: CreateOrderObj = {
-    intent: "CAPTURE",
-    payer: {
-      name: {
-        given_name: parentData.firstName,
-        surname: parentData.lastName,
-      },
-      email_address: parentData.email,
-    },
-    purchase_units: [
-      {
-        amount: {
-          value: (
-            totalPrice + Number(process.env.NEXT_PUBLIC_REGISTRATION_FEE)
-          ).toFixed(2),
-          currency_code: "USD",
-          breakdown: {
-            item_total: {
-              currency_code: "USD",
-              value: (
-                totalPrice + Number(process.env.NEXT_PUBLIC_REGISTRATION_FEE)
-              ).toFixed(2),
-            },
-          },
-        },
-        invoice_id: "1",
-        items: [
-          ...itemsData,
-          {
-            name: "Registration Fee",
-            unit_amount: {
-              currency_code: "USD",
-              value: String(35),
-            },
-            quantity: "1",
-            sku: "1",
-            category: "DIGITAL_GOODS",
-          },
-        ],
-      },
-    ],
-    application_context: {
-      brand_name: "Always Active Academy",
-    },
-  };
-
-  console.log(paypalCreateOrderOptions);
-
-  (window as any).paypal
-    .Buttons({
-      createOrder: function (data, actions) {
-        // This function sets up the details of the transaction, including the amount and line item details.
-        return actions.order.create(paypalCreateOrderOptions);
-      },
-      onApprove: function (data, actions) {
-        // This function captures the funds from the transaction.
-        return actions.order.capture().then(function (details) {
-          // Run stuff after successful payment
-          onPaid();
-          console.log(details);
-        });
-      },
-      onError: function (error) {
-        console.log(error);
-      },
-    })
-    .render(paypal.current);
-  console.log("Ran");
-};
