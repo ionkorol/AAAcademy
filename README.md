@@ -4,14 +4,10 @@
 - [ ] Fix Layout for Medium Screens
   - [x] Front End
   - [ ] Back End
-- [-] Form Validation Admin Area
-  - [-] User Add
-  - [-] User Edit
-  - [-] Club Add
-  - [-] Club Edit
-- [x] Consolidate Modals for Users (if possible)
-- [x] Create API functionality
-  - [x] Users
-  - [x] Clubs
-- [ ] Authentication system
-- [ ] Fix Add Club and Edit API
+
+## Sign Up Forms
+
+- [ ] Add Address and Emergency to parrent
+- [ ] Child Email
+- [ ] Add TOS and Covid Release
+- [ ] Figure On site payment

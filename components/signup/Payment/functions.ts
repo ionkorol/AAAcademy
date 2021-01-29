@@ -1,10 +1,10 @@
 import firebaseClient from "utils/firebaseClient";
-import { ChildProp, UserProp } from "utils/interfaces";
+import { ChildProp, ParentProp, UserProp } from "utils/interfaces";
 import { CreateOrderObj } from "./interfaces";
 
 export const GetOrderObj = async (
   childData: ChildProp[],
-  parentData: UserProp,
+  parentData: ParentProp,
   couponData: any
 ) => {
   // Calculate Total and SubTotal Price
@@ -45,7 +45,7 @@ export const GetOrderObj = async (
         name: `${club.title} - ${child.firstName} ${child.lastName}`,
         unit_amount: {
           currency_code: "USD",
-          value: String(club.price), // club.price
+          value: String(club.price),
         },
         quantity: "1",
         sku: club.id,
@@ -107,7 +107,7 @@ export const GetOrderObj = async (
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const onRun = async (
   childData: ChildProp[],
-  parentData: UserProp,
+  parentData: ParentProp,
   couponData: any,
   onPaid: () => any,
   paypal: React.MutableRefObject<any>

@@ -1,7 +1,7 @@
 import { ChildForm, ParentForm, Payment, Success } from "components/signup";
 import React, { useEffect, useState } from "react";
 import firebaseClient from "utils/firebaseClient";
-import { UserProp } from "utils/interfaces";
+import { ChildProp, UserProp } from "utils/interfaces";
 import { Layout } from "../../components/common";
 
 import styles from "./SignUp.module.scss";
@@ -19,12 +19,22 @@ const SignUp: React.FC<Props> = (props) => {
     email: "",
     phone: "",
     type: "Parent",
+    address: {
+      addressLine1: "",
+      addressLine2: "",
+      adminArea: "",
+      postalCode: "",
+    },
+    emergencyContact: {
+      name: "",
+      phone: "",
+    },
   });
-  const [children, setChildren] = useState([]);
+  const [children, setChildren] = useState<ChildProp[]>([]);
 
   useEffect(() => {
     console.log(parent, children);
-  }, []);
+  });
 
   const handleSubmit = async () => {
     try {
@@ -42,7 +52,7 @@ const SignUp: React.FC<Props> = (props) => {
         childrenIds.push(childId);
       });
 
-      await fetch("/api/users", {
+      const parentRes = await fetch("/api/users", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -51,8 +61,20 @@ const SignUp: React.FC<Props> = (props) => {
         body: JSON.stringify({ ...parent, children: childrenIds }),
       });
 
+      const parentJson = await parentRes.json();
+
+      fetch("/api/orders", {
+        method: "POST",
+        body: JSON.stringify({
+          userId: parentJson.data,
+          totalPrice: process.env.NEXT_PUBLIC_REGISTRATION_FEE,
+          children: children,
+        }),
+      });
+
       return true;
     } catch (error) {
+      alert(error);
       return false;
     }
   };
@@ -73,6 +95,7 @@ const SignUp: React.FC<Props> = (props) => {
           <ChildForm
             navigation={setPage}
             handleData={setChildren}
+            parentData={parent}
             data={children}
           />
         ) : page === "Payment" ? (

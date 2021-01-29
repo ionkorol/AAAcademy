@@ -25,7 +25,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           { merge: true }
         );
       res.statusCode = 200;
-      res.json({ status: true, data: user.uid });
+      res.json({
+        status: true,
+        data: {
+          ...userData,
+          id: user.uid,
+        },
+      });
     } catch (error) {
       res.statusCode = 200;
       res.json({ status: false, error });

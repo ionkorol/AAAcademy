@@ -1,7 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Col, Form, Row } from "react-bootstrap";
-import firebaseClient from "utils/firebaseClient";
-import { ChildProp, ClubProp, UserProp } from "utils/interfaces";
+import React, { useEffect, useState } from "react";
+import { Col, Form, InputGroup, Row } from "react-bootstrap";
+import { ChildProp, ClubProp, ParentProp } from "utils/interfaces";
 import Select from "react-select";
 
 import styles from "./ChildForm.module.scss";
@@ -9,17 +8,16 @@ import styles from "./ChildForm.module.scss";
 interface Props {
   navigation: React.Dispatch<any>;
   handleData: React.Dispatch<any>;
+  parentData: ParentProp;
   data: ChildProp[];
 }
 
 const ChildForm: React.FC<Props> = (props) => {
-  const { navigation, handleData, data } = props;
+  const { navigation, handleData, data, parentData } = props;
 
   const [children, setChildren] = useState(data);
 
   const [clubList, setClubList] = useState<ClubProp[]>([]);
-
-  // const [children, setChildren] = useState([]);
 
   useEffect(() => {
     fetch("/api/clubs")
@@ -37,10 +35,10 @@ const ChildForm: React.FC<Props> = (props) => {
         lastName: "",
         dob: "",
         type: "Student",
-        email: "student@gmail.com",
+        email: parentData.email,
         phone: "",
         clubs: [],
-      },
+      } as ChildProp,
     ]);
   };
 
@@ -52,8 +50,6 @@ const ChildForm: React.FC<Props> = (props) => {
       )
     );
   };
-
-  console.log(children);
 
   const handleCFISubmit = (field, data, childIndex) => {
     setChildren((prevState) =>
@@ -121,6 +117,9 @@ const ChildFormItem: React.FC<CFIProps> = (props) => {
 
   const [firstNameError, setFirstNameError] = useState(null);
   const [lastNameError, setLastNameError] = useState(null);
+  const [dobError, setDobError] = useState(null);
+  const [emailError, setEmailError] = useState(null);
+  const [phoneError, setPhoneError] = useState(null);
 
   return (
     <>
@@ -166,8 +165,40 @@ const ChildFormItem: React.FC<CFIProps> = (props) => {
           type="date"
           value={data.dob}
           onChange={(e) => handleSubmit("dob", e.target.value, childNumber)}
+          isInvalid={!!dobError}
           required
         />
+        <Form.Control.Feedback type="invalid">{dobError}</Form.Control.Feedback>
+      </Form.Group>
+      <Form.Group>
+        <Form.Label>Phone</Form.Label>
+        <InputGroup>
+          <InputGroup.Prepend>
+            <InputGroup.Text>+1</InputGroup.Text>
+          </InputGroup.Prepend>
+          <Form.Control
+            type="tel"
+            value={data.phone}
+            onChange={(e) => handleSubmit("phone", e.target.value, childNumber)}
+            isInvalid={!!phoneError}
+            required
+          />
+        </InputGroup>
+        <Form.Control.Feedback type="invalid">
+          {phoneError}
+        </Form.Control.Feedback>
+      </Form.Group>
+      <Form.Group>
+        <Form.Label>Email (Optional)</Form.Label>
+        <Form.Control
+          type="email"
+          value={data.email}
+          onChange={(e) => handleSubmit("email", e.target.value, childNumber)}
+          required
+        />
+        <Form.Control.Feedback type="invalid">
+          {emailError}
+        </Form.Control.Feedback>
       </Form.Group>
       <Form.Group>
         <Form.Label>Clubs</Form.Label>
@@ -184,13 +215,13 @@ const ChildFormItem: React.FC<CFIProps> = (props) => {
             label: club.title,
           }))}
           isMulti
-          onChange={(e) =>
+          onChange={(e) => {
             handleSubmit(
               "clubs",
-              e.map((item) => item.value),
+              e ? e.map((item) => item.value) : [],
               childNumber
-            )
-          }
+            );
+          }}
         />
       </Form.Group>
     </>

@@ -1,9 +1,9 @@
-import { faDivide } from "@fortawesome/free-solid-svg-icons";
-import React, { useEffect, useRef, useState } from "react";
-import { Button, Form, InputGroup, ListGroup, Alert } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { ListGroup, Alert } from "react-bootstrap";
 import { PayPalButton } from "react-paypal-button-v2";
+import firebaseClient from "utils/firebaseClient";
 import { ChildProp, ClubProp, UserProp } from "utils/interfaces";
-import { GetOrderObj } from "./functions";
+import { CreateOrderObj } from "./interfaces";
 
 import styles from "./Payment.module.scss";
 
@@ -17,70 +17,80 @@ interface Props {
 const Payment: React.FC<Props> = (props) => {
   const { handleSignup, navigation, childData, parentData } = props;
 
-  const [totalPrice, setTotalPrice] = useState(0);
-  const [coupon, setCoupon] = useState("");
-  const [priceDiscounted, setPriceDiscounted] = useState(false);
+  const [totalPrice, setTotalPrice] = useState(
+    Number(process.env.NEXT_PUBLIC_REGISTRATION_FEE)
+  );
   const [orderObj, setOrderObj] = useState(null);
-  const [paid, setPaid] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const paypal = useRef(null);
+  const [tries, setTries] = useState(0);
 
   const handleOrderObj = async () => {
-    setOrderObj(await GetOrderObj(childData, parentData, coupon));
+    // Calculate Invoice Number
+    const invoiceId =
+      Number(
+        (
+          await firebaseClient
+            .firestore()
+            .collection("orders")
+            .orderBy("id", "asc")
+            .limitToLast(1)
+            .get()
+        ).docs[0].id
+      ) + 1;
+
+    const paypalCreateOrderOptions: CreateOrderObj = {
+      intent: "CAPTURE",
+      payer: {
+        name: {
+          given_name: parentData.firstName,
+          surname: parentData.lastName,
+        },
+        email_address: parentData.email,
+      },
+      purchase_units: [
+        {
+          amount: {
+            value: process.env.NEXT_PUBLIC_REGISTRATION_FEE,
+            currency_code: "USD",
+            breakdown: {
+              item_total: {
+                currency_code: "USD",
+                value: process.env.NEXT_PUBLIC_REGISTRATION_FEE,
+              },
+            },
+          },
+          invoice_id: String(invoiceId),
+          items: [
+            {
+              name: "Registration Fee",
+              unit_amount: {
+                currency_code: "USD",
+                value: String(process.env.NEXT_PUBLIC_REGISTRATION_FEE),
+              },
+              quantity: "1",
+              sku: "1",
+              category: "DIGITAL_GOODS",
+            },
+          ],
+        },
+      ],
+      application_context: {
+        brand_name: "Always Active Academy",
+      },
+    };
+    setOrderObj(paypalCreateOrderOptions);
+  };
+
+  // Handle Payment Form Submit
+  const handleSubmit = () => {
+    handleSignup().then((value) => navigation("Success"));
   };
 
   useEffect(() => {
     handleOrderObj();
-  }, [childData, parentData, coupon]);
+  }, [parentData, childData, tries]);
 
   console.log(orderObj);
-
-  // Render Paypal Buttons
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.type = "text/javascript";
-    script.src = `https://www.paypal.com/sdk/js?client-id=${process.env.NEXT_PUBLIC_PAYPAL_API_KEY}`;
-    //For head
-    document.head.appendChild(script);
-  }, [childData, parentData]);
-
-  // Handle Payment Form Submit
-  const handleSubmit = async () => {
-    if (await handleSignup()) {
-      navigation("Success");
-    }
-  };
-
-  const handleCheckCoupon = () => {
-    if (coupon === "123") {
-      setTotalPrice((prevState) => prevState / 2);
-      setPriceDiscounted(true);
-      // onRun(childData, parentData, coupon, handleSubmit, paypal);
-    }
-  };
-
-  // Calculate Total Price
-  const handleTotalPrice = () => {
-    setTotalPrice(0);
-    childData.forEach((child) => {
-      child.clubs.forEach((club) => {
-        if (coupon === "123") {
-          setTotalPrice((prevState) => prevState + club.price / 2);
-        } else {
-          setTotalPrice((prevState) => prevState + club.price); // Club Price
-        }
-      });
-    });
-    setTotalPrice(
-      (prevState) =>
-        prevState + Number(process.env.NEXT_PUBLIC_REGISTRATION_FEE)
-    );
-  };
-
-  useEffect(() => {
-    handleTotalPrice();
-  }, [childData]);
 
   return (
     <div className={styles.container}>
@@ -89,33 +99,10 @@ const Payment: React.FC<Props> = (props) => {
         <button onClick={() => navigation("ChildForm")}>Back</button>
       </div>
       <Alert variant="info">
-        Faiful members of the church can receive 50% off. Please contact us at
-        000-000-0000
+        For discounts up to 50% of your tuition please reach out to us at
+        000-000-0000!
       </Alert>
-      <Form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleTotalPrice();
-          console.log("Test");
-          // onRun(childData, parentData, coupon, handleSubmit, paypal);
-        }}
-      >
-        <Form.Group>
-          <InputGroup className="mb-3">
-            <Form.Control
-              type="text"
-              placeholder="Enter Cupon Here"
-              value={coupon}
-              onChange={(e) => setCoupon(e.target.value)}
-            />
-            <InputGroup.Append>
-              <Button type="submit" variant="outline-success">
-                Submit
-              </Button>
-            </InputGroup.Append>
-          </InputGroup>
-        </Form.Group>
-      </Form>
+      {error ? <Alert variant="danger">{JSON.stringify(error)}</Alert> : null}
       <ListGroup variant="flush">
         <ListGroup.Item variant="warning" className="font-weight-bold  pl-2">
           Children
@@ -131,7 +118,7 @@ const Payment: React.FC<Props> = (props) => {
                 key={club.id}
               >
                 <div>{club.title}</div>
-                <div>$20</div>
+                <div>${club.price.toFixed(2)} / class</div>
               </ListGroup.Item>
             ))}
           </React.Fragment>
@@ -141,49 +128,42 @@ const Payment: React.FC<Props> = (props) => {
           className="d-inline-flex justify-content-between font-weight-bold  pl-2"
         >
           <div>Registration Fee</div>
-          <div>${process.env.NEXT_PUBLIC_REGISTRATION_FEE}</div>
-        </ListGroup.Item>
-        <ListGroup.Item
-          variant="warning"
-          className="d-inline-flex justify-content-between font-weight-bold  pl-2"
-        >
-          <div>Coupon</div>
-          <div>{priceDiscounted ? "50%" : "-"}</div>
+          <div>
+            ${Number(process.env.NEXT_PUBLIC_REGISTRATION_FEE).toFixed(2)}
+          </div>
         </ListGroup.Item>
         <ListGroup.Item
           variant="warning"
           className="d-inline-flex justify-content-between font-weight-bold  pl-2"
         >
           <div>Total</div>
-          <div>${totalPrice}</div>
+          <div>${totalPrice.toFixed(2)}</div>
         </ListGroup.Item>
       </ListGroup>
 
       <div className="mt-5">
         <PayPalButton
           amount={totalPrice}
-          // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
           createOrder={(data, actions) => {
             return actions.order.create(orderObj);
           }}
+          onError={(err) => {
+            setTries((prevState) => prevState + 1);
+            setError("There was an issue with your payment please try again!");
+          }}
+          catchError={(err) => {
+            setTries((prevState) => prevState + 1);
+            setError("There was an issue with your payment please try again!");
+          }}
           onSuccess={async (details, data) => {
-            alert("Transaction completed by " + details.payer.name.given_name);
-
-            const res = await fetch("/api/users", {
-              method: "POST",
-              body: JSON.stringify(parentData),
-            });
-            const jsonData = await res.json();
-
+            setError(null);
             // OPTIONAL: Call your server to save the transaction
-            return fetch("/api/orders", {
-              method: "POST",
-              body: JSON.stringify({
-                userId: jsonData.data,
-                totalPrice: totalPrice,
-                children: childData,
-              }),
-            });
+            handleSubmit();
+          }}
+          options={{
+            clientId: process.env.NEXT_PUBLIC_PAYPAL_API_KEY,
+            currency: "USD",
+            disableFunding: "credit",
           }}
         />
       </div>

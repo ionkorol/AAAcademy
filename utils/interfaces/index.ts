@@ -17,24 +17,59 @@ export interface ClubProp {
 export interface UserProp {
   firstName: string;
   lastName: string;
-  type: "Teacher" | "Student" | "Parent" | string;
+  type: "Parent";
   email: string;
   phone: string;
   id?: string;
   children?: string[];
   clubs?: string[];
   dob?: string;
+  emergencyContact?: {
+    name: string;
+    phone: string;
+  };
+  address: {
+    addressLine1: string;
+    addressLine2: string;
+    adminArea: string;
+    postalCode: string;
+  };
+}
+
+export interface ParentProp {
+  firstName: string;
+  lastName: string;
+  type: "Parent";
+  email: string;
+  phone: string;
+  id?: string;
+  children?: string[];
+  dob?: string;
+  emergencyContact?: {
+    name: string;
+    phone: string;
+  };
 }
 
 export interface ChildProp {
   firstName: string;
   lastName: string;
-  type: "Teacher" | "Student" | "Parent" | string;
+  type: "Student";
   email: string;
   phone: string;
   id?: string;
-  children?: string[];
   clubs?: ClubProp[];
+  dob?: string;
+}
+
+export interface StudentProp {
+  firstName: string;
+  lastName: string;
+  type: "Student";
+  email: string;
+  phone: string;
+  id?: string;
+  clubs?: string[] | ClubProp[];
   dob?: string;
 }
 
@@ -47,5 +82,11 @@ export interface OrderProp {
   id: string;
   userId: string;
   totalPrice: string;
-  children: ChildProp[];
+  children: UserProp[];
+}
+
+export interface CouponProp {
+  id: string;
+  firstName: string;
+  lastName: string;
 }
