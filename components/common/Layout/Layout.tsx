@@ -1,5 +1,5 @@
 import React from "react";
-import { Navigation } from "../";
+import { Navigation, Footer } from "components/common";
 import Head from "next/head";
 import styles from "./layout.module.scss";
 
@@ -16,10 +16,8 @@ const Layout: React.FC<Props> = (props) => {
         <title>{title} | Always Active Academy</title>
       </Head>
       <Navigation />
-      {props.children}
-      <footer className={styles.footer}>
-        <div>© Copyright 2020 | Always Active Academy</div>
-      </footer>
+      <div className={styles.content}>{props.children}</div>
+      <Footer />
     </div>
   );
 };

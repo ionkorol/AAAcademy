@@ -38,23 +38,27 @@ const ParentForm: React.FC<Props> = (props) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    handleData({
-      firstName,
-      lastName,
-      email,
-      phone,
-      type: "Parent",
-      emergencyContact: {
-        name: eName,
-        phone: ePhone,
-      },
-      address: {
-        addressLine1: address1,
-        addressLine2: address2,
-        adminArea,
-        postalCode,
-      },
-    } as UserProp);
+    handleData(
+      (prevState) =>
+        ({
+          ...prevState,
+          firstName,
+          lastName,
+          email,
+          phone,
+          type: "Parent",
+          emergencyContact: {
+            name: eName,
+            phone: ePhone,
+          },
+          address: {
+            addressLine1: address1,
+            addressLine2: address2,
+            adminArea,
+            postalCode,
+          },
+        } as UserProp)
+    );
     navigation("ChildForm");
   };
 

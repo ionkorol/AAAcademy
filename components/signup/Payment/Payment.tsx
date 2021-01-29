@@ -83,7 +83,7 @@ const Payment: React.FC<Props> = (props) => {
 
   // Handle Payment Form Submit
   const handleSubmit = () => {
-    handleSignup().then((value) => navigation("Success"));
+    handleSignup().then((value) => value && navigation("Success"));
   };
 
   useEffect(() => {
@@ -166,6 +166,9 @@ const Payment: React.FC<Props> = (props) => {
             disableFunding: "credit",
           }}
         />
+        <button type="button" onClick={handleSubmit}>
+          Next
+        </button>
       </div>
     </div>
   );

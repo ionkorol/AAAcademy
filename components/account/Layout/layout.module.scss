@@ -1,0 +1,25 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  margin: 5vh 20vw;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  background-color: blanchedalmond;
+  padding: 50px;
+
+  .menuItem {
+    padding: 20px;
+    margin-bottom: 10px;
+    background-color: cadetblue;
+    color: wheat;
+  }
+}
+
+.content {
+  padding: 50px;
+  background-color: wheat;
+  width: 100%;
+}

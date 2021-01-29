@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 
 import styles from "./navigation.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAppleAlt } from "@fortawesome/free-solid-svg-icons";
+import { faAppleAlt, faBars } from "@fortawesome/free-solid-svg-icons";
 import useAuth from "hooks/useAuth";
 
 interface Props {}
@@ -11,8 +11,10 @@ interface Props {}
 const Navigation: React.FC<Props> = (props) => {
   const auth = useAuth();
 
+  const [toggle, setToggle] = useState(false);
+
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} ${toggle ? styles.toggled : null}`}>
       <Link href="/">
         <a className={styles.logo}>
           <FontAwesomeIcon icon={faAppleAlt} color="#ec7849" fixedWidth />
@@ -49,11 +51,23 @@ const Navigation: React.FC<Props> = (props) => {
             </Link>
           )}
         </div>
-        <div className={styles.menuItem}>
-          <Link href="/signup">
-            <button>Sign Up</button>
-          </Link>
-        </div>
+
+        {auth.user ? (
+          <div className={styles.menuItem}>
+            <Link href="/account">
+              <button>Account</button>
+            </Link>
+          </div>
+        ) : (
+          <div className={styles.menuItem}>
+            <Link href="/signup">
+              <button>Sign Up</button>
+            </Link>
+          </div>
+        )}
+      </div>
+      <div onClick={() => setToggle(!toggle)} className={styles.navToggle}>
+        <FontAwesomeIcon icon={faBars} fixedWidth size="2x" />
       </div>
     </div>
   );

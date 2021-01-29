@@ -4,7 +4,7 @@ import firebaseAdmin from "../../utils/firebaseAdmin";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
-    const data = req.body as OrderProp;
+    const { parent, children, totalPrice } = req.body;
     const lastId = (
       await firebaseAdmin
         .firestore()
@@ -18,7 +18,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       .firestore()
       .collection("orders")
       .doc(String(Number(lastId) + 1))
-      .set({ ...data, id: Number(lastId) + 1 });
+      .set({ parent, children, totalPrice, id: Number(lastId) + 1 });
 
     res.statusCode = 200;
     res.json({

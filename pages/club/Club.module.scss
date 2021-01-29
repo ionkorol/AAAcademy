@@ -27,7 +27,7 @@
 .body {
   display: flex;
   flex-direction: column;
-  margin: 0vh 10vw;
+  margin: 0vh 10vw 5vh 10vw;
 
   .info {
     background-color: $light;
@@ -57,9 +57,14 @@
     .teacher {
     }
 
+    @media screen and (max-width: $screen-l) {
+      grid-template-columns: 1fr 1fr;
+      justify-items: flex-start;
+    }
+
     @media screen and (max-width: $screen-s) {
       grid-template-columns: 1fr;
-      justify-items: start;
+      justify-items: flex-start;
     }
   }
   .description {
@@ -70,7 +75,6 @@
 
     .text {
       h2 {
-        text-align: center;
         margin-bottom: 20px;
       }
     }
@@ -80,7 +84,6 @@
       flex-direction: column;
 
       h2 {
-        text-align: center;
         margin-bottom: 20px;
       }
 
@@ -133,6 +136,12 @@
     @media screen and (max-width: $screen-s) {
       grid-template-columns: 1fr;
       justify-items: start;
+      .text {
+        margin-bottom: 50px;
+      }
+      .reqs {
+        margin-bottom: 50px;
+      }
     }
   }
 }

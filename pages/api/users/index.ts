@@ -1,18 +1,28 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import firebaseAdmin from "../../utils/firebaseAdmin";
-import { UserProp } from "../../utils/interfaces";
+import firebaseAdmin from "utils/firebaseAdmin";
+import { UserProp } from "utils/interfaces";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // Add User
   if (req.method === "POST") {
     const userData = req.body as UserProp;
+    let user;
     try {
-      const user = await firebaseAdmin.auth().createUser({
-        email: userData.email,
-        emailVerified: false,
-        password: "password",
-        displayName: `${userData.firstName} ${userData.lastName}`,
-      });
+      try {
+        user = await firebaseAdmin.auth().createUser({
+          email: `${userData.firstName}${userData.lastName}@alwaysactive.academy`,
+          emailVerified: false,
+          password: process.env.DEFAULT_USER_PASSWORD,
+          displayName: `${userData.firstName} ${userData.lastName}`,
+        });
+      } catch (error) {
+        user = await firebaseAdmin.auth().createUser({
+          email: `${userData.firstName}${userData.lastName}1@alwaysactive.academy`,
+          emailVerified: false,
+          password: process.env.DEFAULT_USER_PASSWORD,
+          displayName: `${userData.firstName} ${userData.lastName}`,
+        });
+      }
       const writeResult = await firebaseAdmin
         .firestore()
         .collection("users")
@@ -71,12 +81,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const userData = req.body as UserProp;
 
     try {
-      if (userData.email) {
-        await firebaseAdmin.auth().updateUser(userData.id, {
-          email: userData.email,
-        });
-      }
-
       const writeResult = await firebaseAdmin
         .firestore()
         .collection("users")

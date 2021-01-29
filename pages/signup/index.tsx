@@ -29,17 +29,27 @@ const SignUp: React.FC<Props> = (props) => {
       name: "",
       phone: "",
     },
+    children: [],
   });
   const [children, setChildren] = useState<ChildProp[]>([]);
 
-  useEffect(() => {
-    console.log(parent, children);
-  });
-
   const handleSubmit = async () => {
     try {
-      const childrenIds = [];
-      children.map(async (child) => {
+      // Register Parent
+      const parentRes = await fetch("/api/users", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(parent),
+      });
+
+      const parentJson = await parentRes.json();
+      const parentId = parentJson.data.id;
+
+      // Register Children
+      children.forEach(async (child) => {
         const res = await fetch("/api/users", {
           method: "POST",
           headers: {
@@ -48,25 +58,31 @@ const SignUp: React.FC<Props> = (props) => {
           },
           body: JSON.stringify(child),
         });
-        const childId = (await res.json()).data.id;
-        childrenIds.push(childId);
+        const jsonData = await res.json();
+        const childId = jsonData.data.id;
+
+        // Update Parent Children Array
+        await fetch(`/api/users/${parentId}`, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            childId,
+          }),
+        });
       });
 
-      const parentRes = await fetch("/api/users", {
+      // Create Order
+      await fetch("/api/orders", {
         method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ...parent, children: childrenIds }),
-      });
-
-      const parentJson = await parentRes.json();
-
-      fetch("/api/orders", {
-        method: "POST",
         body: JSON.stringify({
-          userId: parentJson.data,
+          parent: parentJson.data,
           totalPrice: process.env.NEXT_PUBLIC_REGISTRATION_FEE,
           children: children,
         }),
