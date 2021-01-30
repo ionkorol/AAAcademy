@@ -8,7 +8,7 @@ import styles from "./ChildForm.module.scss";
 interface Props {
   navigation: React.Dispatch<any>;
   handleData: React.Dispatch<any>;
-  parentData: ParentProp;
+  parentData: UserProp;
   data: ChildProp[];
 }
 

@@ -1,7 +1,7 @@
 import { ChildForm, ParentForm, Payment, Success } from "components/signup";
 import React, { useEffect, useState } from "react";
 import firebaseClient from "utils/firebaseClient";
-import { ChildProp, UserProp } from "utils/interfaces";
+import { ChildProp, ParentProp, UserProp } from "utils/interfaces";
 import { Layout } from "../../components/common";
 
 import styles from "./SignUp.module.scss";
@@ -13,7 +13,7 @@ const SignUp: React.FC<Props> = (props) => {
     "ParentForm" | "ChildForm" | "Payment" | "Success"
   >("ParentForm");
 
-  const [parent, setParent] = useState<UserProp>({
+  const [parent, setParent] = useState<ParentProp>({
     firstName: "",
     lastName: "",
     email: "",
