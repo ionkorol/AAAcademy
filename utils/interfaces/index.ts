@@ -17,7 +17,7 @@ export interface ClubProp {
 export interface UserProp {
   firstName: string;
   lastName: string;
-  type: "Parent";
+  type: "Parent" | "Student" | string;
   email: string;
   phone: string;
   id?: string;
