@@ -115,6 +115,12 @@ const UserModal: React.FC<Props> = (props) => {
         type,
         phone,
         id: userData ? userData.id : null,
+        address: {
+          addressLine1: "",
+          addressLine2: "",
+          adminArea: "",
+          postalCode: "",
+        },
       });
     }
   };
