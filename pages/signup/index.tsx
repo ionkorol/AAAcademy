@@ -13,7 +13,7 @@ const SignUp: React.FC<Props> = (props) => {
     "ParentForm" | "ChildForm" | "Payment" | "Success"
   >("ParentForm");
 
-  const [parent, setParent] = useState<ParentProp>({
+  const [parent, setParent] = useState<UserProp>({
     firstName: "",
     lastName: "",
     email: "",

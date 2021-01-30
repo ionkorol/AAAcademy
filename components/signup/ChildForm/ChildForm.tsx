@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Col, Form, InputGroup, Row } from "react-bootstrap";
-import { ChildProp, ClubProp, ParentProp } from "utils/interfaces";
+import { ChildProp, ClubProp, ParentProp, UserProp } from "utils/interfaces";
 import Select from "react-select";
 
 import styles from "./ChildForm.module.scss";
