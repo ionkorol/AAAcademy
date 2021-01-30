@@ -31,6 +31,10 @@
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
   }
+
+  @media screen and (max-width: $screen-l) {
+    margin: 5vh 10vw;
+  }
 }
 
 .cfiContainer {
