@@ -71,13 +71,13 @@ const Footer: React.FC<Props> = (props) => {
         <div className={styles.policies}>
           <h4>POLICIES</h4>
           <hr></hr>
-          <Link href="/tos" passHref>
+          <Link href="/policy/tos" passHref>
             <a>
               <FontAwesomeIcon icon={faFile} fixedWidth />
               Terms Of Service
             </a>
           </Link>
-          <Link href="/covid-release" passHref>
+          <Link href="/policy/covid-release" passHref>
             <a>
               <FontAwesomeIcon icon={faFile} fixedWidth />
               Covid Release and Permissions
