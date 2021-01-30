@@ -20,3 +20,26 @@
     border-top-right-radius: 5px;
   }
 }
+
+.payOnSite {
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.agree {
+  margin-top: 20px;
+  > form {
+    > div {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      font-weight: bold;
+
+      a {
+        margin-left: 10px;
+        color: $tertiary
+      }
+    }
+  }
+}

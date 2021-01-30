@@ -43,4 +43,9 @@ button {
   &:hover {
     background-color: $tertiary;
   }
+
+  &:disabled {
+    background-color: gray;
+    cursor: default;
+  }
 }

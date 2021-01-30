@@ -7,13 +7,17 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
     const clubData: ClubProp = req.body;
     try {
-      const write = await firebaseAdmin
+      const docRef = await firebaseAdmin
         .firestore()
         .collection("clubs")
-        .doc(clubData.id)
-        .set(clubData);
+        .add({ clubData });
+
+      await docRef.update({
+        id: docRef.id,
+      });
+
       res.statusCode = 200;
-      res.json(write);
+      res.json({ status: true, data: docRef.id });
     } catch (error) {
       res.statusCode = 500;
       res.json({ error });

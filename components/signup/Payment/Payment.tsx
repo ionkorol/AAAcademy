@@ -1,5 +1,6 @@
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { ListGroup, Alert } from "react-bootstrap";
+import { ListGroup, Alert, Form } from "react-bootstrap";
 import { PayPalButton } from "react-paypal-button-v2";
 import firebaseClient from "utils/firebaseClient";
 import { ChildProp, ClubProp, UserProp } from "utils/interfaces";
@@ -23,6 +24,9 @@ const Payment: React.FC<Props> = (props) => {
   const [orderObj, setOrderObj] = useState(null);
   const [error, setError] = useState<string | null>(null);
   const [tries, setTries] = useState(0);
+
+  const [tosAgree, setTOSAgree] = useState(false);
+  const [covidAgree, setCovidAgree] = useState(false);
 
   const handleOrderObj = async () => {
     // Calculate Invoice Number
@@ -100,7 +104,7 @@ const Payment: React.FC<Props> = (props) => {
       </div>
       <Alert variant="info">
         For discounts up to 50% of your tuition please reach out to us at
-        000-000-0000!
+        470-685-3631!
       </Alert>
       {error ? <Alert variant="danger">{JSON.stringify(error)}</Alert> : null}
       <ListGroup variant="flush">
@@ -140,35 +144,80 @@ const Payment: React.FC<Props> = (props) => {
           <div>${totalPrice.toFixed(2)}</div>
         </ListGroup.Item>
       </ListGroup>
+      <div className={styles.agree}>
+        <Form>
+          <Form.Group>
+            <Form.Check
+              type="checkbox"
+              label="I aggree to the Terms of Services"
+              checked={tosAgree}
+              onChange={(e) => setTOSAgree(!tosAgree)}
+              required
+            />
+            <Link href="/policy/tos">Read Terms of Service</Link>
+          </Form.Group>
+          <Form.Group>
+            <Form.Check
+              type="checkbox"
+              label="I aggree to the Covid Release Form"
+              checked={covidAgree}
+              onChange={(e) => setCovidAgree(!covidAgree)}
+              required
+            />
+            <Link href="/policy/covid-release">Read Covid Release Form</Link>
+          </Form.Group>
+        </Form>
+      </div>
 
       <div className="mt-5">
-        <PayPalButton
-          amount={totalPrice}
-          createOrder={(data, actions) => {
-            return actions.order.create(orderObj);
-          }}
-          onError={(err) => {
-            setTries((prevState) => prevState + 1);
-            setError("There was an issue with your payment please try again!");
-          }}
-          catchError={(err) => {
-            setTries((prevState) => prevState + 1);
-            setError("There was an issue with your payment please try again!");
-          }}
-          onSuccess={async (details, data) => {
-            setError(null);
-            // OPTIONAL: Call your server to save the transaction
-            handleSubmit();
-          }}
-          options={{
-            clientId: process.env.NEXT_PUBLIC_PAYPAL_API_KEY,
-            currency: "USD",
-            disableFunding: "credit",
-          }}
-        />
-        <button type="button" onClick={handleSubmit}>
-          Next
+        <button
+          disabled={covidAgree && tosAgree ? false : true}
+          className={styles.payOnSite}
+          type="button"
+          onClick={handleSubmit}
+        >
+          Pay On Site
         </button>
+        {covidAgree && tosAgree ? (
+          <PayPalButton
+            style={{}}
+            amount={totalPrice}
+            createOrder={(data, actions) => {
+              return actions.order.create(orderObj);
+            }}
+            onError={(err) => {
+              setTries((prevState) => prevState + 1);
+              setError(
+                "There was an issue with your payment please try again!"
+              );
+            }}
+            catchError={(err) => {
+              setTries((prevState) => prevState + 1);
+              setError(
+                "There was an issue with your payment please try again!"
+              );
+            }}
+            onSuccess={async (details, data) => {
+              setError(null);
+              // OPTIONAL: Call your server to save the transaction
+              handleSubmit();
+            }}
+            options={{
+              clientId: process.env.NEXT_PUBLIC_PAYPAL_API_KEY,
+              currency: "USD",
+              disableFunding: "credit",
+            }}
+          />
+        ) : (
+          <>
+            <button className={styles.payOnSite} disabled>
+              Paypal
+            </button>
+            <button className={styles.payOnSite} disabled>
+              Credit Card
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

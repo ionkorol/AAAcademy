@@ -9,7 +9,7 @@ export interface ClubProp {
   image: string;
   teacher: string;
   description: string;
-  id: string;
+  id?: string;
   price: number;
   requirements: string[];
 }

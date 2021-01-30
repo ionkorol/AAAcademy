@@ -55,32 +55,32 @@ const Footer: React.FC<Props> = (props) => {
         <div className={styles.follow}>
           <h4>FOLLOW US</h4>
           <hr></hr>
-          <div>
+          <a href="">
             <Icon icon={faFacebookF} size="1x" bgColor="primary" />
             @alwaysactiveacademy
-          </div>
-          <div>
+          </a>
+          <a href="">
             <Icon icon={faInstagram} size="1x" bgColor="secondary" />
             @alwaysactiveacademy
-          </div>
-          <div>
+          </a>
+          <a href="">
             <Icon icon={faEnvelope} size="1x" bgColor="tertiary" />
             alwaysactiveacademy@gmail.com
-          </div>
+          </a>
         </div>
         <div className={styles.policies}>
           <h4>POLICIES</h4>
           <hr></hr>
-          <Link href="/" passHref>
+          <Link href="/tos" passHref>
             <a>
               <FontAwesomeIcon icon={faFile} fixedWidth />
-              Policy One
+              Terms Of Service
             </a>
           </Link>
-          <Link href="/" passHref>
+          <Link href="/covid-release" passHref>
             <a>
               <FontAwesomeIcon icon={faFile} fixedWidth />
-              Policy One
+              Covid Release and Permissions
             </a>
           </Link>
           <Link href="/" passHref>
