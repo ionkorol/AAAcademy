@@ -28,18 +28,18 @@ const Navigation: React.FC<Props> = (props) => {
           </Link>
         </div>
         <div className={styles.menuItem}>
-          <Link href="/clubs">
-            <a>Clubs</a>
-          </Link>
-        </div>
-        <div className={styles.menuItem}>
           <Link href="/news">
             <a>News</a>
           </Link>
         </div>
         <div className={styles.menuItem}>
+          <Link href="/about">
+            <a>About Us</a>
+          </Link>
+        </div>
+        <div className={styles.menuItem}>
           <Link href="/contact">
-            <a>Contacts</a>
+            <a>Contact Us</a>
           </Link>
         </div>
         <div className={styles.menuItem}>

@@ -1,7 +1,5 @@
-import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { ListGroup, Alert, Form } from "react-bootstrap";
-import { PayPalButton } from "react-paypal-button-v2";
 import firebaseClient from "utils/firebaseClient";
 import { ChildProp, ClubProp, UserProp } from "utils/interfaces";
 import { CreateOrderObj } from "./interfaces";
@@ -111,7 +109,7 @@ const Payment: React.FC<Props> = (props) => {
         <button onClick={() => navigation("ChildForm")}>Back</button>
       </div>
       <Alert variant="info">
-        For available discounts please reach out to us at 470-685-3631!
+        For available discounts please reach out to us at 404-641-0798!
       </Alert>
       {error ? <Alert variant="danger">{JSON.stringify(error)}</Alert> : null}
       <ListGroup variant="flush">
