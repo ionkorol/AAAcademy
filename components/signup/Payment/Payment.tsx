@@ -7,6 +7,7 @@ import { ChildProp, ClubProp, UserProp } from "utils/interfaces";
 import { CreateOrderObj } from "./interfaces";
 
 import styles from "./Payment.module.scss";
+import TOSModal from "./TOSModal";
 
 interface Props {
   handleSignup: () => Promise<boolean>;
@@ -27,6 +28,9 @@ const Payment: React.FC<Props> = (props) => {
 
   const [tosAgree, setTOSAgree] = useState(false);
   const [covidAgree, setCovidAgree] = useState(false);
+
+  const [showTOSModal, setShowTOSModal] = useState(false);
+  const [showCovidModal, setShowCovidModal] = useState(false);
 
   const handleOrderObj = async () => {
     // Calculate Invoice Number
@@ -98,13 +102,16 @@ const Payment: React.FC<Props> = (props) => {
 
   return (
     <div className={styles.container}>
+      <TOSModal
+        show={showTOSModal}
+        handleClose={() => setShowTOSModal(!showTOSModal)}
+      />
       <div className={styles.title}>
         <h1>Payment</h1>
         <button onClick={() => navigation("ChildForm")}>Back</button>
       </div>
       <Alert variant="info">
-        For discounts up to 50% of your tuition please reach out to us at
-        470-685-3631!
+        For available discounts please reach out to us at 470-685-3631!
       </Alert>
       {error ? <Alert variant="danger">{JSON.stringify(error)}</Alert> : null}
       <ListGroup variant="flush">
@@ -154,7 +161,9 @@ const Payment: React.FC<Props> = (props) => {
               onChange={(e) => setTOSAgree(!tosAgree)}
               required
             />
-            <Link href="/policy/tos">Read Terms of Service</Link>
+            <a href="/policy/tos" target="_blank" rel="norefer">
+              Read Terms of Service
+            </a>
           </Form.Group>
           <Form.Group>
             <Form.Check
@@ -164,7 +173,9 @@ const Payment: React.FC<Props> = (props) => {
               onChange={(e) => setCovidAgree(!covidAgree)}
               required
             />
-            <Link href="/policy/covid-release">Read Covid Release Form</Link>
+            <a href="/policy/covid-release" target="_blank" rel="norefer">
+              Read Covid Release Form
+            </a>
           </Form.Group>
         </Form>
       </div>
@@ -176,9 +187,9 @@ const Payment: React.FC<Props> = (props) => {
           type="button"
           onClick={handleSubmit}
         >
-          Pay On Site
+          Register
         </button>
-        {covidAgree && tosAgree ? (
+        {/* {covidAgree && tosAgree ? (
           <PayPalButton
             style={{}}
             amount={totalPrice}
@@ -217,7 +228,7 @@ const Payment: React.FC<Props> = (props) => {
               Credit Card
             </button>
           </>
-        )}
+        )} */}
       </div>
     </div>
   );

@@ -71,6 +71,25 @@ const ChildForm: React.FC<Props> = (props) => {
         <h1>Child Information</h1>
         <button onClick={() => navigation("ParentForm")}>Back</button>
       </div>
+
+      {children.map((child, index) => (
+        <div className={styles.cfiContainer} key={index}>
+          <div className={styles.childNumber}>Child {index + 1}</div>
+          <button
+            type="button"
+            onClick={() => handleRemoveChild(child)}
+            className={styles.removeButton}
+          >
+            x
+          </button>
+          <ChildFormItem
+            handleSubmit={handleCFISubmit}
+            childNumber={index}
+            data={child}
+            clubList={clubList}
+          />
+        </div>
+      ))}
       <Form id="currentForm" onSubmit={handleSubmit}>
         <button
           type="button"
@@ -79,24 +98,6 @@ const ChildForm: React.FC<Props> = (props) => {
         >
           Add Child
         </button>
-        {children.map((child, index) => (
-          <div className={styles.cfiContainer} key={index}>
-            <div className={styles.childNumber}>Child {index + 1}</div>
-            <button
-              type="button"
-              onClick={() => handleRemoveChild(child)}
-              className={styles.removeButton}
-            >
-              x
-            </button>
-            <ChildFormItem
-              handleSubmit={handleCFISubmit}
-              childNumber={index}
-              data={child}
-              clubList={clubList}
-            />
-          </div>
-        ))}
         <button type="submit">Next</button>
       </Form>
     </div>
