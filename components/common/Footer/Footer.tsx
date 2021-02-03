@@ -48,7 +48,8 @@ const Footer: React.FC<Props> = (props) => {
             <Icon icon={faPhone} size="1x" bgColor="tertiary" />
             <div>
               <b>Phone</b>
-              <p>000-000-0000</p>
+              <p>470-685-3631</p>
+              <p>404-747-6223</p>
             </div>
           </div>
         </div>

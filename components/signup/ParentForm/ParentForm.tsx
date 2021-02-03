@@ -19,6 +19,8 @@ const ParentForm: React.FC<Props> = (props) => {
   const [lastNameError, setLastNameError] = useState(null);
   const [email, setEmail] = useState(data.email);
   const [emailError, setEmailError] = useState(null);
+  const [password, setPassword] = useState(data.password);
+  const [passwordError, setPasswordError] = useState(null);
   const [phone, setPhone] = useState(data.phone);
   const [phoneError, setPhoneError] = useState(null);
 
@@ -113,6 +115,19 @@ const ParentForm: React.FC<Props> = (props) => {
           />
           <Form.Control.Feedback type="invalid">
             {emailError}
+          </Form.Control.Feedback>
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Password</Form.Label>
+          <Form.Control
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            isInvalid={!!passwordError}
+            required
+          />
+          <Form.Control.Feedback type="invalid">
+            {passwordError}
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Group>

@@ -105,25 +105,28 @@ const Payment: React.FC<Props> = (props) => {
         handleClose={() => setShowTOSModal(!showTOSModal)}
       />
       <div className={styles.title}>
-        <h1>Payment</h1>
+        <h1>Confirmation</h1>
         <button onClick={() => navigation("ChildForm")}>Back</button>
       </div>
-      <Alert variant="info">
-        For available discounts please reach out to us at 404-641-0798!
+      <Alert variant="info" className="text-center">
+        For available discounts and scholarship please reach out to us at
+        <br></br>
+        404-641-0798!
       </Alert>
       {error ? <Alert variant="danger">{JSON.stringify(error)}</Alert> : null}
-      <ListGroup variant="flush">
-        <ListGroup.Item variant="warning" className="font-weight-bold  pl-2">
-          Children
-        </ListGroup.Item>
+      <ListGroup>
         {childData.map((child, index) => (
           <React.Fragment key={index}>
-            <ListGroup.Item variant="info" className="font-weight-bold  pl-4">
+            <ListGroup.Item
+              variant="warning"
+              className="font-weight-bold  pl-4"
+            >
               {child.firstName} {child.lastName}
             </ListGroup.Item>
             {child.clubs.map((club: ClubProp) => (
               <ListGroup.Item
-                className="bg-transparent d-inline-flex justify-content-between pl-5"
+                className="d-inline-flex justify-content-between pl-5"
+                variant="info"
                 key={club.id}
               >
                 <div>{club.title}</div>
@@ -132,22 +135,6 @@ const Payment: React.FC<Props> = (props) => {
             ))}
           </React.Fragment>
         ))}
-        <ListGroup.Item
-          variant="warning"
-          className="d-inline-flex justify-content-between font-weight-bold  pl-2"
-        >
-          <div>Registration Fee</div>
-          <div>
-            ${Number(process.env.NEXT_PUBLIC_REGISTRATION_FEE).toFixed(2)}
-          </div>
-        </ListGroup.Item>
-        <ListGroup.Item
-          variant="warning"
-          className="d-inline-flex justify-content-between font-weight-bold  pl-2"
-        >
-          <div>Total</div>
-          <div>${totalPrice.toFixed(2)}</div>
-        </ListGroup.Item>
       </ListGroup>
       <div className={styles.agree}>
         <Form>

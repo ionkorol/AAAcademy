@@ -34,6 +34,7 @@ export interface UserProp {
     adminArea: string;
     postalCode: string;
   };
+  password?: string;
 }
 
 export interface ParentProp {
