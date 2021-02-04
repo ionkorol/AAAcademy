@@ -1,25 +1,81 @@
+@import "/styles/variables.scss";
+
 .container {
   display: flex;
-  flex-direction: row;
-  margin: 5vh 20vw;
-}
-
-.menu {
-  display: flex;
   flex-direction: column;
-  background-color: blanchedalmond;
-  padding: 50px;
 
-  .menuItem {
-    padding: 20px;
-    margin-bottom: 10px;
-    background-color: cadetblue;
-    color: wheat;
+  @media screen and (max-width: $screen-s) {
+    margin: 5vh 10vw;
+    flex-direction: column;
   }
 }
 
-.content {
-  padding: 50px;
-  background-color: wheat;
-  width: 100%;
+.slider {
+  display: flex;
+  background-image: url("../../../public/slide/img1.jpg");
+  height: 400px;
+  margin-top: -86px;
+  .inner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    background-color: rgba($quaternary, 0.5);
+    color: white;
+  }
+}
+.body {
+  display: flex;
+  flex-direction: row;
+  margin: 5vh 20vw;
+
+  .menu {
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    margin-right: 10px;
+    background-color: $light;
+    border-radius: 10px;
+    -webkit-box-shadow: 0px 4px 0px 0px $light-dark;
+    -moz-box-shadow: 0px 4px 0px 0px $light-dark;
+    box-shadow: 0px 4px 0px 0px $light-dark;
+
+    .menuItem {
+      cursor: pointer;
+      padding: 15px 50px;
+      margin-bottom: 15px;
+      border-right: 1px solid $primary;
+      border-bottom: 1px solid $primary;
+      background-color: white;
+      color: black;
+      border-radius: 10px;
+
+      &:hover {
+        background-color: $secondary;
+      }
+
+      @media screen and (max-width: $screen-s) {
+        margin-left: 15px;
+      }
+    }
+
+    .active {
+      background-color: $secondary;
+    }
+
+    @media screen and (max-width: $screen-s) {
+      flex-direction: row;
+      padding: 15px;
+    }
+  }
+
+  .content {
+    padding: 30px;
+    width: 100%;
+    background-color: $light;
+    border-radius: 10px;
+    -webkit-box-shadow: 0px 4px 0px 0px $light-dark;
+    -moz-box-shadow: 0px 4px 0px 0px $light-dark;
+    box-shadow: 0px 4px 0px 0px $light-dark;
+  }
 }

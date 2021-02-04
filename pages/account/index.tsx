@@ -28,7 +28,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { token } = nookies.get(ctx);
   try {
     const { uid } = await firebaseAdmin.auth().verifyIdToken(token);
-    const res = await fetch(`${process.env.SERVER}/api/users/${uid}`);
+    const res = await fetch(`${process.env.SERVER}/api/users/parents/${uid}`);
     const jsonData = await res.json();
     if (jsonData.status) {
       return {
@@ -37,10 +37,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         },
       };
     } else {
+      ctx.res.writeHead(302, { Location: "/" });
+      ctx.res.end();
       return {
-        props: {
-          error: jsonData.error,
-        },
+        props: {} as never,
       };
     }
   } catch (error) {

@@ -79,15 +79,9 @@ const UsersContent: React.FC<UsersProps> = (props) => {
 
   const deleteUser = async (userData: UserProp) => {
     try {
-      const res = await fetch("/api/users", {
+      const res = await fetch(`/api/users/${userData.id}`, {
         method: "DELETE",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
       });
-
       console.log(await res.json());
     } catch (error) {
       setError(error.message);
@@ -114,7 +108,7 @@ const UsersContent: React.FC<UsersProps> = (props) => {
           </div>
           <div className={styles.tableBody}>
             {currentUsers.map((user) => (
-              <div className={styles.tableItem} key={user.email}>
+              <div className={styles.tableItem} key={user.id}>
                 <div>
                   {user.firstName} {user.lastName}
                 </div>

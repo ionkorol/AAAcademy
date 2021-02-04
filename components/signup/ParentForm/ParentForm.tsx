@@ -1,6 +1,8 @@
+import useAuth from "hooks/useAuth";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { Col, Form, InputGroup, Row } from "react-bootstrap";
-import { UserProp } from "utils/interfaces";
+import { ApiResProp, ParentProp, UserProp } from "utils/interfaces";
 
 import styles from "./ParentForm.module.scss";
 
@@ -12,6 +14,8 @@ interface Props {
 
 const ParentForm: React.FC<Props> = (props) => {
   const { navigation, handleData, data } = props;
+
+  const [error, setError] = useState(null);
 
   const [firstName, setFirstName] = useState(data.firstName);
   const [firstNameError, setFirstNameError] = useState(null);
@@ -38,30 +42,70 @@ const ParentForm: React.FC<Props> = (props) => {
   const [postalCode, setPostalCode] = useState(data.address.postalCode);
   const [postalCodeError, setPostalCodeError] = useState(null);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  // const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   handleData(
+  //     (prevState) =>
+  //       ({
+  //         ...prevState,
+  //         firstName,
+  //         lastName,
+  //         email,
+  //         phone,
+  //         type: "Parent",
+  //         emergencyContact: {
+  //           name: eName,
+  //           phone: ePhone,
+  //         },
+  //         address: {
+  //           addressLine1: address1,
+  //           addressLine2: address2,
+  //           adminArea,
+  //           postalCode,
+  //         },
+  //       } as UserProp)
+  //   );
+  //   navigation("ChildForm");
+  // };
+
+  const router = useRouter();
+  const auth = useAuth();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    handleData(
-      (prevState) =>
-        ({
-          ...prevState,
-          firstName,
-          lastName,
-          email,
-          phone,
-          type: "Parent",
-          emergencyContact: {
-            name: eName,
-            phone: ePhone,
-          },
-          address: {
-            addressLine1: address1,
-            addressLine2: address2,
-            adminArea,
-            postalCode,
-          },
-        } as UserProp)
-    );
-    navigation("ChildForm");
+    const res = await fetch("/api/users/parents", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        firstName,
+        lastName,
+        email,
+        phone,
+        type: "Parent",
+        emergencyContact: {
+          name: eName,
+          phone: ePhone,
+        },
+        address: {
+          addressLine1: address1,
+          addressLine2: address2,
+          adminArea,
+          postalCode,
+        },
+        children: [],
+        password,
+      } as ParentProp),
+    });
+    const jsonData = (await res.json()) as ApiResProp;
+    if (jsonData.status) {
+      const { email } = jsonData.data;
+      auth.signIn(email, password);
+    } else {
+      setError(jsonData.error);
+    }
   };
 
   return (

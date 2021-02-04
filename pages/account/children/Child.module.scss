@@ -1,0 +1,44 @@
+@import "/styles/variables.scss";
+
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.name {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.info {
+  background-color: rgba($secondary, 0.5);
+  border-radius: 5px;
+  box-shadow: 0px 4px 0px 0px rgba($secondary-dark, 0.5);
+  margin-bottom: 20px;
+  padding: 20px;
+  width: 100%;
+  .infoBody {
+    margin-bottom: 20px;
+    > div {
+      color: black;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      .key {
+        font-weight: bold;
+      }
+    }
+  }
+  button {
+    width: 100%;
+  }
+}
+.clubs {
+  margin-bottom: 20px;
+  background-color: rgba($secondary, 0.5);
+  border-radius: 5px;
+  box-shadow: 0px 4px 0px 0px rgba($secondary-dark, 0.5);
+  margin-bottom: 20px;
+  padding: 20px;
+  width: 100%;
+}

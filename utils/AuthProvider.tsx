@@ -1,16 +1,21 @@
-import React from 'react'
+import React from "react";
 import Cookies from "js-cookie";
 import { createContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { UserProp, UserWithCredProp } from './interfaces';
-import firebaseClient from './firebaseClient';
+import { UserProp, UserWithCredProp } from "./interfaces";
+import firebaseClient from "./firebaseClient";
 
 export const AuthContext = createContext<{
   user: UserWithCredProp | null;
   error: string | null;
   signIn: (email: string, password: string) => void;
   signOut: () => void;
-  signUp: (firstName: string, lastName: string, email: string, password: string) => void;
+  signUp: (
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string
+  ) => void;
 }>({
   user: null,
   error: null,
@@ -57,7 +62,7 @@ export default function AuthProvider({ children }: any) {
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then(() => {
-        router.push("/");
+        router.push("/account");
       })
       .catch((error) => setError(error.message));
   };

@@ -1,0 +1,47 @@
+@import "/styles/variables.scss";
+
+.container {
+  display: flex;
+  flex-direction: row;
+  cursor: pointer;
+
+  @media screen and (max-width: $screen-s) {
+    flex-direction: column;
+  }
+}
+
+.image {
+  img {
+    border-radius: 10px 0 0 10px;
+
+    @media screen and (max-width: $screen-s) {
+      border-radius: 10px 10px 0 0;
+    }
+  }
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  background-color: $tertiary;
+  margin-bottom: 4px;
+  width: 100%;
+  border-radius: 0 10px 10px 0;
+  box-shadow: 0 4px 0 0 $tertiary-dark;
+  padding: 50px;
+  color: white;
+  hr {
+    background-color: white;
+    height: 2px;
+    width: 100px;
+    margin: 15px 0;
+  }
+  .title {
+    text-transform: uppercase;
+  }
+
+  @media screen and (max-width: $screen-s) {
+    border-radius: 0 0 10px 10px;
+  }
+}

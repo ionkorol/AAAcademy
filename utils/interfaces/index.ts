@@ -44,9 +44,8 @@ export interface ParentProp {
   email: string;
   phone: string;
   id?: string;
-  children?: string[];
-  dob?: string;
-  emergencyContact?: {
+  children: string[];
+  emergencyContact: {
     name: string;
     phone: string;
   };
@@ -70,8 +69,8 @@ export interface StudentProp {
   email: string;
   phone: string;
   id?: string;
-  clubs?: string[] | ClubProp[];
-  dob?: string;
+  clubs: string[];
+  dob: string;
 }
 
 export interface UserWithCredProp {
@@ -90,4 +89,17 @@ export interface CouponProp {
   id: string;
   firstName: string;
   lastName: string;
+}
+
+export interface ApiResProp {
+  status: boolean;
+  data?: any;
+  error?: any;
+}
+
+export interface PostProp {
+  title: string;
+  description: string;
+  id: string;
+  images: string[];
 }

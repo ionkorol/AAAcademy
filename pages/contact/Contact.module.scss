@@ -1,0 +1,62 @@
+@import "/styles/variables.scss";
+
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.slider {
+  display: flex;
+  background-image: url("../../public/slide/img1.jpg");
+  height: 500px;
+  margin-top: -86px;
+  .inner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    background-color: rgba($quaternary, 0.5);
+    color:  white;
+  }
+}
+
+.body {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 50px;
+  margin: 5vh 20vw;
+
+  .infoContainer {
+    .message {
+      font-weight: bold;
+      font-size: 1.2rem;
+      margin-bottom: 50px;
+    }
+
+    .info {
+      display: grid;
+      grid-template-columns: auto;
+      row-gap: 50px;
+      > div {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        align-items: start;
+        column-gap: 15px;
+        &:last-child {
+          p {
+            margin: 0;
+          }
+        }
+      }
+    }
+    @media screen and (max-width: $screen-l) {
+      margin-bottom: 50px;
+    }
+  }
+
+  @media screen and (max-width: $screen-l) {
+    display: flex;
+    flex-direction: column-reverse;
+    margin: 5vh 10vw;
+  }
+}

@@ -1,26 +1,33 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import firebaseAdmin from "utils/firebaseAdmin";
-import { UserProp } from "utils/interfaces";
+import { StudentProp } from "utils/interfaces";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // Add User
   if (req.method === "POST") {
-    const userData = req.body as UserProp;
-    let user;
+    const {
+      firstName,
+      lastName,
+      dob,
+      email,
+      phone,
+      clubs,
+    } = req.body as StudentProp;
+    let user: firebaseAdmin.auth.UserRecord;
     try {
       try {
         user = await firebaseAdmin.auth().createUser({
-          email: `${userData.firstName}${userData.lastName}@alwaysactive.academy`,
+          email: `${firstName}${lastName}@alwaysactive.academy`,
           emailVerified: false,
-          password: process.env.DEFAULT_USER_PASSWORD,
-          displayName: `${userData.firstName} ${userData.lastName}`,
+          password: `${firstName}${lastName}`,
+          displayName: `${firstName} ${lastName}`,
         });
       } catch (error) {
         user = await firebaseAdmin.auth().createUser({
-          email: `${userData.firstName}${userData.lastName}1@alwaysactive.academy`,
+          email: `${firstName}${lastName}1@alwaysactive.academy`,
           emailVerified: false,
-          password: process.env.DEFAULT_USER_PASSWORD,
-          displayName: `${userData.firstName} ${userData.lastName}`,
+          password: `${firstName}${lastName}`,
+          displayName: `${firstName} ${lastName}`,
         });
       }
       const writeResult = await firebaseAdmin
@@ -29,22 +36,28 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         .doc(user.uid)
         .set(
           {
-            ...userData,
+            firstName,
+            lastName,
+            email,
+            phone,
+            dob,
+            type: "Student",
             id: user.uid,
-          },
+            clubs,
+          } as StudentProp,
           { merge: true }
         );
       res.statusCode = 200;
       res.json({
         status: true,
         data: {
-          ...userData,
+          email: user.email,
           id: user.uid,
         },
       });
     } catch (error) {
       res.statusCode = 200;
-      res.json({ status: false, error });
+      res.json({ status: false, error: error.message });
     }
 
     // Get Users
@@ -59,26 +72,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       res.json({ status: true, data: usersData });
     } catch (error) {
       res.statusCode = 500;
-      res.json({ status: false, error });
+      res.json({ status: false, error: error.message });
     }
 
     // Delete User
-  } else if (req.method === "DELETE") {
-    const { id } = req.body;
-    try {
-      await firebaseAdmin.auth().deleteUser(id);
-      await firebaseAdmin.firestore().collection("users").doc(id).delete();
-      res.statusCode = 200;
-      res.json({ status: true });
-    } catch (error) {
-      res.statusCode = 200;
-      res.json({
-        status: false,
-        error,
-      });
-    }
   } else if (req.method === "PATCH") {
-    const userData = req.body as UserProp;
+    const userData = req.body as StudentProp;
 
     try {
       const writeResult = await firebaseAdmin
@@ -90,7 +89,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       res.json({ status: true, data: writeResult });
     } catch (error) {
       res.statusCode = 200;
-      res.json({ status: false, error });
+      res.json({ status: false, error: error.message });
     }
   }
 };

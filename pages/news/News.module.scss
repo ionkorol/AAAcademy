@@ -1,0 +1,29 @@
+@import "/styles/variables.scss";
+
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.slider {
+  display: flex;
+  background-image: url("../../public/slide/img1.jpg");
+  height: 500px;
+  margin-top: -86px;
+  .inner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    background-color: rgba($quaternary, 0.5);
+    color: white;
+  }
+}
+
+.body {
+  margin: 5vh 20vw;
+
+  @media screen and (max-width: $screen-l) {
+    margin: 5vh 10vw;
+  }
+}
