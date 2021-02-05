@@ -1,30 +1,26 @@
-import React, { useEffect, useState } from "react";
+import { AdminLayout } from "components/admin";
+import React, { useState } from "react";
 import {
-  Modal,
-  Form,
   Alert,
-  ListGroup,
-  Col,
-  InputGroup,
   Button,
+  Col,
+  Container,
+  Form,
+  InputGroup,
+  ListGroup,
   ListGroupItem,
 } from "react-bootstrap";
-import firebaseClient from "utils/firebaseClient";
-import { ClubProp } from "utils/interfaces";
+import { ApiResProp, ClubProp } from "utils/interfaces";
+import nookies from "nookies";
+import firebaseAdmin from "utils/firebaseAdmin";
+import { GetServerSideProps } from "next";
+import { useRouter } from "next/router";
+import { route } from "next/dist/next-server/server/router";
 
-import styles from "./clubModal.module.scss";
+interface Props {}
 
-interface Props {
-  clubData: ClubProp;
-  show: boolean;
-  handleClose: () => void;
-  onRun: (clubData: ClubProp) => void;
-  error: string;
-  action: "edit" | "add";
-}
-
-const ClubModal: React.FC<Props> = (props) => {
-  const { show, handleClose, clubData, onRun, error, action } = props;
+const Club: React.FC<Props> = (props) => {
+  const [error, setError] = useState(null);
 
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState(0);
@@ -43,6 +39,8 @@ const ClubModal: React.FC<Props> = (props) => {
   const [requirements, setRequirements] = useState([]);
   const [requirement, setRequirement] = useState("");
 
+  const router = useRouter();
+
   const [errors, setErrors] = useState({
     title: null,
     price: null,
@@ -55,8 +53,6 @@ const ClubModal: React.FC<Props> = (props) => {
     description: null,
     requirements: null,
   });
-
-  console.log(requirements);
 
   const handleCategoryClick = (category) => {
     if (categories.includes(category)) {
@@ -75,21 +71,6 @@ const ClubModal: React.FC<Props> = (props) => {
         title: "Title has not been set!",
       }));
       return false;
-    }
-    // Exists
-    if (action === "add") {
-      const docSnap = await firebaseClient
-        .firestore()
-        .collection("clubs")
-        .doc(title)
-        .get();
-      if (docSnap.exists) {
-        setErrors((prevState) => ({
-          ...prevState,
-          title: "Club already Exists",
-        }));
-        return false;
-      }
     }
 
     // Categories Validation
@@ -169,21 +150,35 @@ const ClubModal: React.FC<Props> = (props) => {
     event.preventDefault();
     event.stopPropagation();
     const test = await formValidation();
+    console.log(test);
     if (test) {
-      onRun({
-        title,
-        categories,
-        date,
-        time: {
-          from: timeFrom,
-          to: timeTo,
-        },
-        image,
-        teacher,
-        description,
-        requirements,
-        price,
-      });
+      const jsonData = (await (
+        await fetch("/api/clubs", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title,
+            categories,
+            date,
+            time: { from: timeFrom, to: timeTo },
+            image,
+            teacher,
+            description,
+            price,
+            requirements,
+          } as ClubProp),
+        })
+      ).json()) as ApiResProp;
+
+      if (jsonData.status) {
+        alert("Added");
+        router.push(`/admin/clubs/${jsonData.data}`);
+      } else {
+        alert(jsonData.error);
+      }
     }
   };
 
@@ -197,13 +192,12 @@ const ClubModal: React.FC<Props> = (props) => {
   };
 
   return (
-    <Modal show={show} onHide={handleClose}>
-      <Modal.Header closeButton>
-        <Modal.Title>Modal heading</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
+    <AdminLayout>
+      <Container>
+        <h1>Add Club Page</h1>
+        <hr></hr>
         {error ? <Alert variant="danger">{error}</Alert> : null}
-        <Form id="my-form" onSubmit={handleSubmit} noValidate>
+        <Form onSubmit={handleSubmit} noValidate>
           <Form.Group>
             <Form.Label>Title</Form.Label>
             <Form.Control
@@ -382,15 +376,31 @@ const ClubModal: React.FC<Props> = (props) => {
               {errors.description}
             </Form.Control.Feedback>
           </Form.Group>
+          <Button type="submit" className="w-100">
+            Add
+          </Button>
         </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <button form="my-form" type="submit">
-          Save Changes
-        </button>
-      </Modal.Footer>
-    </Modal>
+      </Container>
+    </AdminLayout>
   );
 };
 
-export default ClubModal;
+export default Club;
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { token } = nookies.get(ctx);
+  try {
+    const { uid } = await firebaseAdmin.auth().verifyIdToken(token);
+    return {
+      props: {
+        uid,
+      },
+    };
+  } catch (error) {
+    ctx.res.writeHead(302, { Location: "/" });
+    ctx.res.end();
+    return {
+      props: {} as never,
+    };
+  }
+};

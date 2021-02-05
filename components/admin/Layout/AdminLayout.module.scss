@@ -19,7 +19,6 @@
   -moz-box-shadow: 5px 0px 10px 0px rgba(0, 0, 0, 0.5);
   box-shadow: 5px 0px 10px 0px rgba(0, 0, 0, 0.5);
 
-  
   .logo {
     text-align: center;
     color: $primary;
@@ -40,13 +39,16 @@
     }
   }
 
-  @media screen and (max-width: $screen-l) {
+  @media screen and (max-width: $screen-s) {
     display: none;
   }
 }
 
 .content {
   width: 80%;
-  height: 100vh;
   padding: 2vh 2vw;
+
+  @media screen and (max-width: $screen-s) {
+    width: 100%;
+  }
 }

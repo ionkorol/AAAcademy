@@ -10,7 +10,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       const docRef = await firebaseAdmin
         .firestore()
         .collection("clubs")
-        .add({ clubData });
+        .add({ ...clubData });
 
       await docRef.update({
         id: docRef.id,
@@ -20,35 +20,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       res.json({ status: true, data: docRef.id });
     } catch (error) {
       res.statusCode = 500;
-      res.json({ error });
-    }
-  } else if (req.method === "DELETE") {
-    const { title } = req.body;
-    try {
-      const write = await firebaseAdmin
-        .firestore()
-        .collection("clubs")
-        .doc(title)
-        .delete();
-      res.statusCode = 200;
-      res.json(write);
-    } catch (error) {
-      res.statusCode = 500;
-      res.json({ error });
-    }
-  } else if (req.method === "PATCH") {
-    const clubData: ClubProp = req.body;
-    try {
-      const write = await firebaseAdmin
-        .firestore()
-        .collection("clubs")
-        .doc(clubData.id)
-        .set(clubData, { merge: true });
-      res.statusCode = 200;
-      res.json(write);
-    } catch (error) {
-      res.statusCode = 500;
-      res.json({ error: error.message, data: req.body });
+      res.json({ status: false, error: error.message });
     }
   } else if (req.method === "GET") {
     try {

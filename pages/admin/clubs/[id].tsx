@@ -1,45 +1,46 @@
+import { AdminLayout } from "components/admin";
 import React, { useEffect, useState } from "react";
 import {
-  Modal,
-  Form,
   Alert,
-  ListGroup,
-  Col,
-  InputGroup,
   Button,
+  Col,
+  Container,
+  Form,
+  InputGroup,
+  ListGroup,
   ListGroupItem,
 } from "react-bootstrap";
 import firebaseClient from "utils/firebaseClient";
-import { ClubProp } from "utils/interfaces";
+import { ApiResProp, ClubProp } from "utils/interfaces";
+import nookies from "nookies";
+import firebaseAdmin from "utils/firebaseAdmin";
+import { GetServerSideProps } from "next";
+import { useRouter } from "next/router";
 
-import styles from "./clubModal.module.scss";
+import styles from "./Club.module.scss";
 
 interface Props {
-  clubData: ClubProp;
-  show: boolean;
-  handleClose: () => void;
-  onRun: (clubData: ClubProp) => void;
-  error: string;
-  action: "edit" | "add";
+  data: ClubProp;
 }
 
-const ClubModal: React.FC<Props> = (props) => {
-  const { show, handleClose, clubData, onRun, error, action } = props;
+const Club: React.FC<Props> = (props) => {
+  const { data } = props;
+  const [error, setError] = useState(null);
 
-  const [title, setTitle] = useState("");
-  const [price, setPrice] = useState(0);
+  const [title, setTitle] = useState(data.title);
+  const [price, setPrice] = useState(data.price);
   const availableCategories: Array<
     "Active" | "Creative" | "Educational" | "Musical"
   > = ["Active", "Creative", "Educational", "Musical"];
   const [categories, setCategories] = useState<
     Array<"Active" | "Creative" | "Educational" | "Musical">
-  >([]);
-  const [date, setDate] = useState("");
-  const [timeTo, setTimeTo] = useState("");
-  const [timeFrom, setTimeFrom] = useState("");
-  const [image, setImage] = useState("");
-  const [teacher, setTeacher] = useState("");
-  const [description, setDescription] = useState("");
+  >(data.categories);
+  const [date, setDate] = useState(data.date);
+  const [timeTo, setTimeTo] = useState(data.time.to);
+  const [timeFrom, setTimeFrom] = useState(data.time.from);
+  const [image, setImage] = useState(data.image);
+  const [teacher, setTeacher] = useState(data.teacher);
+  const [description, setDescription] = useState(data.description);
   const [requirements, setRequirements] = useState([]);
   const [requirement, setRequirement] = useState("");
 
@@ -56,7 +57,7 @@ const ClubModal: React.FC<Props> = (props) => {
     requirements: null,
   });
 
-  console.log(requirements);
+  const router = useRouter();
 
   const handleCategoryClick = (category) => {
     if (categories.includes(category)) {
@@ -75,21 +76,6 @@ const ClubModal: React.FC<Props> = (props) => {
         title: "Title has not been set!",
       }));
       return false;
-    }
-    // Exists
-    if (action === "add") {
-      const docSnap = await firebaseClient
-        .firestore()
-        .collection("clubs")
-        .doc(title)
-        .get();
-      if (docSnap.exists) {
-        setErrors((prevState) => ({
-          ...prevState,
-          title: "Club already Exists",
-        }));
-        return false;
-      }
     }
 
     // Categories Validation
@@ -165,25 +151,53 @@ const ClubModal: React.FC<Props> = (props) => {
     return true;
   };
 
+  const handleDeleteClub = async () => {
+    const jsonData = (await (
+      await fetch(`/api/clubs/${router.query.id}`, {
+        method: "DELETE",
+      })
+    ).json()) as ApiResProp;
+    if (jsonData.status) {
+      alert("Deleted");
+      window.close();
+    } else {
+      alert(jsonData.error);
+    }
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     event.stopPropagation();
     const test = await formValidation();
+    console.log(test);
     if (test) {
-      onRun({
-        title,
-        categories,
-        date,
-        time: {
-          from: timeFrom,
-          to: timeTo,
-        },
-        image,
-        teacher,
-        description,
-        requirements,
-        price,
-      });
+      const jsonData = (await (
+        await fetch(`/api/clubs/${router.query.id}`, {
+          method: "PATCH",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title,
+            categories,
+            date,
+            time: { from: timeFrom, to: timeTo },
+            image,
+            teacher,
+            description,
+            id: router.query.id,
+            price,
+            requirements,
+          } as ClubProp),
+        })
+      ).json()) as ApiResProp;
+
+      if (jsonData.status) {
+        alert("Updated");
+      } else {
+        alert(jsonData.error);
+      }
     }
   };
 
@@ -197,13 +211,12 @@ const ClubModal: React.FC<Props> = (props) => {
   };
 
   return (
-    <Modal show={show} onHide={handleClose}>
-      <Modal.Header closeButton>
-        <Modal.Title>Modal heading</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
+    <AdminLayout>
+      <Container>
+        <h1>{data.title} - Edit Page</h1>
+        <hr></hr>
         {error ? <Alert variant="danger">{error}</Alert> : null}
-        <Form id="my-form" onSubmit={handleSubmit} noValidate>
+        <Form onSubmit={handleSubmit} noValidate>
           <Form.Group>
             <Form.Label>Title</Form.Label>
             <Form.Control
@@ -382,15 +395,51 @@ const ClubModal: React.FC<Props> = (props) => {
               {errors.description}
             </Form.Control.Feedback>
           </Form.Group>
+          <Button type="submit" className="w-100">
+            Save
+          </Button>
         </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <button form="my-form" type="submit">
-          Save Changes
-        </button>
-      </Modal.Footer>
-    </Modal>
+        <Button
+          onClick={handleDeleteClub}
+          className="mt-5 w-100"
+          variant="outline-danger"
+        >
+          Delete
+        </Button>
+      </Container>
+    </AdminLayout>
   );
 };
 
-export default ClubModal;
+export default Club;
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { token } = nookies.get(ctx);
+  const { id } = ctx.query;
+  try {
+    const { uid } = await firebaseAdmin.auth().verifyIdToken(token);
+    const jsonData = (await (
+      await fetch(`${process.env.SERVER}/api/clubs/${id}`)
+    ).json()) as ApiResProp;
+
+    if (jsonData.status) {
+      return {
+        props: {
+          data: jsonData.data,
+        },
+      };
+    } else {
+      ctx.res.writeHead(302, { Location: "/" });
+      ctx.res.end();
+      return {
+        props: {} as never,
+      };
+    }
+  } catch (error) {
+    ctx.res.writeHead(302, { Location: "/" });
+    ctx.res.end();
+    return {
+      props: {} as never,
+    };
+  }
+};

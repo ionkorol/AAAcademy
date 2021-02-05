@@ -1,6 +1,6 @@
 import { GetServerSideProps } from "next";
 import React, { useEffect, useState } from "react";
-import { Alert } from "react-bootstrap";
+import { Alert, Button } from "react-bootstrap";
 import firebase from "utils/firebaseClient";
 import styles from "./Clubs.module.scss";
 import { ClubProp } from "utils/interfaces";
@@ -15,6 +15,7 @@ import {
 import firebaseAdmin from "utils/firebaseAdmin";
 import firebaseClient from "utils/firebaseClient";
 import nookies from "nookies";
+import Link from "next/link";
 
 interface ClubsProps {}
 const ClubsContent: React.FC<ClubsProps> = (props) => {
@@ -68,7 +69,7 @@ const ClubsContent: React.FC<ClubsProps> = (props) => {
   const modifyClub = async (clubData: ClubProp) => {
     if (modalAction === "edit") {
       try {
-        const res = await fetch("/api/clubs", {
+        const res = await fetch(`/api/clubs${clubData.id}`, {
           method: "PATCH",
           headers: {
             Accept: "application/json",
@@ -113,7 +114,11 @@ const ClubsContent: React.FC<ClubsProps> = (props) => {
         <div className={styles.controls}>
           <div className={styles.filter}></div>
           <div className={styles.actions}>
-            <button onClick={handleAdd}>Add</button>
+            <a href="/admin/clubs/add" target="_blank" rel="noreferrer">
+              <Button variant="success" onClick={handleAdd}>
+                Add +
+              </Button>
+            </a>
           </div>
         </div>
         <div className={styles.table}>
@@ -130,7 +135,10 @@ const ClubsContent: React.FC<ClubsProps> = (props) => {
           <div className={styles.tableBody}>
             {currentClubs.map((club) => (
               <div className={styles.tableItem} key={club.id}>
-                <div>{club.title}<small style={{color: 'red'}}>{club.price}</small></div>
+                <div>
+                  {club.title}
+                  <small style={{ color: "red" }}>{club.price}</small>
+                </div>
                 <div>
                   {club.categories.map((category) => (
                     <FontAwesomeIcon
@@ -153,27 +161,25 @@ const ClubsContent: React.FC<ClubsProps> = (props) => {
                 </div>
                 <div>{club.teacher}</div>
                 <div>
-                  <button onClick={() => handleEdit(club)}>V</button>
-                  <button
-                    style={{ backgroundColor: "#ec7849" }}
+                  <a
+                    href={`/admin/clubs/${club.id}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <Button variant="outline-success">V</Button>
+                  </a>
+                  <Button
+                    variant="outline-danger"
                     onClick={() => deleteClub(club)}
                   >
                     X
-                  </button>
+                  </Button>
                 </div>
               </div>
             ))}
           </div>
         </div>
       </div>
-      <ClubModal
-        show={showClubModal}
-        handleClose={() => setShowClubModal(false)}
-        clubData={selectedClub}
-        onRun={modifyClub}
-        error={error}
-        action={modalAction}
-      />
     </AdminLayout>
   );
 };
