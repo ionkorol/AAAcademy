@@ -1,3 +1,4 @@
+import { faSleigh } from "@fortawesome/free-solid-svg-icons";
 import { NextApiRequest, NextApiResponse } from "next";
 import firebaseAdmin from "utils/firebaseAdmin";
 import { UserProp } from "utils/interfaces";
@@ -20,18 +21,14 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       try {
         user = await firebaseAdmin.auth().createUser({
-          email: `${firstName}${lastName}@alwaysactive.academy`,
+          email: email,
           emailVerified: false,
           password: password,
           displayName: `${firstName} ${lastName}`,
         });
       } catch (error) {
-        user = await firebaseAdmin.auth().createUser({
-          email: `${firstName}${lastName}1@alwaysactive.academy`,
-          emailVerified: false,
-          password: password,
-          displayName: `${firstName} ${lastName}`,
-        });
+        res.statusCode = 200;
+        res.json({ status: false, error: error.message });
       }
       const writeResult = await firebaseAdmin
         .firestore()

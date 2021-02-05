@@ -27,14 +27,6 @@
       display: none;
     }
     &::after {
-      content: "Always Active";
-    }
-  }
-  @media screen and (max-width: $screen-m) {
-    span {
-      display: none;
-    }
-    &::after {
       content: "AAA";
     }
   }
