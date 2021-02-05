@@ -51,17 +51,6 @@ export interface ParentProp {
   };
 }
 
-export interface ChildProp {
-  firstName: string;
-  lastName: string;
-  type: "Student";
-  email: string;
-  phone: string;
-  id?: string;
-  clubs?: ClubProp[];
-  dob?: string;
-}
-
 export interface StudentProp {
   firstName: string;
   lastName: string;

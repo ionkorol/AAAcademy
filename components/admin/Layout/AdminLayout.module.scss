@@ -47,6 +47,7 @@
 .content {
   width: 80%;
   padding: 2vh 2vw;
+  min-height: 100vh;
 
   @media screen and (max-width: $screen-s) {
     width: 100%;

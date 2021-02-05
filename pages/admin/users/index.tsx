@@ -1,6 +1,6 @@
 import { GetServerSideProps } from "next";
 import React, { useEffect, useState } from "react";
-import { Alert } from "react-bootstrap";
+import { Alert, Button } from "react-bootstrap";
 import { useRouter } from "next/router";
 import firebaseClient from "utils/firebaseClient";
 import styles from "./Users.module.scss";
@@ -96,7 +96,9 @@ const UsersContent: React.FC<UsersProps> = (props) => {
         <div className={styles.controls}>
           <div className={styles.filter}></div>
           <div className={styles.actions}>
-            <button onClick={handleAdd}>Add</button>
+            <Button variant="success" onClick={handleAdd}>
+              Add +
+            </Button>
           </div>
         </div>
         <div className={styles.table}>
@@ -115,27 +117,22 @@ const UsersContent: React.FC<UsersProps> = (props) => {
                 <div>{user.email}</div>
                 <div>{user.type}</div>
                 <div>
-                  <button onClick={() => handleEdit(user)}>V</button>
-                  <button
-                    style={{ backgroundColor: "#ec7849" }}
-                    onClick={() => deleteUser(user)}
+                  <a
+                    href={`/admin/users/${user.type.toLocaleLowerCase()}/${
+                      user.id
+                    }`}
+                    target="_blank"
+                    rel="noreferrer"
                   >
-                    X
-                  </button>
+                    <Button variant="outline-success">V</Button>
+                  </a>
+                  <Button variant="outline-danger">X</Button>
                 </div>
               </div>
             ))}
           </div>
         </div>
       </div>
-      <UserModal
-        show={showUserModal}
-        handleClose={() => setShowUserModal(false)}
-        userData={selectedUser}
-        onRun={modifyUser}
-        error={error}
-        action={modalAction}
-      />
     </AdminLayout>
   );
 };
