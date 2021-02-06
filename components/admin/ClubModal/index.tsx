@@ -169,22 +169,7 @@ const ClubModal: React.FC<Props> = (props) => {
     event.preventDefault();
     event.stopPropagation();
     const test = await formValidation();
-    if (test) {
-      onRun({
-        title,
-        categories,
-        date,
-        time: {
-          from: timeFrom,
-          to: timeTo,
-        },
-        image,
-        teacher,
-        description,
-        requirements,
-        price,
-      });
-    }
+
   };
 
   const handleAddRequirement = () => {
