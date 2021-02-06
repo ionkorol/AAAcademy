@@ -38,14 +38,19 @@
   }
   .active {
     background-color: $primary;
+    color: white;
   }
   .creative {
     background-color: $secondary;
+    color: white;
+
   }
-  .music {
+  .musical {
     background-color: $tertiary;
+    color: white;
   }
   .educational {
     background-color: $quaternary;
+    color: white;
   }
 }

@@ -29,7 +29,8 @@ const ClubsContent: React.FC<ClubsProps> = (props) => {
       .firestore()
       .collection("clubs")
       .onSnapshot((data) => {
-        setCurrentClubs(data.docs.map((doc) => doc.data() as ClubProp));
+        const clubsList = data.docs.map((doc) => doc.data() as ClubProp);
+        setCurrentClubs(clubsList.sort((a, b) => (a.title > b.title ? 1 : -1)));
       });
 
     return () => usnsub();

@@ -7,9 +7,9 @@ import styles from "./Club.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheck,
+  faChild,
   faClock,
   faEnvelope,
-  faMapMarkerAlt,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { Icon } from "components/ui";
@@ -24,19 +24,26 @@ const Club: React.FC<Props> = (props) => {
   return (
     <Layout title={`${data.title} Club`}>
       <div className={styles.container}>
-        <div className={styles.slider}>
-          <h1>{data.title}</h1>
+        <div
+          className={styles.slider}
+          style={{ backgroundImage: `url(${data.image})` }}
+        >
+          <div className={styles.inner}>
+            <h1>{data.title}</h1>
+          </div>
         </div>
         <div className={styles.body}>
           <div className={styles.info}>
             <div className={styles.location}>
-              <Icon icon={faMapMarkerAlt} size="2x" bgColor="primary" />
-              <span>Friendship Christian School</span>
+              <Icon icon={faChild} size="2x" bgColor="primary" />
+              <span>
+                {data.age.from} years TO {data.age.to} years
+              </span>
             </div>
             <div className={styles.time}>
               <Icon icon={faClock} size="2x" bgColor="secondary" />
               <span>
-                {data.time.from} TO {data.time.to}
+                {data.time.from}:00 TO {data.time.to}:00
               </span>
             </div>
             <div className={styles.contact}>

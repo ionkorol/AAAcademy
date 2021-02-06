@@ -7,7 +7,8 @@ import { ApiResProp, ClubProp, StudentProp } from "utils/interfaces";
 
 import styles from "./Child.module.scss";
 import { useRouter } from "next/router";
-import { Button, ListGroup, ListGroupItem, Table } from "react-bootstrap";
+import { Button, Form, ListGroup, ListGroupItem, Table } from "react-bootstrap";
+import firebaseClient from "utils/firebaseClient";
 
 interface Props {
   data: StudentProp;
@@ -19,19 +20,36 @@ const Child: React.FC<Props> = (props) => {
 
   const [error, setError] = useState(null);
   const [clubs, setClubs] = useState<ClubProp[]>([]);
+  const [allClubs, setAllClubs] = useState<ClubProp[]>([]);
+
+  const [addClub, setAddClub] = useState("");
 
   const router = useRouter();
 
+  // Fetch All Clubs
   useEffect(() => {
-    setClubs([]);
-    data.clubs.forEach((club) =>
-      fetch(`/api/clubs/${club}`)
-        .then((res) => res.json())
-        .then((data) => setClubs((prevState) => [...prevState, data.data]))
-    );
+    fetch("/api/clubs")
+      .then((res) => res.json())
+      .then((data) => setAllClubs(data.data));
   }, []);
 
-  console.log(clubs);
+  useEffect(() => {
+    const unsub = firebaseClient
+      .firestore()
+      .collection("users")
+      .doc(data.id)
+      .onSnapshot((data) => {
+        setClubs([]);
+        const userData = data.data() as StudentProp;
+        userData.clubs.forEach((club) =>
+          fetch(`/api/clubs/${club}`)
+            .then((res) => res.json())
+            .then((data) => setClubs((prevState) => [...prevState, data.data]))
+        );
+      });
+
+    return () => unsub();
+  }, []);
 
   const deleteChild = async () => {
     const childData = (await (
@@ -65,6 +83,24 @@ const Child: React.FC<Props> = (props) => {
       setError(parentData.error);
     }
   };
+
+  const handleAddClub = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const jsonData = (await (
+      await fetch(`/api/users/students/${data.id}/clubs/${addClub}`, {
+        method: "POST",
+      })
+    ).json()) as ApiResProp;
+
+    if (jsonData.status) {
+      alert("Club Added");
+    } else {
+      alert(jsonData.error);
+    }
+  };
+
+  console.log(addClub);
+
   return (
     <AccountLayout>
       <div className={styles.container}>
@@ -101,14 +137,33 @@ const Child: React.FC<Props> = (props) => {
                 className="bg-transparent text-dark d-flex justify-content-between align-items-center font-weight-bold"
                 key={club.id}
               >
-                <span>{club.title}</span>
+                <span>
+                  {club.title} ({club.time.from}:00 - {club.time.to}:00)
+                </span>
                 <Button variant="outline-danger">x</Button>
               </ListGroupItem>
             ))}
           </ListGroup>
+          <Form onSubmit={handleAddClub}>
+            <Form.Group>
+              <Form.Control
+                as="select"
+                onChange={(e) => setAddClub(e.target.value)}
+              >
+                {allClubs.map((club: ClubProp) => (
+                  <option value={club.id} key={club.id}>
+                    {club.title} ({club.time.from}:00 - {club.time.to}:00)
+                  </option>
+                ))}
+              </Form.Control>
+            </Form.Group>
+            <Button type="submit  " variant="warning" className="w-100">
+              Add Club
+            </Button>
+          </Form>
         </div>
 
-        <Schedule />
+        <Schedule data={clubs} />
         <Button variant="outline-danger" onClick={deleteChild}>
           Remove Child
         </Button>

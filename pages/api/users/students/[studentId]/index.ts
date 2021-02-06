@@ -5,14 +5,14 @@ import firebaseAdmin from "utils/firebaseAdmin";
 import { StudentProp } from "utils/interfaces";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const { id } = req.query;
+  const { studentId } = req.query;
   if (req.method === "PATCH") {
     const studentData = req.body as StudentProp;
     try {
       await firebaseAdmin
         .firestore()
         .collection("users")
-        .doc(id as string)
+        .doc(studentId as string)
         .set({ ...studentData }, { merge: true });
       res.statusCode = 200;
       res.json({ status: true });
@@ -29,7 +29,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         await firebaseAdmin
           .firestore()
           .collection("users")
-          .doc(id as string)
+          .doc(studentId as string)
           .get()
       ).data() as StudentProp;
       res.statusCode = 200;
@@ -44,7 +44,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       firestore: null,
     };
     try {
-      await firebaseAdmin.auth().deleteUser(id as string);
+      await firebaseAdmin.auth().deleteUser(studentId as string);
     } catch (error) {
       resError.auth = error.message;
     }
@@ -52,7 +52,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       await firebaseAdmin
         .firestore()
         .collection("users")
-        .doc(id as string)
+        .doc(studentId as string)
         .delete();
     } catch (error) {
       resError.firestore = error.message;

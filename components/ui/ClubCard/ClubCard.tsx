@@ -5,6 +5,7 @@ import {
   faCalendar,
   faInfo,
   faInfoCircle,
+  faChild,
 } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 
@@ -32,14 +33,16 @@ const ClubCard: React.FC<Props> = (props) => {
       <div className={styles.title}>{data.title}</div>
       <div className={styles.body}>
         <div className={styles.location}>
-          <FontAwesomeIcon icon={faThumbtack} fixedWidth />
-          Friendship Christian School
+          <FontAwesomeIcon icon={faChild} fixedWidth />
+          {data.age.from} years
+          {" to "}
+          {data.age.to} years
         </div>
         <div className={styles.time}>
           <FontAwesomeIcon icon={faClock} fixedWidth />
-          {data.time.from}
-          {" TO "}
-          {data.time.to}
+          {data.time.from}:00
+          {" to "}
+          {data.time.to}:00
         </div>
         <hr className={styles.hr} />
         <div className={styles.description}>
