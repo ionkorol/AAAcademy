@@ -36,8 +36,10 @@ const Club: React.FC<Props> = (props) => {
     Array<"Active" | "Creative" | "Educational" | "Musical">
   >(data.categories);
   const [date, setDate] = useState(data.date);
-  const [timeTo, setTimeTo] = useState(data.time.to);
+  const [ageFrom, setAgeFrom] = useState(data.age ? data.age.from : 0);
+  const [ageTo, setAgeTo] = useState(data.age ? data.age.to : 0);
   const [timeFrom, setTimeFrom] = useState(data.time.from);
+  const [timeTo, setTimeTo] = useState(data.time.to);
   const [image, setImage] = useState(data.image);
   const [teacher, setTeacher] = useState(data.teacher);
   const [description, setDescription] = useState(data.description);
@@ -49,6 +51,8 @@ const Club: React.FC<Props> = (props) => {
     price: null,
     categories: null,
     date: null,
+    fromAge: null,
+    toAge: null,
     fromTime: null,
     toTime: null,
     image: null,
@@ -186,6 +190,10 @@ const Club: React.FC<Props> = (props) => {
             image,
             teacher,
             description,
+            age: {
+              from: ageFrom,
+              to: ageTo,
+            },
             id: router.query.id,
             price,
             requirements,
@@ -282,6 +290,38 @@ const Club: React.FC<Props> = (props) => {
               {errors.date}
             </Form.Control.Feedback>
           </Form.Group>
+          <Form.Row>
+            <Col>
+              <Form.Group>
+                <Form.Label>Age From</Form.Label>
+                <Form.Control
+                  type="number"
+                  placeholder="Enter From Age"
+                  value={ageFrom}
+                  onChange={(e) => setAgeFrom(Number(e.target.value))}
+                  isInvalid={!!errors.fromAge}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.fromAge}
+                </Form.Control.Feedback>
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group>
+                <Form.Label>Age To</Form.Label>
+                <Form.Control
+                  type="number"
+                  placeholder="Enter To Age"
+                  value={ageTo}
+                  onChange={(e) => setAgeTo(Number(e.target.value))}
+                  isInvalid={!!errors.toAge}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.toAge}
+                </Form.Control.Feedback>
+              </Form.Group>
+            </Col>
+          </Form.Row>
           <Form.Row>
             <Col>
               <Form.Group>

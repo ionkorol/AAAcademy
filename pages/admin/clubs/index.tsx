@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Alert, Button } from "react-bootstrap";
 import firebase from "utils/firebaseClient";
 import styles from "./Clubs.module.scss";
-import { ClubProp } from "utils/interfaces";
+import { ApiResProp, ClubProp } from "utils/interfaces";
 import { AdminLayout, ClubModal } from "components/admin";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -20,9 +20,6 @@ import Link from "next/link";
 interface ClubsProps {}
 const ClubsContent: React.FC<ClubsProps> = (props) => {
   const [currentClubs, setCurrentClubs] = useState<ClubProp[]>([]);
-  const [showClubModal, setShowClubModal] = useState(false);
-  const [selectedClub, setSelectedClub] = useState<ClubProp>(null);
-  const [modalAction, setModalAction] = useState<"edit" | "add">("add");
 
   const [error, setError] = useState(null);
 
@@ -38,65 +35,49 @@ const ClubsContent: React.FC<ClubsProps> = (props) => {
     return () => usnsub();
   }, []);
 
-  const handleAdd = () => {
-    setSelectedClub(null);
-    setModalAction("add");
-    setShowClubModal(true);
-  };
-
-  const handleEdit = (clubData: ClubProp) => {
-    setSelectedClub(clubData);
-    setModalAction("edit");
-    setShowClubModal(true);
-  };
-
   const deleteClub = async (clubData: ClubProp) => {
     try {
-      const res = await fetch("/api/clubs", {
-        method: "DELETE",
+      const jsonData = (await (
+        await fetch("/api/clubs", {
+          method: "DELETE",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(clubData),
+        })
+      ).json()) as ApiResProp;
+
+      if (jsonData.status) {
+        alert("Deleted");
+      } else {
+        alert(jsonData.error);
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  const handleDublicateClub = async (club: ClubProp) => {
+    delete club.id;
+    const jsonData = (await (
+      await fetch("/api/clubs", {
+        method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(clubData),
-      });
-      console.log(await res.json());
-    } catch (error) {
-      setError(error);
-    }
-  };
+        body: JSON.stringify({
+          ...club,
+        }),
+      })
+    ).json()) as ApiResProp;
 
-  const modifyClub = async (clubData: ClubProp) => {
-    if (modalAction === "edit") {
-      try {
-        const res = await fetch(`/api/clubs${clubData.id}`, {
-          method: "PATCH",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(clubData),
-        });
-        console.log(await res.json());
-      } catch (error) {
-        setError(error);
-      }
+    if (jsonData.status) {
+      alert("Success: " + jsonData.data);
     } else {
-      try {
-        const res = await fetch("/api/clubs", {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(clubData),
-        });
-        console.log(await res.json());
-      } catch (error) {
-        setError(error);
-      }
+      alert(jsonData.error);
     }
-    setShowClubModal(false);
   };
 
   const categoryIcon = {
@@ -115,9 +96,7 @@ const ClubsContent: React.FC<ClubsProps> = (props) => {
           <div className={styles.filter}></div>
           <div className={styles.actions}>
             <a href="/admin/clubs/add" target="_blank" rel="noreferrer">
-              <Button variant="success" onClick={handleAdd}>
-                Add +
-              </Button>
+              <Button variant="success">Add +</Button>
             </a>
           </div>
         </div>
@@ -126,8 +105,8 @@ const ClubsContent: React.FC<ClubsProps> = (props) => {
             <div>Title</div>
             <div>Categories</div>
             <div>Date</div>
-            <div>From</div>
-            <div>To</div>
+            <div>Time</div>
+            <div>Age</div>
             <div>Image</div>
             <div>Teacher</div>
             <div>Actions</div>
@@ -149,8 +128,12 @@ const ClubsContent: React.FC<ClubsProps> = (props) => {
                   ))}
                 </div>
                 <div>{club.date}</div>
-                <div>{club.time.from}</div>
-                <div>{club.time.to}</div>
+                <div>
+                  {club.time.from} - {club.time.to}
+                </div>
+                <div>
+                  {club.age ? `${club.age.from} - ${club.age.to}` : "0 - 0"}
+                </div>
                 <div>
                   <img
                     src={club.image}
@@ -168,6 +151,12 @@ const ClubsContent: React.FC<ClubsProps> = (props) => {
                   >
                     <Button variant="outline-success">V</Button>
                   </a>
+                  <Button
+                    variant="outline-primary"
+                    onClick={() => handleDublicateClub(club)}
+                  >
+                    O
+                  </Button>
                   <Button
                     variant="outline-danger"
                     onClick={() => deleteClub(club)}

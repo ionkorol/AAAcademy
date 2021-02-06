@@ -1,4 +1,4 @@
-import { AccountLayout } from "components/account";
+import { AccountLayout, Schedule } from "components/account";
 import { GetServerSideProps } from "next";
 import React, { useEffect, useState } from "react";
 import firebaseAdmin from "utils/firebaseAdmin";
@@ -107,6 +107,8 @@ const Child: React.FC<Props> = (props) => {
             ))}
           </ListGroup>
         </div>
+
+        <Schedule />
         <Button variant="outline-danger" onClick={deleteChild}>
           Remove Child
         </Button>

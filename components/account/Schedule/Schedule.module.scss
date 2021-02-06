@@ -1,0 +1,51 @@
+@import "/styles/variables.scss";
+
+.container {
+  background-color: rgba($secondary, 0.5);
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  box-shadow: 0px 4px 0px 0px rgba($secondary-dark, 0.5);
+}
+
+.body {
+  display: grid;
+  grid-template-columns: 1fr;
+  color: black;
+
+  .timePeriod {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border: 1px solid rgba(128, 128, 128, 0.5);
+    border-radius: 5px;
+    margin-bottom: 5px;
+
+    .time {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      padding: 10px;
+    }
+
+    .club {
+      display: flex;
+      border-left: 1px solid rgba(128, 128, 128, 0.5);
+      padding: 10px;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+  .active {
+    background-color: $primary;
+  }
+  .creative {
+    background-color: $secondary;
+  }
+  .music {
+    background-color: $tertiary;
+  }
+  .educational {
+    background-color: $quaternary;
+  }
+}
