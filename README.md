@@ -11,3 +11,14 @@
 - [ ] Child Email
 - [ ] Add TOS and Covid Release
 - [ ] Figure On site payment
+
+## Account
+
+- [ ] Send account Info
+- [ ] Cloud function for account info
+
+### Invoices
+
+- [ ] Create Page
+- [ ] Add Additional Fees for clubs
+- [ ]

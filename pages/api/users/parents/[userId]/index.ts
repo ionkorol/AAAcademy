@@ -5,7 +5,7 @@ import firebaseAdmin from "utils/firebaseAdmin";
 import { UserProp } from "utils/interfaces";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const { id } = req.query;
+  const { userId } = req.query;
   if (req.method === "POST") {
     const { childId, action } = req.body;
     if (childId) {
@@ -14,7 +14,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           await firebaseAdmin
             .firestore()
             .collection("users")
-            .doc(id as string)
+            .doc(userId as string)
             .update({
               children: firebaseAdmin.firestore.FieldValue.arrayUnion(childId),
             });
@@ -24,7 +24,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           await firebaseAdmin
             .firestore()
             .collection("users")
-            .doc(id as string)
+            .doc(userId as string)
             .update({
               children: firebaseAdmin.firestore.FieldValue.arrayRemove(childId),
             });
@@ -45,7 +45,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         await firebaseAdmin
           .firestore()
           .collection("users")
-          .doc(id as string)
+          .doc(userId as string)
           .get()
       ).data() as UserProp;
       res.statusCode = 200;
@@ -60,7 +60,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       firestore: null,
     };
     try {
-      await firebaseAdmin.auth().deleteUser(id as string);
+      await firebaseAdmin.auth().deleteUser(userId as string);
     } catch (error) {
       resError.auth = error.message;
     }
@@ -68,7 +68,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       await firebaseAdmin
         .firestore()
         .collection("users")
-        .doc(id as string)
+        .doc(userId as string)
         .delete();
     } catch (error) {
       resError.firestore = error.message;

@@ -16,6 +16,22 @@ export interface ClubProp {
   id?: string;
   price: number;
   requirements: string[];
+  fees: FeeProp[];
+}
+
+export interface InvoiceProp {
+  id: number;
+  parentId: string;
+  invoiceDate: DateProp;
+  dueDate: DateProp;
+  total: number;
+  lineItems: {
+    name: string;
+    price: number;
+    discount: number;
+    fees: FeeProp[];
+  }[];
+  status: "Unpaid" | "Paid" | "Past Due";
 }
 
 export interface UserProp {
@@ -95,4 +111,16 @@ export interface PostProp {
   description: string;
   id: string;
   images: string[];
+}
+
+export interface FeeProp {
+  price: number;
+  name: string;
+}
+
+interface DateProp {
+  day: number;
+  month: number;
+  year: number;
+  dayName: string;
 }
