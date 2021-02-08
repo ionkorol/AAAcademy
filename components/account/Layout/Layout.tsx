@@ -9,7 +9,7 @@ interface Props {}
 
 const AccountLayout: React.FC<Props> = (props) => {
   const [activePath, setActivePath] = useState<
-    "dashboard" | "children" | "invoices"
+    "dashboard" | "children" | "invoices" | "coupons"
   >("dashboard");
 
   const router = useRouter();
@@ -18,6 +18,8 @@ const AccountLayout: React.FC<Props> = (props) => {
       setActivePath("children");
     } else if (router.pathname.includes("invoices")) {
       setActivePath("invoices");
+    } else if (router.pathname.includes("coupons")) {
+      setActivePath("coupons");
     } else {
       setActivePath("dashboard");
     }
@@ -58,6 +60,15 @@ const AccountLayout: React.FC<Props> = (props) => {
                 }`}
               >
                 Invoices
+              </div>
+            </Link>
+            <Link href="/account/coupons">
+              <div
+                className={`${styles.menuItem} ${
+                  activePath === "coupons" ? styles.active : null
+                }`}
+              >
+                Coupons
               </div>
             </Link>
           </div>

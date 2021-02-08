@@ -137,32 +137,7 @@ const Payment: React.FC<Props> = (props) => {
         ))}
       </ListGroup>
       <div className={styles.agree}>
-        <Form>
-          <Form.Group>
-            <Form.Check
-              type="checkbox"
-              label="I aggree to the Terms of Services"
-              checked={tosAgree}
-              onChange={(e) => setTOSAgree(!tosAgree)}
-              required
-            />
-            <a href="/policy/tos" target="_blank" rel="norefer">
-              Read Terms of Service
-            </a>
-          </Form.Group>
-          <Form.Group>
-            <Form.Check
-              type="checkbox"
-              label="I aggree to the Covid Release Form"
-              checked={covidAgree}
-              onChange={(e) => setCovidAgree(!covidAgree)}
-              required
-            />
-            <a href="/policy/covid-release" target="_blank" rel="norefer">
-              Read Covid Release Form
-            </a>
-          </Form.Group>
-        </Form>
+        
       </div>
 
       <div className="mt-5">

@@ -1,7 +1,7 @@
 import { AccountLayout } from "components/account";
 import Link from "next/link";
 import React from "react";
-import { Container, Table } from "react-bootstrap";
+import { Badge, Container, Table } from "react-bootstrap";
 import firebaseAdmin from "utils/firebaseAdmin";
 import nookies from "nookies";
 
@@ -46,7 +46,19 @@ const Invoices: React.FC<Props> = (props) => {
                       {item.dueDate.day}/{item.dueDate.year}
                     </td>
                     <td>${item.total.toFixed(2)}</td>
-                    <td>{item.status}</td>
+                    <td>
+                      <Badge
+                        variant={
+                          item.status === "Paid"
+                            ? "success"
+                            : item.status === "Unpaid"
+                            ? "secondary"
+                            : "danger"
+                        }
+                      >
+                        {item.status}
+                      </Badge>
+                    </td>
                   </tr>
                 </Link>
               ))}

@@ -5,7 +5,7 @@ import firebaseAdmin from "utils/firebaseAdmin";
 import { FeeProp, InvoiceProp, UserProp } from "utils/interfaces";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const { id } = req.query;
+  const { userId } = req.query;
   if (req.method === "POST") {
     const lineItems = req.body as {
       name: string;
@@ -50,7 +50,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         .doc(String(lastId + 1))
         .set({
           id: lastId + 1,
-          parentId: id,
+          parentId: userId,
           invoiceDate: {
             day: invoiceDate.getDate(),
             month: invoiceDate.getMonth(),
@@ -82,7 +82,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         await firebaseAdmin
           .firestore()
           .collection("invoices")
-          .where("parentId", "==", id as string)
+          .where("parentId", "==", userId as string)
           .get()
       ).docs.map((doc) => doc.data());
 

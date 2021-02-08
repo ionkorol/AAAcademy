@@ -36,6 +36,9 @@ const SignUp: React.FC<Props> = (props) => {
   const [postalCode, setPostalCode] = useState("");
   const [postalCodeError, setPostalCodeError] = useState(null);
 
+  const [tosAgree, setTOSAgree] = useState(false);
+  const [covidAgree, setCovidAgree] = useState(false);
+
   const auth = useAuth();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -257,6 +260,44 @@ const SignUp: React.FC<Props> = (props) => {
                 </Form.Group>
               </Col>
             </Row>
+            <Form.Group>
+              <Form.Label>
+                <a
+                  href="/policy/tos"
+                  target="_blank"
+                  rel="norefer"
+                  className="text-danger"
+                >
+                  Read Terms of Service
+                </a>
+              </Form.Label>
+              <Form.Check
+                type="checkbox"
+                label="I aggree to the Terms of Services"
+                checked={tosAgree}
+                onChange={(e) => setTOSAgree(!tosAgree)}
+                required
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>
+                <a
+                  href="/policy/covid-release"
+                  target="_blank"
+                  rel="norefer"
+                  className="text-danger"
+                >
+                  Read Covid Release Form
+                </a>
+              </Form.Label>
+              <Form.Check
+                type="checkbox"
+                label="I aggree to the Covid Release Form"
+                checked={covidAgree}
+                onChange={(e) => setCovidAgree(!covidAgree)}
+                required
+              />
+            </Form.Group>
             <button type="submit">Register</button>
           </Form>
         </div>

@@ -69,6 +69,12 @@ export interface ParentProp {
     name: string;
     phone: string;
   };
+  address: {
+    addressLine1: string;
+    addressLine2: string;
+    adminArea: string;
+    postalCode: string;
+  };
 }
 
 export interface StudentProp {
@@ -94,12 +100,6 @@ export interface OrderProp {
   children: UserProp[];
 }
 
-export interface CouponProp {
-  id: string;
-  firstName: string;
-  lastName: string;
-}
-
 export interface ApiResProp {
   status: boolean;
   data?: any;
@@ -123,4 +123,9 @@ interface DateProp {
   month: number;
   year: number;
   dayName: string;
+}
+
+interface CouponProp {
+  id: string;
+  value: number;
 }

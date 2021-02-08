@@ -1,24 +1,25 @@
 # TODO list
 
-- [ ] Menu For Small Screens
-- [ ] Fix Layout for Medium Screens
+- [x] Menu For Small Screens
+- [x] Fix Layout for Medium Screens
   - [x] Front End
   - [ ] Back End
 
 ## Sign Up Forms
 
-- [ ] Add Address and Emergency to parrent
-- [ ] Child Email
-- [ ] Add TOS and Covid Release
+- [x] Add Address and Emergency to parrent
+- [x] Child Email
+- [x] Add TOS and Covid Release
 - [ ] Figure On site payment
 
 ## Account
 
 - [ ] Send account Info
 - [ ] Cloud function for account info
+- [ ] Add state to address
 
 ### Invoices
 
 - [ ] Create Page
 - [ ] Add Additional Fees for clubs
-- [ ]
+- [ ] A
