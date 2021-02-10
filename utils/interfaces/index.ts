@@ -86,6 +86,7 @@ export interface StudentProp {
   id?: string;
   clubs: string[];
   dob: string;
+  parentId: string;
 }
 
 export interface UserWithCredProp {
