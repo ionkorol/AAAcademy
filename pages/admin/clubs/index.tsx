@@ -4,7 +4,7 @@ import { Alert, Button } from "react-bootstrap";
 import firebase from "utils/firebaseClient";
 import styles from "./Clubs.module.scss";
 import { ApiResProp, ClubProp } from "utils/interfaces";
-import { AdminLayout, ClubModal } from "components/admin";
+import { AdminLayout } from "components/admin";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBook,

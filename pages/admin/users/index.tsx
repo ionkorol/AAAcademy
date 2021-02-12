@@ -1,12 +1,11 @@
 import { GetServerSideProps } from "next";
 import React, { useEffect, useState } from "react";
 import { Alert, Button } from "react-bootstrap";
-import { useRouter } from "next/router";
 import firebaseClient from "utils/firebaseClient";
 import styles from "./Users.module.scss";
 import firebaseAdmin from "utils/firebaseAdmin";
 import { UserProp } from "utils/interfaces";
-import { AdminLayout, UserModal } from "components/admin";
+import { AdminLayout } from "components/admin";
 import nookies from "nookies";
 
 interface UsersProps {}
