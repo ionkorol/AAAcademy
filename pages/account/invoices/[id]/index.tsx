@@ -17,7 +17,11 @@ const Invoice: React.FC<Props> = (props) => {
   const [transTotal, setTransTotal] = useState(0);
 
   const accountCredit = userData.funds.amount < 0 ? userData.funds.amount : 0;
-  const invoiceTotal = data.total + accountCredit;
+  let invoiceTotal = data.total + accountCredit;
+
+  if (data.registrationFee) {
+    invoiceTotal += 30;
+  }
 
   useEffect(() => {
     setTransTotal(0);
@@ -91,9 +95,9 @@ const Invoice: React.FC<Props> = (props) => {
                         }),
                       });
                     }}
-                    options={
-                      {clientId: process.env.NEXT_PUBLIC_PAYPAL_API_KEY}
-                    }
+                    options={{
+                      clientId: process.env.NEXT_PUBLIC_PAYPAL_API_KEY,
+                    }}
                     style={{ layout: "horizontal", tagline: false }}
                   />
                 )
@@ -170,6 +174,7 @@ const Invoice: React.FC<Props> = (props) => {
                     </td>
                   </tr>
                 ))}
+
                 <tr>
                   <td></td>
                   <td className="text-right">Subtotal</td>
@@ -177,6 +182,13 @@ const Invoice: React.FC<Props> = (props) => {
                     ${(data.total + data.discount).toFixed(2)}
                   </td>
                 </tr>
+                {data.registrationFee ? (
+                  <tr>
+                    <td></td>
+                    <td className="text-right">Registration Fee</td>
+                    <td className="text-right pr-5">$30.00</td>
+                  </tr>
+                ) : null}
                 <tr>
                   <td></td>
                   <td className="text-right">Discount</td>
