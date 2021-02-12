@@ -148,6 +148,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           "Friday",
           "Saturday",
         ];
+
+        
         invoiceData = {
           id: currentId,
           parentId: userId,

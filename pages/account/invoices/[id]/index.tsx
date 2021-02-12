@@ -54,6 +54,21 @@ const Invoice: React.FC<Props> = (props) => {
     }
   };
 
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
   return (
     <AccountLayout>
       <Container className="text-dark">
@@ -68,8 +83,9 @@ const Invoice: React.FC<Props> = (props) => {
           </Col>
           <Col className="d-flex flex-column">
             <p>
-              Invoice Date: {data.invoiceDate.dayName}, {data.invoiceDate.month}
-              /{data.invoiceDate.day}/{data.invoiceDate.year}
+              Invoice Date: {data.invoiceDate.dayName},{" "}
+              {months[data.invoiceDate.month]} {data.invoiceDate.day}{" "}
+              {data.invoiceDate.year}
             </p>
             <p className="my-2">
               {invoiceTotal > 0 ? (
@@ -153,7 +169,9 @@ const Invoice: React.FC<Props> = (props) => {
                                 {item.club.title}
                               </b>
                             </td>
-                            <td className="text-right">{item.quantity} classes</td>
+                            <td className="text-right">
+                              {item.quantity} classes
+                            </td>
                             <td className="text-right pr-5">
                               ${item.club.price.toFixed(2)}
                             </td>

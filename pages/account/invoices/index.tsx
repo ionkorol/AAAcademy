@@ -19,6 +19,21 @@ const Invoices: React.FC<Props> = (props) => {
 
   console.log(data);
 
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
   return (
     <AccountLayout>
       <Container>
@@ -51,12 +66,13 @@ const Invoices: React.FC<Props> = (props) => {
                   <tr role="button">
                     <td>{item.id}</td>
                     <td>
-                      {item.invoiceDate.dayName}, {item.invoiceDate.month}/
-                      {item.invoiceDate.day}/{item.invoiceDate.year}
+                      {item.invoiceDate.dayName},{" "}
+                      {months[item.invoiceDate.month]} {item.invoiceDate.day}{" "}
+                      {item.invoiceDate.year}
                     </td>
                     <td>
-                      {item.dueDate.dayName}, {item.dueDate.month}/
-                      {item.dueDate.day}/{item.dueDate.year}
+                      {item.dueDate.dayName}, {months[item.dueDate.month]}{" "}
+                      {item.dueDate.day} {item.dueDate.year}
                     </td>
                     <td>${item.total.toFixed(2)}</td>
                     <td>
