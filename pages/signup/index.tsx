@@ -31,8 +31,10 @@ const SignUp: React.FC<Props> = (props) => {
   const [address1Error, setAddress1Error] = useState(null);
   const [address2, setAddress2] = useState("");
   const [address2Error, setAddress2Error] = useState(null);
-  const [adminArea, setAdminArea] = useState("");
-  const [adminAreaError, setAdminAreaError] = useState(null);
+  const [city, setCity] = useState("");
+  const [cityError, setCityError] = useState(null);
+  const [state, setState] = useState("");
+  const [stateError, setStateError] = useState(null);
   const [postalCode, setPostalCode] = useState("");
   const [postalCodeError, setPostalCodeError] = useState(null);
 
@@ -62,12 +64,17 @@ const SignUp: React.FC<Props> = (props) => {
         address: {
           addressLine1: address1,
           addressLine2: address2,
-          adminArea,
+          state,
+          city,
           postalCode,
         },
         children: [],
         password,
         hasDiscount: false,
+        paidRegistration: false,
+        funds: {
+          amount: 0,
+        },
       } as ParentProp),
     });
     const jsonData = (await res.json()) as ApiResProp;
@@ -87,7 +94,7 @@ const SignUp: React.FC<Props> = (props) => {
         </div>
         <div className={styles.formContainer}>
           <div className={styles.title}>
-            <h1>Parent Information</h1>
+            <h1>Registration</h1>
           </div>
           {error ? <Alert variant="danger">{error}</Alert> : null}
           <Form id="currentForm" onSubmit={handleSubmit}>
@@ -235,13 +242,28 @@ const SignUp: React.FC<Props> = (props) => {
                   <Form.Label>City</Form.Label>
                   <Form.Control
                     type="text"
-                    value={adminArea}
-                    onChange={(e) => setAdminArea(e.target.value)}
-                    isInvalid={!!adminAreaError}
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    isInvalid={!!cityError}
                     required
                   />
                   <Form.Control.Feedback type="invalid">
-                    {adminAreaError}
+                    {cityError}
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Col>
+              <Col>
+                <Form.Group>
+                  <Form.Label>State</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={state}
+                    onChange={(e) => setState(e.target.value)}
+                    isInvalid={!!stateError}
+                    required
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {stateError}
                   </Form.Control.Feedback>
                 </Form.Group>
               </Col>

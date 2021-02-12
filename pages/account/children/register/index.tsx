@@ -35,7 +35,6 @@ const RegisterChild: React.FC<Props> = (props) => {
   const [dob, setDob] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [clubs, setClubs] = useState([]);
 
   const [clubList, setClubList] = useState<ClubProp[]>([]);
 
@@ -63,7 +62,7 @@ const RegisterChild: React.FC<Props> = (props) => {
           dob,
           email,
           phone,
-          clubs,
+          clubs: [],
           parentId: data.id,
         } as StudentProp),
       })
@@ -177,27 +176,6 @@ const RegisterChild: React.FC<Props> = (props) => {
           <Form.Control.Feedback type="invalid">
             {emailError}
           </Form.Control.Feedback>
-        </Form.Group>
-        <Form.Group>
-          <Form.Label>Clubs</Form.Label>
-          <Select
-            value={
-              clubList.length &&
-              clubs.map((selectedClub) => ({
-                value: selectedClub,
-                label: clubList.filter((item) => item.id === selectedClub)[0]
-                  .title,
-              }))
-            }
-            options={clubList.map((club) => ({
-              value: club.id,
-              label: club.title,
-            }))}
-            isMulti
-            onChange={(e) => {
-              setClubs(e ? e.map((item) => item.value) : []);
-            }}
-          />
         </Form.Group>
         <button type="submit">Register</button>
       </Form>

@@ -61,7 +61,7 @@ const Navigation: React.FC<Props> = (props) => {
         ) : (
           <div className={styles.menuItem}>
             <Link href="/signup">
-              <button>Sign Up</button>
+              <button>Register</button>
             </Link>
           </div>
         )}
