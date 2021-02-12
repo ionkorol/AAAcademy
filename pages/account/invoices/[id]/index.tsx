@@ -113,6 +113,7 @@ const Invoice: React.FC<Props> = (props) => {
                     }}
                     options={{
                       clientId: process.env.NEXT_PUBLIC_PAYPAL_API_KEY,
+                      disableFunding: "credit",
                     }}
                     style={{ layout: "horizontal", tagline: false }}
                   />
