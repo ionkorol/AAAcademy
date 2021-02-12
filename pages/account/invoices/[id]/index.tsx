@@ -136,7 +136,7 @@ const Invoice: React.FC<Props> = (props) => {
               <thead>
                 <tr>
                   <th>Description</th>
-                  <th></th>
+                  <th>Units</th>
                   <th className="text-right pr-5">Amount</th>
                 </tr>
               </thead>
@@ -153,7 +153,7 @@ const Invoice: React.FC<Props> = (props) => {
                                 {item.club.title}
                               </b>
                             </td>
-                            <td></td>
+                            <td>{item.quantity}</td>
                             <td className="text-right pr-5">
                               ${item.club.price.toFixed(2)}
                             </td>
