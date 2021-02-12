@@ -17,7 +17,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     let total = 0;
     lineItems.forEach((item) => {
       total += item.price;
-      total -= item.discount;
       item.fees.forEach((fee) => {
         total += fee.price;
       });

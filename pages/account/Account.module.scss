@@ -1,4 +1,13 @@
-.container {
-  display: flex;
-  flex-direction: row;
+@import "/styles/variables.scss";
+
+.card {
+  color: black;
+
+  .body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    div {
+      margin-bottom: 10px;
+    }
+  }
 }

@@ -1,26 +1,17 @@
 import { AccountLayout } from "components/account";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import { Alert, Col, Form, InputGroup, Row } from "react-bootstrap";
-import Select from "react-select";
-
-import styles from "RegisterChild.module.scss";
-import {
-  ApiResProp,
-  StudentProp,
-  ParentProp,
-  ClubProp,
-} from "utils/interfaces";
-
-import nookies from "nookies";
+import React, { useState } from "react";
+import { Alert, Button, Col, Form, InputGroup, Row } from "react-bootstrap";
 import firebaseAdmin from "utils/firebaseAdmin";
+import { ApiResProp, StudentProp } from "utils/interfaces";
+import nookies from "nookies";
 
 interface Props {
-  data: ParentProp;
+  data: StudentProp;
 }
 
-const RegisterChild: React.FC<Props> = (props) => {
+const EditChild: React.FC<Props> = (props) => {
   const { data } = props;
   const [error, setError] = useState(null);
 
@@ -30,29 +21,19 @@ const RegisterChild: React.FC<Props> = (props) => {
   const [emailError, setEmailError] = useState(null);
   const [phoneError, setPhoneError] = useState(null);
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [dob, setDob] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [clubs, setClubs] = useState([]);
-
-  const [clubList, setClubList] = useState<ClubProp[]>([]);
+  const [firstName, setFirstName] = useState(data.firstName);
+  const [lastName, setLastName] = useState(data.lastName);
+  const [dob, setDob] = useState(data.dob);
+  const [email, setEmail] = useState(data.email);
+  const [phone, setPhone] = useState(data.phone);
 
   const router = useRouter();
 
-  useEffect(() => {
-    fetch("/api/clubs")
-      .then((res) => res.json())
-      .then((data: ApiResProp) => setClubList(data.data))
-      .catch((error) => setError(error));
-  }, []);
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const studentJson = (await (
-      await fetch("/api/users/students", {
-        method: "POST",
+    const jsonData = (await (
+      await fetch(`/api/users/students/${router.query.id}`, {
+        method: "PATCH",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -63,41 +44,19 @@ const RegisterChild: React.FC<Props> = (props) => {
           dob,
           email,
           phone,
-          clubs,
-          parentId: data.id,
         } as StudentProp),
       })
     ).json()) as ApiResProp;
 
-    let childId = null;
-    if (studentJson.status) {
-      childId = studentJson.data.id;
+    if (jsonData.status) {
+      router.back();
     } else {
-      setError(studentJson.error);
-      return;
-    }
-
-    const parentJson = (await (
-      await fetch(`/api/users/parents/${data.id}`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          childId,
-          action: "add",
-        }),
-      })
-    ).json()) as ApiResProp;
-
-    if (parentJson.status) {
-      router.push("/account/children");
-    } else {
-      setError(parentJson.error);
+      setError(jsonData.error);
       return;
     }
   };
+
+  console.log(data);
 
   return (
     <AccountLayout>
@@ -178,42 +137,23 @@ const RegisterChild: React.FC<Props> = (props) => {
             {emailError}
           </Form.Control.Feedback>
         </Form.Group>
-        <Form.Group>
-          <Form.Label>Clubs</Form.Label>
-          <Select
-            value={
-              clubList.length &&
-              clubs.map((selectedClub) => ({
-                value: selectedClub,
-                label: clubList.filter((item) => item.id === selectedClub)[0]
-                  .title,
-              }))
-            }
-            options={clubList.map((club) => ({
-              value: club.id,
-              label: club.title,
-            }))}
-            isMulti
-            onChange={(e) => {
-              setClubs(e ? e.map((item) => item.value) : []);
-            }}
-          />
-        </Form.Group>
-        <button type="submit">Register</button>
+        <Button type="submit" variant="warning">
+          Save
+        </Button>
       </Form>
     </AccountLayout>
   );
 };
 
-export default RegisterChild;
+export default EditChild;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { token } = nookies.get(ctx);
-
+  const { id } = ctx.query;
   try {
     const { uid } = await firebaseAdmin.auth().verifyIdToken(token);
     const jsonData = (await (
-      await fetch(`${process.env.SERVER}/api/users/parents/${uid}`)
+      await fetch(`${process.env.SERVER}/api/users/students/${id}`)
     ).json()) as ApiResProp;
     if (jsonData.status) {
       return {

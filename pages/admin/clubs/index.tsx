@@ -81,6 +81,17 @@ const ClubsContent: React.FC<ClubsProps> = (props) => {
     }
   };
 
+  const handleFix = async (club: ClubProp) => {
+    try {
+      await firebaseClient.firestore().collection("clubs").doc(club.id).update({
+        fees: [],
+      });
+      alert("Success");
+    } catch (error) {
+      alert(error);
+    }
+  };
+
   const categoryIcon = {
     Active: faVolleyballBall,
     Creative: faPalette,
@@ -117,7 +128,7 @@ const ClubsContent: React.FC<ClubsProps> = (props) => {
               <div className={styles.tableItem} key={club.id}>
                 <div>
                   {club.title}
-                  <small style={{ color: "red" }}>{club.price}</small>
+                  <small style={{ color: "red" }}>{JSON.stringify(club.fees)}</small>
                 </div>
                 <div>
                   {club.categories.map((category) => (
@@ -163,6 +174,12 @@ const ClubsContent: React.FC<ClubsProps> = (props) => {
                     onClick={() => deleteClub(club)}
                   >
                     X
+                  </Button>
+                  <Button
+                    variant="outline-secondary"
+                    onClick={() => handleFix(club)}
+                  >
+                    U
                   </Button>
                 </div>
               </div>

@@ -9,6 +9,8 @@ import styles from "./Child.module.scss";
 import { useRouter } from "next/router";
 import { Button, Form, ListGroup, ListGroupItem, Table } from "react-bootstrap";
 import firebaseClient from "utils/firebaseClient";
+import { getAge } from "utils/functions";
+import Link from "next/link";
 
 interface Props {
   data: StudentProp;
@@ -19,7 +21,9 @@ const Child: React.FC<Props> = (props) => {
   const { data, parentId } = props;
 
   const [error, setError] = useState(null);
-  const [clubs, setClubs] = useState<ClubProp[]>([]);
+  const [clubs, setClubs] = useState<{ data: ClubProp; quantity: number }[]>(
+    []
+  );
   const [allClubs, setAllClubs] = useState<ClubProp[]>([]);
 
   const [addClub, setAddClub] = useState("");
@@ -33,18 +37,23 @@ const Child: React.FC<Props> = (props) => {
       .then((data) => setAllClubs(data.data));
   }, []);
 
+  // Realt Time Updates on Clubs
   useEffect(() => {
     const unsub = firebaseClient
       .firestore()
       .collection("users")
-      .doc(data.id)
+      .doc(data.id).collection('clubs')
       .onSnapshot((data) => {
         setClubs([]);
-        const userData = data.data() as StudentProp;
-        userData.clubs.forEach((club) =>
-          fetch(`/api/clubs/${club}`)
+        data.docs.forEach((club) =>
+          fetch(`/api/clubs/${club.id}`)
             .then((res) => res.json())
-            .then((data) => setClubs((prevState) => [...prevState, data.data]))
+            .then((data) =>
+              setClubs((prevState) => [
+                ...prevState,
+                { data: data.data, quantity: club.data().quantity },
+              ])
+            )
         );
       });
 
@@ -99,7 +108,24 @@ const Child: React.FC<Props> = (props) => {
     }
   };
 
-  console.log(addClub);
+  const handleRemoveClub = async (club: { id: string; quantity: number }) => {
+    const jsonData = (await (
+      await fetch(`/api/users/students/${data.id}/clubs/${club.id}`, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(club),
+      })
+    ).json()) as ApiResProp;
+
+    if (jsonData.status) {
+      alert("Club Removed");
+    } else {
+      alert(jsonData.error);
+    }
+  };
 
   return (
     <AccountLayout>
@@ -115,7 +141,9 @@ const Child: React.FC<Props> = (props) => {
           <div className={styles.infoBody}>
             <div>
               <span className={styles.key}>Date of Birth:</span>
-              <span>{data.dob}</span>
+              <span>
+                {data.dob} - {getAge(data.dob)} Years old
+              </span>
             </div>
             <div>
               <span className={styles.key}>Email:</span>
@@ -126,7 +154,9 @@ const Child: React.FC<Props> = (props) => {
               <span>{data.phone}</span>
             </div>
           </div>
-          <button>Edit</button>
+          <Link href={`/account/children/${data.id}/edit`}>
+            <button>Edit</button>
+          </Link>
         </div>
         <div className={styles.clubs}>
           <h3>Clubs</h3>
@@ -135,12 +165,23 @@ const Child: React.FC<Props> = (props) => {
             {clubs.map((club) => (
               <ListGroupItem
                 className="bg-transparent text-dark d-flex justify-content-between align-items-center font-weight-bold"
-                key={club.id}
+                key={club.data.id}
               >
                 <span>
-                  {club.title} ({club.time.from}:00 - {club.time.to}:00)
+                  {club.data.title} ({club.data.time.from}:00 -{" "}
+                  {club.data.time.to}:00) ({club.quantity} classes left)
                 </span>
-                <Button variant="outline-danger">x</Button>
+                <Button
+                  variant="outline-danger"
+                  onClick={() =>
+                    handleRemoveClub({
+                      id: club.data.id,
+                      quantity: club.quantity,
+                    })
+                  }
+                >
+                  x
+                </Button>
               </ListGroupItem>
             ))}
           </ListGroup>
@@ -152,7 +193,8 @@ const Child: React.FC<Props> = (props) => {
               >
                 {allClubs.map((club: ClubProp) => (
                   <option value={club.id} key={club.id}>
-                    {club.title} ({club.time.from}:00 - {club.time.to}:00)
+                    {club.title} ({club.time.from}:00 - {club.time.to}:00) (
+                    {club.age.from} - {club.age.to} Years)
                   </option>
                 ))}
               </Form.Control>
@@ -163,7 +205,7 @@ const Child: React.FC<Props> = (props) => {
           </Form>
         </div>
 
-        <Schedule data={clubs} />
+        <Schedule data={clubs.map((club) => club.data)} />
         <Button variant="outline-danger" onClick={deleteChild}>
           Remove Child
         </Button>

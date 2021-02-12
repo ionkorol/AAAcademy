@@ -67,6 +67,7 @@ const SignUp: React.FC<Props> = (props) => {
         },
         children: [],
         password,
+        hasDiscount: false,
       } as ParentProp),
     });
     const jsonData = (await res.json()) as ApiResProp;

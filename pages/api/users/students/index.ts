@@ -12,6 +12,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       email,
       phone,
       clubs,
+      parentId,
     } = req.body as StudentProp;
     let user: firebaseAdmin.auth.UserRecord;
     try {
@@ -44,6 +45,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             type: "Student",
             id: user.uid,
             clubs,
+            parentId,
           } as StudentProp,
           { merge: true }
         );

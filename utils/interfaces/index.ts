@@ -19,20 +19,33 @@ export interface ClubProp {
   fees: FeeProp[];
 }
 
+// Invoice Props
+
 export interface InvoiceProp {
   id: number;
   parentId: string;
   invoiceDate: DateProp;
   dueDate: DateProp;
   total: number;
-  lineItems: {
-    name: string;
-    price: number;
-    discount: number;
-    fees: FeeProp[];
+  lineItems: LineItemProp[];
+  paid: boolean;
+  discount: number;
+  registrationFee: boolean;
+  transactions: {
+    date: DateProp;
+    gateway: "Paypal" | "Card";
+    id: string;
+    total: number;
   }[];
-  status: "Unpaid" | "Paid" | "Past Due";
 }
+
+export interface LineItemProp {
+  child: StudentProp;
+  club: ClubProp;
+  quantity: number;
+}
+
+// Users Props
 
 export interface UserProp {
   firstName: string;
@@ -55,6 +68,7 @@ export interface UserProp {
     postalCode: string;
   };
   password?: string;
+  hasDiscount: boolean;
 }
 
 export interface ParentProp {
@@ -65,6 +79,9 @@ export interface ParentProp {
   phone: string;
   id?: string;
   children: string[];
+  funds: {
+    amount: number;
+  };
   emergencyContact: {
     name: string;
     phone: string;
@@ -72,9 +89,12 @@ export interface ParentProp {
   address: {
     addressLine1: string;
     addressLine2: string;
-    adminArea: string;
+    city: string;
+    state: string;
     postalCode: string;
   };
+  hasDiscount: boolean;
+  paidRegistration: boolean;
 }
 
 export interface StudentProp {
@@ -84,7 +104,10 @@ export interface StudentProp {
   email: string;
   phone: string;
   id?: string;
-  clubs: string[];
+  clubs: {
+    quantity: number;
+    id: string;
+  }[];
   dob: string;
   parentId: string;
 }
@@ -124,9 +147,4 @@ interface DateProp {
   month: number;
   year: number;
   dayName: string;
-}
-
-interface CouponProp {
-  id: string;
-  value: number;
 }

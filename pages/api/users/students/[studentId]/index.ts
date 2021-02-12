@@ -32,8 +32,17 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           .doc(studentId as string)
           .get()
       ).data() as StudentProp;
+
+      const clubsData = (
+        await firebaseAdmin
+          .firestore()
+          .collection("users")
+          .doc(studentId as string)
+          .collection("clubs")
+          .get()
+      ).docs.map((club) => club.data());
       res.statusCode = 200;
-      res.json({ status: true, data });
+      res.json({ status: true, data: { ...data, clubs: clubsData } });
     } catch (error) {
       res.statusCode = 200;
       res.json({ status: false, error: error.message });

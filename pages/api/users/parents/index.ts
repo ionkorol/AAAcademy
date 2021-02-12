@@ -77,20 +77,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     // Delete User
-  } else if (req.method === "PATCH") {
-    const userData = req.body as UserProp;
-
-    try {
-      const writeResult = await firebaseAdmin
-        .firestore()
-        .collection("users")
-        .doc(userData.id)
-        .set(userData, { merge: true });
-      res.statusCode = 200;
-      res.json({ status: true, data: writeResult });
-    } catch (error) {
-      res.statusCode = 200;
-      res.json({ status: false, error: error.message });
-    }
+  } else {
+    res.statusCode = 200;
+    res.json({ status: false, error: "Method Not Allowed" });
   }
 };

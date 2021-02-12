@@ -2,7 +2,7 @@
 
 import { NextApiResponse, NextApiRequest } from "next";
 import firebaseAdmin from "utils/firebaseAdmin";
-import { UserProp } from "utils/interfaces";
+import { ParentProp, UserProp } from "utils/interfaces";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { userId } = req.query;
@@ -38,6 +38,21 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           error: error.message,
         });
       }
+    }
+  } else if (req.method === "PATCH") {
+    const userData = req.body as ParentProp;
+
+    try {
+      await firebaseAdmin
+        .firestore()
+        .collection("users")
+        .doc(userId as string)
+        .set({ ...userData }, { merge: true });
+      res.statusCode = 200;
+      res.json({ status: true });
+    } catch (error) {
+      res.statusCode = 200;
+      res.json({ status: false, error: error.message });
     }
   } else if (req.method === "GET") {
     try {
