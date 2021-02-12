@@ -2,22 +2,17 @@
 
 import { NextApiResponse, NextApiRequest } from "next";
 import firebaseAdmin from "utils/firebaseAdmin";
-import { FeeProp, InvoiceProp, UserProp } from "utils/interfaces";
+import { FeeProp, InvoiceProp, LineItemProp, UserProp } from "utils/interfaces";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { userId } = req.query;
   if (req.method === "POST") {
-    const lineItems = req.body as {
-      name: string;
-      price: number;
-      discount: number;
-      fees: FeeProp[];
-    }[];
+    const lineItems = req.body as LineItemProp[];
 
     let total = 0;
     lineItems.forEach((item) => {
-      total += item.price;
-      item.fees.forEach((fee) => {
+      total += item.club.price;
+      item.club.fees.forEach((fee) => {
         total += fee.price;
       });
     });
@@ -64,6 +59,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           },
           total,
           lineItems,
+          paid: false,
+          registrationFee: false,
+          discount: 0,
+          transactions: [],
         } as InvoiceProp);
 
       res.statusCode = 200;
