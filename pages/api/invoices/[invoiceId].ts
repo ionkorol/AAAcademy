@@ -75,7 +75,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           .collection("clubs")
           .doc(item.club.id)
           .update({
-            quantity: firebaseAdmin.firestore.FieldValue.increment(4),
+            quantity: firebaseAdmin.firestore.FieldValue.increment(3),
           });
       }
 

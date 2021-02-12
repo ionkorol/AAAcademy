@@ -113,13 +113,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         invoiceData.lineItems.push({
           child: studentData,
           club: requestedClubData,
-          quantity: 4,
+          quantity: 3,
         } as LineItemProp);
         if (parentData.hasDiscount) {
-          invoiceData.total += (requestedClubData.price * 4) / 2;
-          invoiceData.discount += (requestedClubData.price * 4) / 2;
+          invoiceData.total += (requestedClubData.price * 3) / 2;
+          invoiceData.discount += (requestedClubData.price * 3) / 2;
         } else {
-          invoiceData.total += requestedClubData.price * 4;
+          invoiceData.total += requestedClubData.price * 3;
         }
       } else {
         const invoiceDate = new Date();
@@ -164,17 +164,17 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             dayName: days[dueDate.getDay()],
           },
           total: parentData.hasDiscount
-            ? (requestedClubData.price * 4) / 2
-            : requestedClubData.price * 4,
+            ? (requestedClubData.price * 3) / 2
+            : requestedClubData.price * 3,
           lineItems: [
             {
               club: requestedClubData,
               child: studentData,
-              quantity: 4,
+              quantity: 3,
             },
           ],
           discount: parentData.hasDiscount
-            ? (requestedClubData.price * 4) / 2
+            ? (requestedClubData.price * 3) / 2
             : 0,
           paid: false,
           registrationFee: !parentData.paidRegistration,
@@ -255,10 +255,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           (item) => item.club.id !== club.id
         );
         (invoiceData.total -= parentData.hasDiscount
-          ? (clubData.price * 4) / 2
-          : clubData.price * 4),
+          ? (clubData.price * 3) / 2
+          : clubData.price * 3),
           (invoiceData.discount -= parentData.hasDiscount
-            ? (clubData.price * 4) / 2
+            ? (clubData.price * 3) / 2
             : 0),
           await firebaseAdmin
             .firestore()
