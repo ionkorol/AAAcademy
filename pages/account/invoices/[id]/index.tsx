@@ -91,6 +91,9 @@ const Invoice: React.FC<Props> = (props) => {
                         }),
                       });
                     }}
+                    options={
+                      {clientId: process.env.NEXT_PUBLIC_PAYPAL_API_KEY}
+                    }
                     style={{ layout: "horizontal", tagline: false }}
                   />
                 )
