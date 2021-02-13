@@ -3,8 +3,8 @@ export interface ClubProp {
   categories: Array<"Active" | "Creative" | "Educational" | "Musical">;
   date: string;
   age: {
-    from: number;
-    to: number;
+    from: string;
+    to: string;
   };
   time: {
     from: string;

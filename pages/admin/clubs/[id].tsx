@@ -295,7 +295,7 @@ const Club: React.FC<Props> = (props) => {
               <Form.Group>
                 <Form.Label>Age From</Form.Label>
                 <Form.Control
-                  type="number"
+                  type="text"
                   placeholder="Enter From Age"
                   value={ageFrom}
                   onChange={(e) => setAgeFrom(Number(e.target.value))}
@@ -310,7 +310,7 @@ const Club: React.FC<Props> = (props) => {
               <Form.Group>
                 <Form.Label>Age To</Form.Label>
                 <Form.Control
-                  type="number"
+                  type="text"
                   placeholder="Enter To Age"
                   value={ageTo}
                   onChange={(e) => setAgeTo(Number(e.target.value))}

@@ -34,9 +34,9 @@ const ClubCard: React.FC<Props> = (props) => {
       <div className={styles.body}>
         <div className={styles.location}>
           <FontAwesomeIcon icon={faChild} fixedWidth />
-          {data.age.from} years
+          {data.age.from}
           {" to "}
-          {data.age.to} years
+          {data.age.to}
         </div>
         <div className={styles.time}>
           <FontAwesomeIcon icon={faClock} fixedWidth />

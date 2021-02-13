@@ -38,16 +38,21 @@ const User: React.FC<Props> = (props) => {
     phone: null,
   });
 
+
   const router = useRouter();
 
   useEffect(() => {
     setClubs([]);
-    clubs.forEach((club) => {
-      fetch(`/api/clubs/${club}`)
+    data.clubs.forEach((club) => {
+      fetch(`/api/clubs/${club.id}`)
         .then((res) => res.json())
         .then((data) => setClubsData((prevState) => [...prevState, data.data]));
     });
   }, [data.clubs]);
+
+
+  console.log(data)
+  console.log(clubsData)
 
   const formValidation = async () => {
     // First Name Validation
