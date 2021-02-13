@@ -1,50 +1,34 @@
 import { faSleigh } from "@fortawesome/free-solid-svg-icons";
 import { NextApiRequest, NextApiResponse } from "next";
 import firebaseAdmin from "utils/firebaseAdmin";
-import { UserProp } from "utils/interfaces";
+import { ParentProp, UserProp } from "utils/interfaces";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // Add User
   if (req.method === "POST") {
-    const {
-      firstName,
-      lastName,
-      email,
-      phone,
-      type,
-      emergencyContact,
-      address,
-      children,
-      password,
-    } = req.body as UserProp;
+    const data = req.body;
     let user: firebaseAdmin.auth.UserRecord;
     try {
       try {
         user = await firebaseAdmin.auth().createUser({
-          email: email,
+          email: data.email,
           emailVerified: false,
-          password: password,
-          displayName: `${firstName} ${lastName}`,
+          password: data.password,
+          displayName: `${data.firstName} ${data.lastName}`,
         });
       } catch (error) {
         res.statusCode = 200;
         res.json({ status: false, error: error.message });
       }
-      const writeResult = await firebaseAdmin
+      delete data.password;
+      await firebaseAdmin
         .firestore()
         .collection("users")
         .doc(user.uid)
         .set(
           {
-            firstName,
-            lastName,
-            email,
-            phone,
-            type,
-            emergencyContact,
-            address,
+            ...data,
             id: user.uid,
-            children,
           },
           { merge: true }
         );

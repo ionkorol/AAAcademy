@@ -33,8 +33,8 @@ const RegisterChild: React.FC<Props> = (props) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [dob, setDob] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState(data.email);
+  const [phone, setPhone] = useState(data.phone);
 
   const [clubList, setClubList] = useState<ClubProp[]>([]);
 
@@ -165,7 +165,7 @@ const RegisterChild: React.FC<Props> = (props) => {
             {phoneError}
           </Form.Control.Feedback>
         </Form.Group>
-        <Form.Group>
+        {/* <Form.Group>
           <Form.Label>Email (Optional)</Form.Label>
           <Form.Control
             type="email"
@@ -176,7 +176,7 @@ const RegisterChild: React.FC<Props> = (props) => {
           <Form.Control.Feedback type="invalid">
             {emailError}
           </Form.Control.Feedback>
-        </Form.Group>
+        </Form.Group> */}
         <button type="submit">Register</button>
       </Form>
     </AccountLayout>

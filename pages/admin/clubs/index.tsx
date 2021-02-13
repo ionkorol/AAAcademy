@@ -128,7 +128,6 @@ const ClubsContent: React.FC<ClubsProps> = (props) => {
               <div className={styles.tableItem} key={club.id}>
                 <div>
                   {club.title}
-                  <small style={{ color: "red" }}>{JSON.stringify(club.fees)}</small>
                 </div>
                 <div>
                   {club.categories.map((category) => (

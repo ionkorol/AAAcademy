@@ -43,8 +43,11 @@ const Club: React.FC<Props> = (props) => {
   const [image, setImage] = useState(data.image);
   const [teacher, setTeacher] = useState(data.teacher);
   const [description, setDescription] = useState(data.description);
-  const [requirements, setRequirements] = useState([]);
+  const [requirements, setRequirements] = useState(data.requirements);
   const [requirement, setRequirement] = useState("");
+  const [fees, setFees] = useState(data.fees);
+  const [feeName, setFeeName] = useState("");
+  const [feePrice, setFeePrice] = useState(0);
 
   const [errors, setErrors] = useState({
     title: null,
@@ -60,6 +63,8 @@ const Club: React.FC<Props> = (props) => {
     description: null,
     requirements: null,
   });
+
+  console.log(requirements);
 
   const router = useRouter();
 
@@ -194,6 +199,7 @@ const Club: React.FC<Props> = (props) => {
               from: ageFrom,
               to: ageTo,
             },
+            fees,
             id: router.query.id,
             price,
             requirements,
@@ -214,8 +220,18 @@ const Club: React.FC<Props> = (props) => {
     setRequirement("");
   };
 
+  const handleAddFee = () => {
+    setFees((prevState) => [...prevState, { name: feeName, price: feePrice }]);
+    setFeeName("");
+    setFeePrice(0);
+  };
+
   const handleDeleteRequirement = (req: string) => {
     setRequirements((prevState) => prevState.filter((item) => item !== req));
+  };
+
+  const handleDeleteFee = (fee: { name: string; price: number }) => {
+    setFees((prevState) => prevState.filter((item) => item !== fee));
   };
 
   return (
@@ -417,9 +433,48 @@ const Club: React.FC<Props> = (props) => {
                   ))
                 : null}
             </ListGroup>
-            <Form.Control.Feedback type="invalid">
-              {errors.teacher}
-            </Form.Control.Feedback>
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>Fees</Form.Label>
+            <InputGroup className="mb-3">
+              <Form.Control
+                type="text"
+                placeholder="Fee Name"
+                value={feeName}
+                onChange={(e) => setFeeName(e.target.value)}
+              />
+              <Form.Control
+                type="number"
+                placeholder="Fee Amount"
+                value={feePrice}
+                onChange={(e) => setFeePrice(Number(e.target.value))}
+              />
+              <InputGroup.Append>
+                <Button variant="outline-success" onClick={handleAddFee}>
+                  Add
+                </Button>
+              </InputGroup.Append>
+            </InputGroup>
+            <ListGroup>
+              {fees &&
+                fees.map((fee, index) => (
+                  <ListGroupItem
+                    className="d-flex justify-content-between"
+                    key={index}
+                  >
+                    <div>
+                      {fee.name} - ${fee.price}.00
+                    </div>
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      onClick={() => handleDeleteFee(fee)}
+                    >
+                      x
+                    </Button>
+                  </ListGroupItem>
+                ))}
+            </ListGroup>
           </Form.Group>
           <Form.Group>
             <Form.Label>Description</Form.Label>
