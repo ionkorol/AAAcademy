@@ -144,7 +144,8 @@ export interface FeeProp {
 
 interface DateProp {
   day: number;
-  month: number;
-  year: number;
   dayName: string;
+  month: number;
+  monthName: string;
+  year: number;
 }

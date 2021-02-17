@@ -2,8 +2,9 @@
 
 import { NextApiResponse, NextApiRequest } from "next";
 import firebaseAdmin from "utils/firebaseAdmin";
-import { getAge } from "utils/functions";
+import { getRemainingWeeks } from "utils/functions";
 import {
+  ApiResProp,
   ClubProp,
   InvoiceProp,
   LineItemProp,
@@ -18,22 +19,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
     try {
       // Get student data
-      const studentData = (
-        await firebaseAdmin
-          .firestore()
-          .collection("users")
-          .doc(studentId as string)
-          .get()
-      ).data() as StudentProp;
-
-      const studentClubsData = (
-        await firebaseAdmin
-          .firestore()
-          .collection("users")
-          .doc(studentId as string)
-          .collection("clubs")
-          .get()
-      ).docs.map((doc) => doc.data());
+      const studentData = ((await (
+        await fetch(`${process.env.SERVER}/api/users/students/${studentId}`)
+      ).json()) as ApiResProp).data as StudentProp;
 
       // Get requested club data
       const requestedClubData = (
@@ -69,7 +57,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
       // Check if time slot is taken
       let slotTaken = false;
-      for (const club of studentClubsData) {
+      for (const club of studentData.clubs) {
         const clubData = (
           await firebaseAdmin.firestore().collection("clubs").doc(club.id).get()
         ).data() as ClubProp;
@@ -98,6 +86,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         });
 
       // Add Club to invoice
+
+      const classAmount = getRemainingWeeks();
+
       // Check for Existing Invoice
       let invoiceData: InvoiceProp | null = null;
       const unpaidInvoices = (
@@ -113,13 +104,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         invoiceData.lineItems.push({
           child: studentData,
           club: requestedClubData,
-          quantity: 3,
+          quantity: classAmount,
         } as LineItemProp);
         if (parentData.hasDiscount) {
-          invoiceData.total += (requestedClubData.price * 3) / 2;
-          invoiceData.discount += (requestedClubData.price * 3) / 2;
+          invoiceData.total += (requestedClubData.price * classAmount) / 2;
+          invoiceData.discount += (requestedClubData.price * classAmount) / 2;
         } else {
-          invoiceData.total += requestedClubData.price * 3;
+          invoiceData.total += requestedClubData.price * classAmount;
         }
       } else {
         const invoiceDate = new Date();
@@ -149,7 +140,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           "Saturday",
         ];
 
-        
         invoiceData = {
           id: currentId,
           parentId: userId,
@@ -166,17 +156,17 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             dayName: days[dueDate.getDay()],
           },
           total: parentData.hasDiscount
-            ? (requestedClubData.price * 3) / 2
-            : requestedClubData.price * 3,
+            ? (requestedClubData.price * classAmount) / 2
+            : requestedClubData.price * classAmount,
           lineItems: [
             {
               club: requestedClubData,
               child: studentData,
-              quantity: 3,
+              quantity: classAmount,
             },
           ],
           discount: parentData.hasDiscount
-            ? (requestedClubData.price * 3) / 2
+            ? (requestedClubData.price * classAmount) / 2
             : 0,
           paid: false,
           registrationFee: !parentData.paidRegistration,

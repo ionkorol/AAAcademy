@@ -1,10 +1,12 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import firebaseAdmin from "utils/firebaseAdmin";
+import { getRemainingWeeks } from "utils/functions";
 import { InvoiceProp, ParentProp } from "utils/interfaces";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { invoiceId } = req.query;
 
+  // Invoice pay
   if (req.method === "PATCH") {
     const { gateway, id, date, total } = req.body;
 
@@ -47,7 +49,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             date: {
               day: fDate.getDate(),
               dayName: days[fDate.getDay()],
-              month: fDate.getMonth(),
+              month: fDate.getMonth() + 1,
+              monthName: fDate.getMonth(),
               year: fDate.getFullYear(),
             },
             gateway,
@@ -66,7 +69,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         });
 
       // Add classes to kids
-
       for (const item of invoiceData.lineItems) {
         await firebaseAdmin
           .firestore()
@@ -75,7 +77,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           .collection("clubs")
           .doc(item.club.id)
           .update({
-            quantity: firebaseAdmin.firestore.FieldValue.increment(3),
+            quantity: firebaseAdmin.firestore.FieldValue.increment(
+              getRemainingWeeks()
+            ),
           });
       }
 
