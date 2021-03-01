@@ -45,6 +45,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             type: "Student",
             id: user.uid,
             parentId,
+            clubs: [],
           } as StudentProp,
           { merge: true }
         );
