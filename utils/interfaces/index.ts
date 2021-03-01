@@ -101,6 +101,7 @@ export interface StudentProp {
   firstName: string;
   lastName: string;
   phone: string;
+  email: string;
   id?: string;
   clubs: {
     quantity: number;
