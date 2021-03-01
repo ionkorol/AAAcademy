@@ -100,8 +100,6 @@ export interface ParentProp {
 export interface StudentProp {
   firstName: string;
   lastName: string;
-  type: "Student";
-  email: string;
   phone: string;
   id?: string;
   clubs: {

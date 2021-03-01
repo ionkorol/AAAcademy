@@ -4,11 +4,12 @@ import firebaseAdmin from "utils/firebaseAdmin";
 import { ParentProp, UserProp } from "utils/interfaces";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  // Add User
+  // Register User
   if (req.method === "POST") {
     const data = req.body;
     let user: firebaseAdmin.auth.UserRecord;
     try {
+      // Register parent auth
       try {
         user = await firebaseAdmin.auth().createUser({
           email: data.email,
@@ -21,6 +22,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         res.json({ status: false, error: error.message });
       }
       delete data.password;
+
+      // Save data to firestore
       await firebaseAdmin
         .firestore()
         .collection("users")
@@ -32,6 +35,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           },
           { merge: true }
         );
+
       res.statusCode = 200;
       res.json({
         status: true,
@@ -45,7 +49,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       res.json({ status: false, error: error.message });
     }
 
-    // Get Users
+  // Get Users
   } else if (req.method === "GET") {
     try {
       const usersQuery = await firebaseAdmin

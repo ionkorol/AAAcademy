@@ -16,8 +16,16 @@
 - [x] Send account Info
 - [x] Cloud function for account info
 - [ ] Add state to address
+- [ ] Inactive classes
 
 ### Invoices
 
 - [x] Create Page
 - [x] Add Additional Fees for clubs
+
+## Admin
+
+### Users
+
+- [ ] Add date of registration
+- [ ] Fix Api calls

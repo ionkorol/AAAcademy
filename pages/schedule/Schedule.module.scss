@@ -1,0 +1,20 @@
+@import "/styles/variables.scss";
+
+.slider {
+  display: flex;
+  background-image: url("../../public/slide/img1.jpg");
+  height: 300px;
+  margin-top: -86px;
+  .inner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    background-color: rgba($quaternary, 0.5);
+    color: white;
+  }
+}
+
+.schedule{
+  width: 100%;
+}

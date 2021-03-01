@@ -33,6 +33,11 @@ const Navigation: React.FC<Props> = (props) => {
           </Link>
         </div>
         <div className={styles.menuItem}>
+          <Link href="/schedule">
+            <a>Schedule</a>
+          </Link>
+        </div>
+        <div className={styles.menuItem}>
           <Link href="/about">
             <a>About Us</a>
           </Link>

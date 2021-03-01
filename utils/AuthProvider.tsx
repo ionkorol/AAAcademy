@@ -30,17 +30,6 @@ export default function AuthProvider({ children }: any) {
 
   const router = useRouter();
   const getUser = async (user) => {
-    // Create The Shopping Cart
-    const shoppingCartSnap = await firebaseClient
-      .firestore()
-      .collection("shoppingCarts")
-      .doc(user.uid)
-      .get();
-    if (!shoppingCartSnap.exists) {
-      await shoppingCartSnap.ref.set({
-        id: user.uid,
-      });
-    }
     firebaseClient
       .firestore()
       .collection("users")
