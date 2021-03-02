@@ -9,10 +9,11 @@ import nookies from "nookies";
 
 interface Props {
   data: StudentProp;
+  parentId: string;
 }
 
 const EditChild: React.FC<Props> = (props) => {
-  const { data } = props;
+  const { data, parentId } = props;
   const [error, setError] = useState(null);
 
   const [firstNameError, setFirstNameError] = useState(null);
@@ -32,7 +33,7 @@ const EditChild: React.FC<Props> = (props) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const jsonData = (await (
-      await fetch(`/api/users/students/${router.query.id}`, {
+      await fetch(`/api/parents/${parentId}/students/${router.query.id}`, {
         method: "PATCH",
         headers: {
           Accept: "application/json",
@@ -153,12 +154,13 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   try {
     const { uid } = await firebaseAdmin.auth().verifyIdToken(token);
     const jsonData = (await (
-      await fetch(`${process.env.SERVER}/api/users/students/${id}`)
+      await fetch(`${process.env.SERVER}/api/parents/${uid}/students/${id}`)
     ).json()) as ApiResProp;
     if (jsonData.status) {
       return {
         props: {
           data: jsonData.data,
+          parentId: uid,
         },
       };
     } else {

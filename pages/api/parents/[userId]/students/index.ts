@@ -21,8 +21,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           lastName,
           phone,
           dob,
-          clubs: [],
-          parentId: userId,
         } as StudentProp);
 
       await docRef.update({ id: docRef.id });

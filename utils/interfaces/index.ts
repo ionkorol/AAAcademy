@@ -101,14 +101,12 @@ export interface StudentProp {
   firstName: string;
   lastName: string;
   phone: string;
-  email: string;
   id?: string;
   clubs: {
     quantity: number;
     id: string;
   }[];
   dob: string;
-  parentId: string;
 }
 
 export interface UserWithCredProp {

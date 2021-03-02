@@ -8,7 +8,6 @@ import { ApiResProp, ClubProp, StudentProp } from "utils/interfaces";
 import styles from "./Child.module.scss";
 import { useRouter } from "next/router";
 import { Button, Form, ListGroup, ListGroupItem, Table } from "react-bootstrap";
-import firebaseClient from "utils/firebaseClient";
 import { getAge } from "utils/functions";
 import Link from "next/link";
 
@@ -17,7 +16,7 @@ interface Props {
   parentId: string;
 }
 
-const Child: React.FC<Props> = (props) => {
+const Student: React.FC<Props> = (props) => {
   const { data, parentId } = props;
 
   const [error, setError] = useState(null);
@@ -66,7 +65,7 @@ const Child: React.FC<Props> = (props) => {
     ).json()) as ApiResProp;
 
     if (childData.status) {
-      router.push("/account/children");
+      router.push("/account/students");
     } else {
       setError(childData.error);
     }
@@ -141,7 +140,7 @@ const Child: React.FC<Props> = (props) => {
               <span>{data.phone}</span>
             </div>
           </div>
-          <Link href={`/account/children/${data.id}/edit`}>
+          <Link href={`/account/students/${data.id}/edit`}>
             <button>Edit</button>
           </Link>
         </div>
@@ -201,7 +200,7 @@ const Child: React.FC<Props> = (props) => {
   );
 };
 
-export default Child;
+export default Student;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { token } = nookies.get(ctx);

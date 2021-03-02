@@ -23,9 +23,9 @@ const Children: React.FC<Props> = (props) => {
         {data.map((child) => (
           <ChildCard data={child} key={child.id} />
         ))}
-        <Link href="/account/children/register">
+        <Link href="/account/students/register">
           <div className={styles.addChild}>
-            Register Child
+            Register Student
             <FontAwesomeIcon icon={faPlus} fixedWidth size="2x" />
           </div>
         </Link>

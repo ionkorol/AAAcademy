@@ -13,7 +13,7 @@ const ChildCard: React.FC<Props> = (props) => {
 
   return (
     <div className={styles.container}>
-      <Link href={`/account/children/${data.id}`}>
+      <Link href={`/account/students/${data.id}`}>
         <div className={styles.body}>
           <div className={styles.avatar}>
             <img

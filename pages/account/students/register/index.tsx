@@ -27,30 +27,19 @@ const RegisterChild: React.FC<Props> = (props) => {
   const [firstNameError, setFirstNameError] = useState(null);
   const [lastNameError, setLastNameError] = useState(null);
   const [dobError, setDobError] = useState(null);
-  const [emailError, setEmailError] = useState(null);
   const [phoneError, setPhoneError] = useState(null);
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [dob, setDob] = useState("");
-  const [email, setEmail] = useState(data.email);
   const [phone, setPhone] = useState(data.phone);
 
-  const [clubList, setClubList] = useState<ClubProp[]>([]);
-
   const router = useRouter();
-
-  useEffect(() => {
-    fetch("/api/clubs")
-      .then((res) => res.json())
-      .then((data: ApiResProp) => setClubList(data.data))
-      .catch((error) => setError(error));
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const studentJson = (await (
-      await fetch("/api/users/students", {
+      await fetch(`/api/parents/${data.id}/students`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -60,40 +49,16 @@ const RegisterChild: React.FC<Props> = (props) => {
           firstName,
           lastName,
           dob,
-          email,
           phone,
-          clubs: [],
-          parentId: data.id,
         } as StudentProp),
       })
     ).json()) as ApiResProp;
 
-    let childId = null;
     if (studentJson.status) {
-      childId = studentJson.data.id;
+      alert("Student Registered");
+      router.back();
     } else {
       setError(studentJson.error);
-      return;
-    }
-
-    const parentJson = (await (
-      await fetch(`/api/users/parents/${data.id}`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          childId,
-          action: "add",
-        }),
-      })
-    ).json()) as ApiResProp;
-
-    if (parentJson.status) {
-      router.push("/account/children");
-    } else {
-      setError(parentJson.error);
       return;
     }
   };
@@ -165,18 +130,6 @@ const RegisterChild: React.FC<Props> = (props) => {
             {phoneError}
           </Form.Control.Feedback>
         </Form.Group>
-        {/* <Form.Group>
-          <Form.Label>Email (Optional)</Form.Label>
-          <Form.Control
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <Form.Control.Feedback type="invalid">
-            {emailError}
-          </Form.Control.Feedback>
-        </Form.Group> */}
         <button type="submit">Register</button>
       </Form>
     </AccountLayout>
@@ -191,7 +144,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   try {
     const { uid } = await firebaseAdmin.auth().verifyIdToken(token);
     const jsonData = (await (
-      await fetch(`${process.env.SERVER}/api/users/parents/${uid}`)
+      await fetch(`${process.env.SERVER}/api/parents/${uid}`)
     ).json()) as ApiResProp;
     if (jsonData.status) {
       return {

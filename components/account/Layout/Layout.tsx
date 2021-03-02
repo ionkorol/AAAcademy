@@ -9,13 +9,13 @@ interface Props {}
 
 const AccountLayout: React.FC<Props> = (props) => {
   const [activePath, setActivePath] = useState<
-    "dashboard" | "children" | "invoices" 
+    "dashboard" | "students" | "invoices"
   >("dashboard");
 
   const router = useRouter();
   useEffect(() => {
-    if (router.pathname.includes("children")) {
-      setActivePath("children");
+    if (router.pathname.includes("students")) {
+      setActivePath("students");
     } else if (router.pathname.includes("invoices")) {
       setActivePath("invoices");
     } else {
@@ -42,13 +42,13 @@ const AccountLayout: React.FC<Props> = (props) => {
                 Dashboard
               </div>
             </Link>
-            <Link href="/account/children">
+            <Link href="/account/students">
               <div
                 className={`${styles.menuItem} ${
-                  activePath === "children" ? styles.active : null
+                  activePath === "students" ? styles.active : null
                 }`}
               >
-                Children
+                Students
               </div>
             </Link>
             <Link href="/account/invoices">
