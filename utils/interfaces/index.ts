@@ -74,11 +74,10 @@ export interface UserProp {
 export interface ParentProp {
   firstName: string;
   lastName: string;
-  type: "Parent";
   email: string;
   phone: string;
   id?: string;
-  students: StudentProp[];
+  students?: StudentProp[];
   funds: {
     amount: number;
   };

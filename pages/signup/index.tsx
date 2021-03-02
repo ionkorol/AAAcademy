@@ -45,7 +45,7 @@ const SignUp: React.FC<Props> = (props) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const res = await fetch("/api/users/parents", {
+    const res = await fetch("/api/parents", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -56,7 +56,6 @@ const SignUp: React.FC<Props> = (props) => {
         lastName,
         email,
         phone,
-        type: "Parent",
         emergencyContact: {
           name: eName,
           phone: ePhone,
@@ -68,7 +67,6 @@ const SignUp: React.FC<Props> = (props) => {
           city,
           postalCode,
         },
-        children: [],
         password,
         hasDiscount: false,
         paidRegistration: false,
