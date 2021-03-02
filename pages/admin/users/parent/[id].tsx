@@ -4,10 +4,10 @@ import React, { useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import nookies from "nookies";
 import firebaseAdmin from "utils/firebaseAdmin";
-import { ApiResProp, StudentProp } from "utils/interfaces";
+import { ApiResProp, ParentProp } from "utils/interfaces";
 
 interface Props {
-  data: StudentProp;
+  data: ParentProp;
 }
 
 const User: React.FC<Props> = (props) => {
@@ -17,7 +17,6 @@ const User: React.FC<Props> = (props) => {
   const [lastName, setLastName] = useState(data.lastName);
   const [email, setEmail] = useState(data.email);
   const [phone, setPhone] = useState(data.phone);
-  const [type, setType] = useState("Student");
 
   const [errors, setErrors] = useState({
     firstName: null,
@@ -63,16 +62,6 @@ const User: React.FC<Props> = (props) => {
       setErrors((prevState) => ({
         ...prevState,
         phone: "Phone has not been set!",
-      }));
-      return false;
-    }
-
-    // Type Validation
-    // Empty
-    if (!type) {
-      setErrors((prevState) => ({
-        ...prevState,
-        type: "Type has not been set!",
       }));
       return false;
     }
@@ -152,23 +141,6 @@ const User: React.FC<Props> = (props) => {
             />
             <Form.Control.Feedback type="invalid">
               {errors.phone}
-            </Form.Control.Feedback>
-          </Form.Group>
-
-          <Form.Group controlId="formBasicPassword">
-            <Form.Label>User Type</Form.Label>
-            <Form.Control
-              as="select"
-              value={type}
-              onChange={(e) => setType(e.target.value)}
-              isInvalid={!!errors.type}
-            >
-              <option>Choose Type</option>
-              <option>Teacher</option>
-              <option>Student</option>
-            </Form.Control>
-            <Form.Control.Feedback type="invalid">
-              {errors.type}
             </Form.Control.Feedback>
           </Form.Group>
           <Button variant="primary" type="submit" className="w-100">
