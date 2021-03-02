@@ -37,72 +37,55 @@ const Child: React.FC<Props> = (props) => {
       .then((data) => setAllClubs(data.data));
   }, []);
 
-  // Realt Time Updates on Clubs
   useEffect(() => {
-    const unsub = firebaseClient
-      .firestore()
-      .collection("users")
-      .doc(data.id).collection('clubs')
-      .onSnapshot((data) => {
-        setClubs([]);
-        data.docs.forEach((club) =>
-          fetch(`/api/clubs/${club.id}`)
-            .then((res) => res.json())
-            .then((data) =>
-              setClubs((prevState) => [
-                ...prevState,
-                { data: data.data, quantity: club.data().quantity },
-              ])
-            )
-        );
-      });
-
-    return () => unsub();
+    setClubs([]);
+    data.clubs.forEach((club) => {
+      fetch(`/api/clubs/${club.id}`)
+        .then((res) => res.json())
+        .then((data: ApiResProp) => {
+          if (data.status) {
+            setClubs((prevState) => [
+              ...prevState,
+              {
+                data: data.data,
+                quantity: club.quantity,
+              },
+            ]);
+          } else {
+            setError(data.error);
+          }
+        });
+    });
   }, []);
 
   const deleteChild = async () => {
     const childData = (await (
-      await fetch(`/api/users/students/${data.id}`, {
+      await fetch(`/api/parents/${parentId}/students/${data.id}`, {
         method: "DELETE",
       })
     ).json()) as ApiResProp;
 
-    if (!childData.status) {
-      setError(childData.error);
-      return;
-    }
-
-    const parentData = await (
-      await fetch(`/api/users/parents/${parentId}`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          childId: data.id,
-          action: "remove",
-        }),
-      })
-    ).json();
-
-    if (parentData.status) {
+    if (childData.status) {
       router.push("/account/children");
     } else {
-      setError(parentData.error);
+      setError(childData.error);
     }
   };
 
   const handleAddClub = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const jsonData = (await (
-      await fetch(`/api/users/students/${data.id}/clubs/${addClub}`, {
-        method: "POST",
-      })
+      await fetch(
+        `/api/parents/${parentId}/students/${data.id}/clubs/${addClub}`,
+        {
+          method: "POST",
+        }
+      )
     ).json()) as ApiResProp;
 
     if (jsonData.status) {
       alert("Club Added");
+      router.reload();
     } else {
       alert(jsonData.error);
     }
@@ -110,18 +93,22 @@ const Child: React.FC<Props> = (props) => {
 
   const handleRemoveClub = async (club: { id: string; quantity: number }) => {
     const jsonData = (await (
-      await fetch(`/api/users/students/${data.id}/clubs/${club.id}`, {
-        method: "DELETE",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(club),
-      })
+      await fetch(
+        `/api/parents/${parentId}/students/${data.id}/clubs/${club.id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(club),
+        }
+      )
     ).json()) as ApiResProp;
 
     if (jsonData.status) {
       alert("Club Removed");
+      router.reload();
     } else {
       alert(jsonData.error);
     }
@@ -222,7 +209,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   try {
     const { uid } = await firebaseAdmin.auth().verifyIdToken(token);
     const jsonData = (await (
-      await fetch(`${process.env.SERVER}/api/users/students/${id}`)
+      await fetch(`${process.env.SERVER}/api/parents/${uid}/students/${id}`)
     ).json()) as ApiResProp;
 
     if (jsonData.status) {

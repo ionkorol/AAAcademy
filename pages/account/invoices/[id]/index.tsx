@@ -6,6 +6,7 @@ import firebaseAdmin from "utils/firebaseAdmin";
 import { ApiResProp, InvoiceProp, ParentProp } from "utils/interfaces";
 import { Badge, Button, Col, Container, Row, Table } from "react-bootstrap";
 import { PayPalButton } from "react-paypal-button-v2";
+import { useRouter } from "next/router";
 
 interface Props {
   data: InvoiceProp;
@@ -15,13 +16,11 @@ interface Props {
 const Invoice: React.FC<Props> = (props) => {
   const { data, userData } = props;
   const [transTotal, setTransTotal] = useState(0);
+  const router = useRouter();
 
   const accountCredit = userData.funds.amount < 0 ? userData.funds.amount : 0;
-  let invoiceTotal = data.total + accountCredit;
-
-  if (data.registrationFee) {
-    invoiceTotal += 30;
-  }
+  const invoiceTotal =
+    data.subTotal + accountCredit - data.discount + data.registrationFee;
 
   useEffect(() => {
     setTransTotal(0);
@@ -32,8 +31,8 @@ const Invoice: React.FC<Props> = (props) => {
 
   const handleFreeInvoice = async () => {
     const jsonData = (await (
-      await fetch(`/api/invoices/${data.id}`, {
-        method: "PATCH",
+      await fetch(`/api/parents/${data.parentId}/invoices/${data.id}`, {
+        method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -49,25 +48,11 @@ const Invoice: React.FC<Props> = (props) => {
 
     if (jsonData.status) {
       alert("Invoice Paid");
+      router.reload();
     } else {
       alert(jsonData.error);
     }
   };
-
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
 
   return (
     <AccountLayout>
@@ -84,40 +69,39 @@ const Invoice: React.FC<Props> = (props) => {
           <Col className="d-flex flex-column">
             <p>
               Invoice Date: {data.invoiceDate.dayName},{" "}
-              {months[data.invoiceDate.month]} {data.invoiceDate.day}{" "}
+              {data.invoiceDate.monthName} {data.invoiceDate.day}{" "}
               {data.invoiceDate.year}
             </p>
             <p className="my-2">
-              {invoiceTotal > 0 ? (
-                data.paid ? null : (
-                  <PayPalButton
-                    amount={invoiceTotal}
-                    onSuccess={(details, tData) => {
-                      console.log(details, data);
-                      fetch(`/api/invoices/${data.id}`, {
-                        method: "PATCH",
-                        headers: {
-                          Accept: "application/json",
-                          "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                          date: details.create_time,
-                          id: details.id,
-                          gateway: "Paypal",
-                          total: Number(
-                            details.purchase_units[0].payments.captures[0]
-                              .amount.value
-                          ),
-                        }),
-                      });
-                    }}
-                    options={{
-                      clientId: process.env.NEXT_PUBLIC_PAYPAL_API_KEY,
-                      disableFunding: "credit",
-                    }}
-                    style={{ layout: "horizontal", tagline: false }}
-                  />
-                )
+              {data.paid || !data.subTotal ? null : invoiceTotal ? (
+                <PayPalButton
+                  amount={invoiceTotal}
+                  onSuccess={(details, tData) => {
+                    fetch(`/api/parents/${data.parentId}/invoices/${data.id}`, {
+                      method: "POST",
+                      headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify({
+                        date: details.create_time,
+                        id: details.id,
+                        gateway: "Paypal",
+                        total: Number(
+                          details.purchase_units[0].payments.captures[0].amount
+                            .value
+                        ),
+                      }),
+                    }).then((res) => {
+                      router.reload();
+                    });
+                  }}
+                  options={{
+                    clientId: process.env.NEXT_PUBLIC_PAYPAL_API_KEY,
+                    disableFunding: "credit",
+                  }}
+                  style={{ layout: "horizontal", tagline: false }}
+                />
               ) : (
                 <button onClick={handleFreeInvoice}>Pay Invoice</button>
               )}
@@ -166,8 +150,8 @@ const Invoice: React.FC<Props> = (props) => {
                           <tr>
                             <td>
                               <b>
-                                {item.child.firstName} {item.child.lastName} -{" "}
-                                {item.club.title}
+                                {item.student.firstName} {item.student.lastName}{" "}
+                                - {item.club.title}
                               </b>
                             </td>
                             <td className="text-right">
@@ -198,14 +182,16 @@ const Invoice: React.FC<Props> = (props) => {
                   <td></td>
                   <td className="text-right">Subtotal</td>
                   <td className="text-right pr-5">
-                    ${(data.total + data.discount).toFixed(2)}
+                    ${data.subTotal.toFixed(2)}
                   </td>
                 </tr>
                 {data.registrationFee ? (
                   <tr>
                     <td></td>
                     <td className="text-right">Registration Fee</td>
-                    <td className="text-right pr-5">$30.00</td>
+                    <td className="text-right pr-5">
+                      ${data.registrationFee.toFixed(2)}
+                    </td>
                   </tr>
                 ) : null}
                 <tr>
@@ -283,15 +269,20 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { id } = ctx.query;
   const { token } = nookies.get(ctx);
   try {
+    // Check if user is authenticated
     const { uid } = await firebaseAdmin.auth().verifyIdToken(token);
+
+    // Get Invoice data
     const invoiceJsonData = (await (
-      await fetch(
-        `${process.env.SERVER}/api/users/parents/${uid}/invoices/${id}`
-      )
+      await fetch(`${process.env.SERVER}/api/parents/${uid}/invoices/${id}`)
     ).json()) as ApiResProp;
+
+    // Get User data
     const userJsonData = (await (
-      await fetch(`${process.env.SERVER}/api/users/parents/${uid}`)
+      await fetch(`${process.env.SERVER}/api/parents/${uid}`)
     ).json()) as ApiResProp;
+
+    // Check if calls are ok
     if (invoiceJsonData.status && userJsonData.status) {
       return {
         props: {

@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import firebaseAdmin from "utils/firebaseAdmin";
 import { getRemainingWeeks } from "utils/functions";
 import { InvoiceProp, ParentProp } from "utils/interfaces";
+import { daysNames, monthsNames } from "utils/variables";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { invoiceId } = req.query;
@@ -11,15 +12,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const { gateway, id, date, total } = req.body;
 
     const fDate = new Date(date);
-    const days = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ];
 
     try {
       const invoiceData = (
@@ -48,9 +40,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           transactions: firebaseAdmin.firestore.FieldValue.arrayUnion({
             date: {
               day: fDate.getDate(),
-              dayName: days[fDate.getDay()],
+              dayName: daysNames[fDate.getDay()],
               month: fDate.getMonth() + 1,
-              monthName: fDate.getMonth(),
+              monthName: monthsNames[fDate.getMonth()],
               year: fDate.getFullYear(),
             },
             gateway,
@@ -73,7 +65,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         await firebaseAdmin
           .firestore()
           .collection("users")
-          .doc(item.child.id)
+          .doc(invoiceData.parentId)
+          .collection("students")
+          .doc(item.student.id)
           .collection("clubs")
           .doc(item.club.id)
           .update({

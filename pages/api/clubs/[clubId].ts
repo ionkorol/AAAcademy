@@ -3,7 +3,7 @@ import firebaseAdmin from "utils/firebaseAdmin";
 import { ClubProp } from "utils/interfaces";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const clubId = req.query.pid;
+  const { clubId } = req.query;
 
   if (req.method === "GET") {
     try {
@@ -15,13 +15,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
       const clubData = clubSnap.data();
 
-      if (!clubData) {
-        res.statusCode = 200;
-        res.json({ status: false, message: "Not Available" });
-      } else {
-        res.statusCode = 200;
-        res.json({ status: true, data: clubData });
-      }
+      res.statusCode = 200;
+      res.json({ status: true, data: clubData });
     } catch (error) {
       res.statusCode = 200;
       res.json({ status: false, message: error.message });

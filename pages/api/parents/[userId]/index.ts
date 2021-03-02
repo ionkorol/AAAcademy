@@ -63,8 +63,14 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           .doc(userId as string)
           .get()
       ).data() as UserProp;
+
+      const students = (
+        await (
+          await fetch(`${process.env.SERVER}/api/parents/${userId}/students`)
+        ).json()
+      ).data;
       res.statusCode = 200;
-      res.json({ status: true, data });
+      res.json({ status: true, data: { ...data, students } });
     } catch (error) {
       res.statusCode = 200;
       res.json({ status: false, error: error.message });

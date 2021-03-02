@@ -26,11 +26,11 @@ export interface InvoiceProp {
   parentId: string;
   invoiceDate: DateProp;
   dueDate: DateProp;
-  total: number;
+  subTotal: number;
   lineItems: LineItemProp[];
   paid: boolean;
   discount: number;
-  registrationFee: boolean;
+  registrationFee: number;
   transactions: {
     date: DateProp;
     gateway: "Paypal" | "Card";
@@ -40,7 +40,7 @@ export interface InvoiceProp {
 }
 
 export interface LineItemProp {
-  child: StudentProp;
+  student: StudentProp;
   club: ClubProp;
   quantity: number;
 }
@@ -78,7 +78,7 @@ export interface ParentProp {
   email: string;
   phone: string;
   id?: string;
-  children: string[];
+  students: StudentProp[];
   funds: {
     amount: number;
   };

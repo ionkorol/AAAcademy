@@ -5,13 +5,13 @@ import firebaseAdmin from "utils/firebaseAdmin";
 import nookies from "nookies";
 
 import styles from "./Children.module.scss";
-import { ApiResProp, ParentProp } from "utils/interfaces";
+import { ApiResProp, StudentProp } from "utils/interfaces";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 
 interface Props {
-  data?: ParentProp;
+  data?: StudentProp[];
   error?: any;
 }
 
@@ -20,8 +20,8 @@ const Children: React.FC<Props> = (props) => {
   return (
     <AccountLayout>
       <div className={styles.container}>
-        {data.children.map((child) => (
-          <ChildCard id={child} key={child} />
+        {data.map((child) => (
+          <ChildCard data={child} key={child.id} />
         ))}
         <Link href="/account/children/register">
           <div className={styles.addChild}>
@@ -41,7 +41,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   try {
     const { uid } = await firebaseAdmin.auth().verifyIdToken(token);
     const jsonData = (await (
-      await fetch(`${process.env.SERVER}/api/users/parents/${uid}`)
+      await fetch(`${process.env.SERVER}/api/parents/${uid}/students`)
     ).json()) as ApiResProp;
 
     if (jsonData.status) {

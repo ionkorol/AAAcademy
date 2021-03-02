@@ -1,13 +1,14 @@
 import { AccountLayout } from "components/account";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import { Badge, Col, Container, Row, Table } from "react-bootstrap";
 import firebaseAdmin from "utils/firebaseAdmin";
 import nookies from "nookies";
 
-import styles from "./Invoices.module.scss";
 import { ApiResProp, InvoiceProp, ParentProp } from "utils/interfaces";
 import { GetServerSideProps } from "next";
+
+import styles from "./Invoices.module.scss";
 
 interface Props {
   data: InvoiceProp[];
@@ -16,23 +17,6 @@ interface Props {
 
 const Invoices: React.FC<Props> = (props) => {
   const { data, userData } = props;
-
-  console.log(data);
-
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
 
   return (
     <AccountLayout>
@@ -66,15 +50,14 @@ const Invoices: React.FC<Props> = (props) => {
                   <tr role="button">
                     <td>{item.id}</td>
                     <td>
-                      {item.invoiceDate.dayName},{" "}
-                      {months[item.invoiceDate.month]} {item.invoiceDate.day}{" "}
-                      {item.invoiceDate.year}
+                      {item.invoiceDate.dayName}, {item.invoiceDate.monthName}{" "}
+                      {item.invoiceDate.day} {item.invoiceDate.year}
                     </td>
                     <td>
-                      {item.dueDate.dayName}, {months[item.dueDate.month]}{" "}
+                      {item.dueDate.dayName}, {item.dueDate.monthName}{" "}
                       {item.dueDate.day} {item.dueDate.year}
                     </td>
-                    <td>${item.total.toFixed(2)}</td>
+                    <td>${item.subTotal.toFixed(2)}</td>
                     <td>
                       <Badge variant={item.paid ? "success" : "danger"}>
                         {item.paid ? "Paid" : "Unpaid"}
@@ -98,27 +81,46 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const { uid } = await firebaseAdmin.auth().verifyIdToken(token);
 
     const userJsonData = (await (
-      await fetch(`${process.env.SERVER}/api/users/parents/${uid}`)
+      await fetch(`${process.env.SERVER}/api/parents/${uid}`)
     ).json()) as ApiResProp;
 
-    const res = await fetch(
-      `${process.env.SERVER}/api/users/parents/${uid}/invoices`
-    );
-    const jsonData = (await res.json()) as ApiResProp;
-    if (jsonData.status && userJsonData.status) {
-      return {
-        props: {
-          data: jsonData.data,
-          userData: userJsonData.data,
-        },
-      };
-    } else {
-      ctx.res.writeHead(302, { Location: "/" });
-      ctx.res.end();
-      return {
-        props: {} as never,
-      };
+    const invoicesJsonData = (await (
+      await fetch(`${process.env.SERVER}/api/parents/${uid}/invoices`)
+    ).json()) as ApiResProp;
+
+    const invoicesData = invoicesJsonData.data as InvoiceProp[];
+
+    // If there is no invoice for this week create one
+    let exists = false;
+    const currentDate = new Date();
+    invoicesData.forEach((invoice) => {
+      if (
+        currentDate.getFullYear() <= invoice.dueDate.year &&
+        currentDate.getMonth() <= invoice.dueDate.month &&
+        currentDate.getDate() <= invoice.dueDate.day &&
+        !invoice.paid
+      ) {
+        exists = true;
+      }
+    });
+    if (!exists) {
+      const newInvoice = (
+        await (
+          await fetch(`${process.env.SERVER}/api/parents/${uid}/invoices`, {
+            method: "POST",
+          })
+        ).json()
+      ).data;
+      if (newInvoice) {
+        invoicesData.push(newInvoice);
+      }
     }
+    return {
+      props: {
+        data: invoicesData,
+        userData: userJsonData.data,
+      },
+    };
   } catch (error) {
     ctx.res.writeHead(302, { Location: "/" });
     ctx.res.end();

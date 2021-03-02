@@ -5,8 +5,9 @@ import firebaseAdmin from "utils/firebaseAdmin";
 import { StudentProp } from "utils/interfaces";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const { studentId } = req.query;
+  const { studentId, userId } = req.query;
   if (req.method === "PATCH") {
+    // Update student data
     const studentData = req.body as StudentProp;
     try {
       await firebaseAdmin
@@ -24,11 +25,14 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       });
     }
   } else if (req.method === "GET") {
+    // Get student data
     try {
       const data = (
         await firebaseAdmin
           .firestore()
           .collection("users")
+          .doc(userId as string)
+          .collection("students")
           .doc(studentId as string)
           .get()
       ).data() as StudentProp;
@@ -37,6 +41,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         await firebaseAdmin
           .firestore()
           .collection("users")
+          .doc(userId as string)
+          .collection("students")
           .doc(studentId as string)
           .collection("clubs")
           .get()
@@ -48,34 +54,23 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       res.json({ status: false, error: error.message });
     }
   } else if (req.method === "DELETE") {
-    const resError = {
-      auth: null,
-      firestore: null,
-    };
-    try {
-      await firebaseAdmin.auth().deleteUser(studentId as string);
-    } catch (error) {
-      resError.auth = error.message;
-    }
+    // Delete student
     try {
       await firebaseAdmin
         .firestore()
         .collection("users")
+        .doc(userId as string)
+        .collection("students")
         .doc(studentId as string)
         .delete();
+      res.statusCode = 200;
+      res.json({ status: true });
     } catch (error) {
-      resError.firestore = error.message;
-    }
-
-    if (resError.auth && resError.firestore) {
       res.statusCode = 200;
       res.json({
         status: false,
-        error: `${resError.auth}/${resError.firestore}`,
+        error: error.message,
       });
-    } else {
-      res.statusCode = 200;
-      res.json({ status: true });
     }
   } else {
     res.statusCode = 200;

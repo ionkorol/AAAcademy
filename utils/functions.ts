@@ -49,3 +49,25 @@ export const getRemainingWeeks = () => {
 
   return weeksLeft;
 };
+
+export const getNextWeekDayDate = (nextDay: number) => {
+  const now = new Date();
+
+  let nextSaturday: Date;
+  const daysLeft = nextDay - now.getDay();
+
+  if (daysLeft < 0) {
+    nextSaturday = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate() + 7 + daysLeft
+    );
+  } else {
+    nextSaturday = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate() + daysLeft
+    );
+  }
+  return nextSaturday
+};
