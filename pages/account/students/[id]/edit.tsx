@@ -19,13 +19,11 @@ const EditChild: React.FC<Props> = (props) => {
   const [firstNameError, setFirstNameError] = useState(null);
   const [lastNameError, setLastNameError] = useState(null);
   const [dobError, setDobError] = useState(null);
-  const [emailError, setEmailError] = useState(null);
   const [phoneError, setPhoneError] = useState(null);
 
   const [firstName, setFirstName] = useState(data.firstName);
   const [lastName, setLastName] = useState(data.lastName);
   const [dob, setDob] = useState(data.dob);
-  const [email, setEmail] = useState(data.email);
   const [phone, setPhone] = useState(data.phone);
 
   const router = useRouter();
@@ -43,7 +41,6 @@ const EditChild: React.FC<Props> = (props) => {
           firstName,
           lastName,
           dob,
-          email,
           phone,
         } as StudentProp),
       })
@@ -124,18 +121,6 @@ const EditChild: React.FC<Props> = (props) => {
           </InputGroup>
           <Form.Control.Feedback type="invalid">
             {phoneError}
-          </Form.Control.Feedback>
-        </Form.Group>
-        <Form.Group>
-          <Form.Label>Email (Optional)</Form.Label>
-          <Form.Control
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <Form.Control.Feedback type="invalid">
-            {emailError}
           </Form.Control.Feedback>
         </Form.Group>
         <Button type="submit" variant="warning">
