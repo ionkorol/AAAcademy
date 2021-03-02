@@ -132,10 +132,6 @@ const Student: React.FC<Props> = (props) => {
               </span>
             </div>
             <div>
-              <span className={styles.key}>Email:</span>
-              <span>{data.email}</span>
-            </div>
-            <div>
               <span className={styles.key}>Phone:</span>
               <span>{data.phone}</span>
             </div>
