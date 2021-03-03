@@ -2,6 +2,7 @@ import useAuth from "hooks/useAuth";
 import React, { useState } from "react";
 import { Alert, Col, Form, InputGroup, Row } from "react-bootstrap";
 import { ApiResProp, ParentProp } from "utils/interfaces";
+import { daysNames, monthsNames } from "utils/variables";
 import { Layout } from "../../components/common";
 
 import styles from "./SignUp.module.scss";
@@ -45,6 +46,7 @@ const SignUp: React.FC<Props> = (props) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const currentDate = new Date()
     const res = await fetch("/api/parents", {
       method: "POST",
       headers: {
@@ -56,6 +58,13 @@ const SignUp: React.FC<Props> = (props) => {
         lastName,
         email,
         phone,
+        createdAt: {
+          day: currentDate.getDate(),
+          dayName: daysNames[currentDate.getDay()],
+          month: currentDate.getMonth(),
+          monthName: monthsNames[currentDate.getMonth()],
+          year: currentDate.getFullYear()
+        },
         emergencyContact: {
           name: eName,
           phone: ePhone,

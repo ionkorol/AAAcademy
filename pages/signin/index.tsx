@@ -3,7 +3,6 @@ import { Layout } from "components/common";
 
 import styles from "./SignIn.module.scss";
 import { Form, InputGroup } from "react-bootstrap";
-import { UserProp } from "utils/interfaces";
 import useAuth from "hooks/useAuth";
 
 interface Props {}
