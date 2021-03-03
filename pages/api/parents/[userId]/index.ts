@@ -2,7 +2,7 @@
 
 import { NextApiResponse, NextApiRequest } from "next";
 import firebaseAdmin from "utils/firebaseAdmin";
-import { ParentProp, UserProp } from "utils/interfaces";
+import { ParentProp } from "utils/interfaces";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { userId } = req.query;
@@ -62,7 +62,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           .collection("users")
           .doc(userId as string)
           .get()
-      ).data() as UserProp;
+      ).data() as ParentProp;
 
       const students = (
         await (
