@@ -7,7 +7,6 @@ import firebaseAdmin from "utils/firebaseAdmin";
 import { GetServerSideProps } from "next";
 import states from "utils/states.json";
 import { useRouter } from "next/router";
-import { route } from "next/dist/next-server/server/router";
 
 interface Props {
   data: ParentProp;
