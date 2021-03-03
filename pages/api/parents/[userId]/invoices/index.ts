@@ -77,17 +77,17 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             // Calculate subTotal
             invoiceData.subTotal += clubData.price * remainingWeeks;
             clubData.fees.forEach((fee) => (invoiceData.subTotal += fee.price));
+
+            // Calculate discount
+            if (parentData.hasDiscount) {
+              invoiceData.discount += clubData.price * remainingWeeks;
+            }
           }
         }
       }
 
       // Assign paid
       invoiceData.paid = false;
-
-      // Assign discount
-      invoiceData.discount = parentData.hasDiscount
-        ? invoiceData.subTotal / 2
-        : 0;
 
       // Assign registration fee
       invoiceData.registrationFee = parentData.paidRegistration

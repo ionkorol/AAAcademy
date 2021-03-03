@@ -78,6 +78,26 @@ const User: React.FC<Props> = (props) => {
     }
   };
 
+  const handleUserDelete = async () => {
+    try {
+      const userJson = (await (
+        await fetch(`/api/parents/${data.id}`, {
+          method: "DELETE",
+        })
+      ).json()) as ApiResProp;
+
+      if (userJson.status) {
+        alert("User Deleted");
+      } else {
+        console.log(userJson.error);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  console.log(data.createdAt)
+
   return (
     <AdminLayout>
       <Container>
@@ -147,7 +167,9 @@ const User: React.FC<Props> = (props) => {
             Save
           </Button>
         </Form>
-        <Button variant="outline-danger mt-5 w-100">Delete</Button>
+        <Button onClick={handleUserDelete} variant="outline-danger mt-5 w-100">
+          Delete
+        </Button>
       </Container>
     </AdminLayout>
   );
@@ -162,7 +184,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   try {
     const { uid } = await firebaseAdmin.auth().verifyIdToken(token);
     const jsonData = (await (
-      await fetch(`${process.env.SERVER}/api/users/students/${id}`)
+      await fetch(`${process.env.SERVER}/api/parents/${id}`)
     ).json()) as ApiResProp;
 
     if (jsonData.status) {

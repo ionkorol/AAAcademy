@@ -1,3 +1,5 @@
+import firebaseAdmin from "utils/firebaseAdmin";
+
 export interface ClubProp {
   title: string;
   categories: Array<"Active" | "Creative" | "Educational" | "Musical">;
@@ -46,37 +48,13 @@ export interface LineItemProp {
 }
 
 // Users Props
-
-export interface UserProp {
-  firstName: string;
-  lastName: string;
-  type: "Parent" | "Student" | string;
-  email: string;
-  phone: string;
-  id?: string;
-  children?: string[];
-  clubs?: string[];
-  dob?: string;
-  emergencyContact?: {
-    name: string;
-    phone: string;
-  };
-  address: {
-    addressLine1: string;
-    addressLine2: string;
-    adminArea: string;
-    postalCode: string;
-  };
-  password?: string;
-  hasDiscount: boolean;
-}
-
 export interface ParentProp {
+  id?: string;
   firstName: string;
   lastName: string;
   email: string;
   phone: string;
-  id?: string;
+  createdAt: DateProp
   students?: StudentProp[];
   funds: {
     amount: number;
@@ -106,18 +84,6 @@ export interface StudentProp {
     id: string;
   }[];
   dob: string;
-}
-
-export interface UserWithCredProp {
-  credentials: any;
-  data: UserProp;
-}
-
-export interface OrderProp {
-  id: string;
-  userId: string;
-  totalPrice: string;
-  children: UserProp[];
 }
 
 export interface ApiResProp {

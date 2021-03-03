@@ -66,6 +66,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       // Build lineItems object
       invoiceData.lineItems = [];
       invoiceData.subTotal = 0;
+      invoiceData.discount = 0;
       const remainingWeeks = getRemainingWeeks();
 
       for (const student of parentData.students) {
@@ -86,14 +87,14 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             // Calculate subTotal
             invoiceData.subTotal += clubData.price * remainingWeeks;
             clubData.fees.forEach((fee) => (invoiceData.subTotal += fee.price));
+
+            // Calculate discount
+            if (parentData.hasDiscount) {
+              invoiceData.discount += (clubData.price * remainingWeeks) / 2;
+            }
           }
         }
       }
-
-      // Assign discount
-      invoiceData.discount = parentData.hasDiscount
-        ? invoiceData.subTotal / 2
-        : 0;
 
       // Assign registration fee
       invoiceData.registrationFee = parentData.paidRegistration
