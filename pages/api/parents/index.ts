@@ -1,7 +1,5 @@
-import { faSleigh } from "@fortawesome/free-solid-svg-icons";
 import { NextApiRequest, NextApiResponse } from "next";
 import firebaseAdmin from "utils/firebaseAdmin";
-import { ParentProp, UserProp } from "utils/interfaces";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // Register User
