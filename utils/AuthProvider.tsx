@@ -2,11 +2,14 @@ import React from "react";
 import Cookies from "js-cookie";
 import { createContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { UserProp, UserWithCredProp } from "./interfaces";
+import { ParentProp } from "./interfaces";
 import firebaseClient from "./firebaseClient";
 
 export const AuthContext = createContext<{
-  user: UserWithCredProp | null;
+  user: {
+    data: ParentProp;
+    credentials: any;
+  } | null;
   error: string | null;
   signIn: (email: string, password: string) => void;
   signOut: () => void;
@@ -25,7 +28,10 @@ export const AuthContext = createContext<{
 });
 
 export default function AuthProvider({ children }: any) {
-  const [user, setUser] = useState<UserWithCredProp | null>(null);
+  const [user, setUser] = useState<{
+    data: ParentProp;
+    credentials: any;
+  } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const router = useRouter();
@@ -37,7 +43,7 @@ export default function AuthProvider({ children }: any) {
       .get()
       .then((userSnap) =>
         setUser({
-          data: userSnap.data() as UserProp,
+          data: userSnap.data() as ParentProp,
           credentials: user,
         })
       )
