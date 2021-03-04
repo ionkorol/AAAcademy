@@ -1,5 +1,3 @@
-import firebaseAdmin from "utils/firebaseAdmin";
-
 export interface ClubProp {
   title: string;
   categories: Array<"Active" | "Creative" | "Educational" | "Musical">;
@@ -19,6 +17,7 @@ export interface ClubProp {
   price: number;
   requirements: string[];
   fees: FeeProp[];
+  isFull: boolean;
 }
 
 // Invoice Props
@@ -54,7 +53,7 @@ export interface ParentProp {
   lastName: string;
   email: string;
   phone: string;
-  createdAt: DateProp
+  createdAt: DateProp;
   students?: StudentProp[];
   funds: {
     amount: number;

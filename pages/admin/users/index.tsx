@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { GetServerSideProps } from "next";
-import { Alert, Button, Table } from "react-bootstrap";
+import { Alert, Button, Container, Table } from "react-bootstrap";
 import { AdminLayout } from "components/admin";
 import { ApiResProp, ParentProp } from "utils/interfaces";
 import Link from "next/link";
@@ -19,8 +19,7 @@ const UsersContent: React.FC<Props> = (props) => {
 
   return (
     <AdminLayout>
-      <div className={styles.container}>
-        <h2>Users</h2>
+      <Container>
         {error ? <Alert variant="danger"></Alert> : null}
         <div className={styles.controls}>
           <div className={styles.filter}></div>
@@ -59,7 +58,7 @@ const UsersContent: React.FC<Props> = (props) => {
             ))}
           </tbody>
         </Table>
-      </div>
+      </Container>
     </AdminLayout>
   );
 };
@@ -96,10 +95,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       },
     };
   } catch (error) {
-    ctx.res.writeHead(302, { Location: "/" });
-    ctx.res.end();
     return {
-      props: {} as never,
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
     };
   }
 };

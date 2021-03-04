@@ -1,54 +1,9 @@
 @import "/styles/variables.scss";
 
-.container {
-  display: flex;
-  flex-direction: column;
-  h2 {
-    margin-bottom: 2vh;
-  }
-}
-
 .actions {
   display: flex;
   padding: 20px;
   background-color: $primary;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
-}
-
-.table {
-  background-color: white;
-  padding: 20px;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  .tableHead {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    height: 50px;
-    align-items: center;
-    padding: 10px 0;
-    color: $primary;
-    div {
-      &:last-child {
-        text-align: center;
-      }
-    }
-  }
-  .tableBody {
-    .tableItem {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      border-top: 1px solid rgba(128, 128, 128, 0.25);
-      padding: 10px 0;
-
-      div {
-        display: flex;
-        align-items: center;
-        &:last-child {
-          display: flex;
-          justify-content: space-evenly;
-        }
-      }
-    }
-  }
 }

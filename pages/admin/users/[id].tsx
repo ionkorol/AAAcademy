@@ -5,6 +5,7 @@ import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import nookies from "nookies";
 import firebaseAdmin from "utils/firebaseAdmin";
 import { ApiResProp, ParentProp } from "utils/interfaces";
+import { useRouter } from "next/router";
 
 interface Props {
   data: ParentProp;
@@ -25,6 +26,8 @@ const User: React.FC<Props> = (props) => {
     type: null,
     phone: null,
   });
+
+  const router = useRouter();
 
   const formValidation = async () => {
     // First Name Validation
@@ -88,6 +91,7 @@ const User: React.FC<Props> = (props) => {
 
       if (userJson.status) {
         alert("User Deleted");
+        router.back();
       } else {
         console.log(userJson.error);
       }
@@ -95,8 +99,6 @@ const User: React.FC<Props> = (props) => {
       console.log(error);
     }
   };
-
-  console.log(data.createdAt)
 
   return (
     <AdminLayout>
@@ -194,17 +196,19 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         },
       };
     } else {
-      ctx.res.writeHead(302, { Location: "/" });
-      ctx.res.end();
       return {
-        props: {} as never,
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
       };
     }
   } catch (error) {
-    ctx.res.writeHead(302, { Location: "/" });
-    ctx.res.end();
     return {
-      props: {} as never,
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
     };
   }
 };

@@ -10,11 +10,10 @@ import {
   ListGroup,
   ListGroupItem,
 } from "react-bootstrap";
-import firebaseClient from "utils/firebaseClient";
 import { ApiResProp, ClubProp } from "utils/interfaces";
 import nookies from "nookies";
 import firebaseAdmin from "utils/firebaseAdmin";
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, GetStaticPaths } from "next";
 import { useRouter } from "next/router";
 
 import styles from "./Club.module.scss";
@@ -48,6 +47,7 @@ const Club: React.FC<Props> = (props) => {
   const [fees, setFees] = useState(data.fees);
   const [feeName, setFeeName] = useState("");
   const [feePrice, setFeePrice] = useState(0);
+  const [isFull, setIsFull] = useState(data.isFull);
 
   const [errors, setErrors] = useState({
     title: null,
@@ -203,6 +203,7 @@ const Club: React.FC<Props> = (props) => {
             id: router.query.id,
             price,
             requirements,
+            isFull,
           } as ClubProp),
         })
       ).json()) as ApiResProp;
@@ -233,6 +234,8 @@ const Club: React.FC<Props> = (props) => {
   const handleDeleteFee = (fee: { name: string; price: number }) => {
     setFees((prevState) => prevState.filter((item) => item !== fee));
   };
+
+  console.log(isFull);
 
   return (
     <AdminLayout>
@@ -433,6 +436,14 @@ const Club: React.FC<Props> = (props) => {
                   ))
                 : null}
             </ListGroup>
+          </Form.Group>
+          <Form.Group>
+            <Form.Check
+              type="checkbox"
+              label="Is class full"
+              checked={isFull}
+              onChange={(e) => setIsFull(!isFull)}
+            />
           </Form.Group>
           <Form.Group>
             <Form.Label>Fees</Form.Label>

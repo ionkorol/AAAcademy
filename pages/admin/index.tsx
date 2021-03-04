@@ -1,6 +1,7 @@
 import { GetServerSideProps } from "next";
 import React from "react";
-import { AdminLayout } from "../../components/admin";
+import nookies from "nookies";
+import firebaseAdmin from "utils/firebaseAdmin";
 
 interface Props {}
 
@@ -9,20 +10,21 @@ const Admin: React.FC<Props> = (props) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { token } = nookies.get(ctx);
   try {
-    // Some sort of Auth
-    ctx.res.statusCode = 302;
-    ctx.res.setHeader("Location", "/admin/dashboard");
-    ctx.res.end();
+    const { uid } = await firebaseAdmin.auth().verifyIdToken(token);
     return {
-      props: {} as never,
+      redirect: {
+        destination: "/admin/dashboard",
+        permanent: false,
+      },
     };
   } catch (error) {
-    ctx.res.statusCode = 302;
-    ctx.res.setHeader("Location", "/login");
-    ctx.res.end();
     return {
-      props: {} as never,
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
     };
   }
 };

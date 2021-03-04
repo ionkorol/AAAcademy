@@ -1,11 +1,15 @@
-import useAuth from "hooks/useAuth";
 import React, { useState } from "react";
+import useAuth from "hooks/useAuth";
 import { Alert, Col, Form, InputGroup, Row } from "react-bootstrap";
 import { ApiResProp, ParentProp } from "utils/interfaces";
 import { daysNames, monthsNames } from "utils/variables";
 import { Layout } from "../../components/common";
 
 import styles from "./SignUp.module.scss";
+
+import nookies from "nookies";
+import firebaseAdmin from "utils/firebaseAdmin";
+import { GetServerSideProps } from "next";
 
 interface Props {}
 
@@ -46,7 +50,7 @@ const SignUp: React.FC<Props> = (props) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const currentDate = new Date()
+    const currentDate = new Date();
     const res = await fetch("/api/parents", {
       method: "POST",
       headers: {
@@ -63,7 +67,7 @@ const SignUp: React.FC<Props> = (props) => {
           dayName: daysNames[currentDate.getDay()],
           month: currentDate.getMonth(),
           monthName: monthsNames[currentDate.getMonth()],
-          year: currentDate.getFullYear()
+          year: currentDate.getFullYear(),
         },
         emergencyContact: {
           name: eName,
@@ -337,3 +341,20 @@ const SignUp: React.FC<Props> = (props) => {
 };
 
 export default SignUp;
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { token } = nookies.get(ctx);
+  try {
+    const { uid } = await firebaseAdmin.auth().verifyIdToken(token);
+    return {
+      redirect: {
+        destination: "/account",
+        permanent: false,
+      },
+    };
+  } catch (error) {
+    return {
+      props: {} as never,
+    };
+  }
+};

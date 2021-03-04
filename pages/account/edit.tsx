@@ -275,17 +275,19 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         },
       };
     } else {
-      ctx.res.writeHead(302, { Location: "/" });
-      ctx.res.end();
       return {
-        props: {} as never,
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
       };
     }
   } catch (error) {
-    ctx.res.writeHead(302, { Location: "/" });
-    ctx.res.end();
     return {
-      props: {} as never,
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
     };
   }
 };

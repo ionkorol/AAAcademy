@@ -59,7 +59,7 @@ const Club: React.FC<Props> = (props) => {
             <div className={styles.text}>
               <h2>DESCRIPTION</h2>
               {data.description ? (
-                data.description
+                <span dangerouslySetInnerHTML={{__html: data.description}}></span>
               ) : (
                 <span>
                   <p>

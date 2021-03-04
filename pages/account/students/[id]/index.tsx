@@ -174,9 +174,10 @@ const Student: React.FC<Props> = (props) => {
                 onChange={(e) => setAddClub(e.target.value)}
               >
                 {allClubs.map((club: ClubProp) => (
-                  <option value={club.id} key={club.id}>
+                  <option disabled={club.isFull} value={club.id} key={club.id}>
                     {club.title} ({club.time.from}:00 - {club.time.to}:00) (
-                    {club.age.from} - {club.age.to} Years)
+                    {club.age.from} - {club.age.to} Years){" "}
+                    {club.isFull ? "(Class is Full)" : null}
                   </option>
                 ))}
               </Form.Control>
@@ -215,17 +216,19 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         },
       };
     } else {
-      ctx.res.writeHead(302, { Location: "/" });
-      ctx.res.end();
       return {
-        props: {} as never,
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
       };
     }
   } catch (error) {
-    ctx.res.writeHead(302, { Location: "/" });
-    ctx.res.end();
     return {
-      props: {} as never,
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
     };
   }
 };

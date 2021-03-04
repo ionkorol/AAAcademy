@@ -1,14 +1,16 @@
 import { AccountLayout, ChildCard } from "components/account";
 import { GetServerSideProps } from "next";
 import React from "react";
-import firebaseAdmin from "utils/firebaseAdmin";
-import nookies from "nookies";
 
-import styles from "./Children.module.scss";
 import { ApiResProp, StudentProp } from "utils/interfaces";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
+
+import styles from "./Children.module.scss";
+
+import firebaseAdmin from "utils/firebaseAdmin";
+import nookies from "nookies";
 
 interface Props {
   data?: StudentProp[];
@@ -51,17 +53,19 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         },
       };
     } else {
-      ctx.res.writeHead(302, { Location: "/" });
-      ctx.res.end();
       return {
-        props: {} as never,
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
       };
     }
   } catch (error) {
-    ctx.res.writeHead(302, { Location: "/" });
-    ctx.res.end();
     return {
-      props: {} as never,
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
     };
   }
 };

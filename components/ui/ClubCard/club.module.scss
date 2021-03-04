@@ -76,8 +76,13 @@
     margin: 20px 0;
   }
   .description {
-    height: 7rem;
-    line-height: 1.4rem;
+    height: 7.3em;
+    line-height: 1.2em;
+    overflow: hidden;
+    p {
+      margin: 0;
+      padding: 0;
+    }
   }
 }
 

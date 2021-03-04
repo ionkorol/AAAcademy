@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import { Layout } from "components/common";
 
 import styles from "./SignIn.module.scss";
-import { Form, InputGroup } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import useAuth from "hooks/useAuth";
+import { GetServerSideProps } from "next";
+import nookies from "nookies";
+import firebaseAdmin from "utils/firebaseAdmin";
 
 interface Props {}
 
@@ -64,3 +67,20 @@ const SignIn: React.FC<Props> = (props) => {
 };
 
 export default SignIn;
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { token } = nookies.get(ctx);
+  try {
+    const { uid } = await firebaseAdmin.auth().verifyIdToken(token);
+    return {
+      redirect: {
+        destination: "/account",
+        permanent: false,
+      },
+    };
+  } catch (error) {
+    return {
+      props: {} as never,
+    };
+  }
+};

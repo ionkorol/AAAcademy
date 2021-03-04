@@ -5,18 +5,16 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "GET") {
     const { id } = req.query;
     try {
-      const couponData = (
-        await firebaseAdmin
-          .firestore()
-          .collection("coupons")
-          .doc(id as string)
-          .get()
-      ).data();
+      const invoicesQuery = await firebaseAdmin
+        .firestore()
+        .collection("invoices")
+        .get();
 
+      const invoicesData = invoicesQuery.docs.map((invoice) => invoice.data());
       res.statusCode = 200;
       res.json({
         status: true,
-        data: couponData,
+        data: invoicesData,
       });
     } catch (error) {
       res.statusCode = 200;

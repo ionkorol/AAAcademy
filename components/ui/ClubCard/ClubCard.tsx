@@ -1,9 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faThumbtack,
   faClock,
   faCalendar,
-  faInfo,
   faInfoCircle,
   faChild,
 } from "@fortawesome/free-solid-svg-icons";
@@ -46,7 +44,11 @@ const ClubCard: React.FC<Props> = (props) => {
         </div>
         <hr className={styles.hr} />
         <div className={styles.description}>
-          {data.description.slice(0, 200)}
+          <span
+            dangerouslySetInnerHTML={{
+              __html: `${data.description.slice(0, 200)}`,
+            }}
+          ></span>
         </div>
       </div>
       <Link href={`/club/${data.id}`}>
