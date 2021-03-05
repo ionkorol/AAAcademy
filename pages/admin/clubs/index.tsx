@@ -26,39 +26,6 @@ const ClubsContent: React.FC<Props> = (props) => {
 
   const [error, setError] = useState(null);
 
-  const handleDublicateClub = async (club: ClubProp) => {
-    delete club.id;
-    const jsonData = (await (
-      await fetch("/api/clubs", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...club,
-        }),
-      })
-    ).json()) as ApiResProp;
-
-    if (jsonData.status) {
-      alert("Success: " + jsonData.data);
-    } else {
-      alert(jsonData.error);
-    }
-  };
-
-  const handleFix = async (club: ClubProp) => {
-    try {
-      await firebaseClient.firestore().collection("clubs").doc(club.id).update({
-        fees: [],
-      });
-      alert("Success");
-    } catch (error) {
-      alert(error);
-    }
-  };
-
   const categoryIcon = {
     Active: faVolleyballBall,
     Creative: faPalette,
@@ -144,24 +111,28 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       await fetch(`${process.env.SERVER}/api/clubs`)
     ).json()) as ApiResProp;
 
+    const clubsData = jsonData.data as ClubProp[];
+
     if (jsonData.status) {
       return {
         props: {
-          data: jsonData.data,
+          data: clubsData.sort((a, b) => (a.title < b.title ? -1 : 1)),
         },
       };
     } else {
-      ctx.res.writeHead(302, { Location: "/" });
-      ctx.res.end();
       return {
-        props: {} as never,
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
       };
     }
   } catch (error) {
-    ctx.res.writeHead(302, { Location: "/" });
-    ctx.res.end();
     return {
-      props: {} as never,
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
     };
   }
 };

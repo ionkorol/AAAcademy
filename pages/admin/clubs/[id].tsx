@@ -35,8 +35,8 @@ const Club: React.FC<Props> = (props) => {
     Array<"Active" | "Creative" | "Educational" | "Musical">
   >(data.categories);
   const [date, setDate] = useState(data.date);
-  const [ageFrom, setAgeFrom] = useState(data.age ? data.age.from : 0);
-  const [ageTo, setAgeTo] = useState(data.age ? data.age.to : 0);
+  const [ageFrom, setAgeFrom] = useState(data.age.from);
+  const [ageTo, setAgeTo] = useState(data.age.to);
   const [timeFrom, setTimeFrom] = useState(data.time.from);
   const [timeTo, setTimeTo] = useState(data.time.to);
   const [image, setImage] = useState(data.image);
@@ -317,7 +317,7 @@ const Club: React.FC<Props> = (props) => {
                   type="text"
                   placeholder="Enter From Age"
                   value={ageFrom}
-                  onChange={(e) => setAgeFrom(Number(e.target.value))}
+                  onChange={(e) => setAgeFrom(e.target.value)}
                   isInvalid={!!errors.fromAge}
                 />
                 <Form.Control.Feedback type="invalid">
@@ -332,7 +332,7 @@ const Club: React.FC<Props> = (props) => {
                   type="text"
                   placeholder="Enter To Age"
                   value={ageTo}
-                  onChange={(e) => setAgeTo(Number(e.target.value))}
+                  onChange={(e) => setAgeTo(e.target.value)}
                   isInvalid={!!errors.toAge}
                 />
                 <Form.Control.Feedback type="invalid">
@@ -535,17 +535,19 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         },
       };
     } else {
-      ctx.res.writeHead(302, { Location: "/" });
-      ctx.res.end();
       return {
-        props: {} as never,
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
       };
     }
   } catch (error) {
-    ctx.res.writeHead(302, { Location: "/" });
-    ctx.res.end();
     return {
-      props: {} as never,
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
     };
   }
 };
