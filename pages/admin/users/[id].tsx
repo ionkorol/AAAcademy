@@ -1,7 +1,7 @@
 import { AdminLayout } from "components/admin";
 import { GetServerSideProps } from "next";
 import React, { useState } from "react";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Col, Container, Form, Row, Table } from "react-bootstrap";
 import nookies from "nookies";
 import firebaseAdmin from "utils/firebaseAdmin";
 import { ApiResProp, ParentProp } from "utils/interfaces";
@@ -103,6 +103,27 @@ const User: React.FC<Props> = (props) => {
   return (
     <AdminLayout>
       <Container>
+        <Table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>DOB</th>
+              <th>Clubs</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.students.map((student) => (
+              <tr key={student.id}>
+                <td>
+                  {student.firstName} {student.lastName}
+                </td>
+                <td>{student.dob}</td>
+                <td>{student.clubs.length}</td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+
         <h1>
           {data.firstName} {data.lastName} - Edit Page
         </h1>
