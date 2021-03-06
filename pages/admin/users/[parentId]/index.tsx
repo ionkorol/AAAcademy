@@ -1,11 +1,12 @@
 import { AdminLayout } from "components/admin";
 import { GetServerSideProps } from "next";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Col, Container, Form, Row, Table } from "react-bootstrap";
 import nookies from "nookies";
 import firebaseAdmin from "utils/firebaseAdmin";
 import { ApiResProp, ParentProp } from "utils/interfaces";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 interface Props {
   data: ParentProp;
@@ -103,7 +104,7 @@ const User: React.FC<Props> = (props) => {
   return (
     <AdminLayout>
       <Container>
-        <Table>
+        <Table hover striped bordered>
           <thead>
             <tr>
               <th>Name</th>
@@ -113,13 +114,18 @@ const User: React.FC<Props> = (props) => {
           </thead>
           <tbody>
             {data.students.map((student) => (
-              <tr key={student.id}>
-                <td>
-                  {student.firstName} {student.lastName}
-                </td>
-                <td>{student.dob}</td>
-                <td>{student.clubs.length}</td>
-              </tr>
+              <Link
+                href={`/admin/users/${data.id}/students/${student.id}`}
+                key={student.id}
+              >
+                <tr style={{ cursor: "pointer" }}>
+                  <td>
+                    {student.firstName} {student.lastName}
+                  </td>
+                  <td>{student.dob}</td>
+                  <td>{student.clubs.length}</td>
+                </tr>
+              </Link>
             ))}
           </tbody>
         </Table>
@@ -201,13 +207,13 @@ const User: React.FC<Props> = (props) => {
 export default User;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { id } = ctx.query;
+  const { parentId } = ctx.query;
   const { token } = nookies.get(ctx);
 
   try {
     const { uid } = await firebaseAdmin.auth().verifyIdToken(token);
     const jsonData = (await (
-      await fetch(`${process.env.SERVER}/api/parents/${id}`)
+      await fetch(`${process.env.SERVER}/api/parents/${parentId}`)
     ).json()) as ApiResProp;
 
     if (jsonData.status) {
