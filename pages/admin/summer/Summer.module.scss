@@ -1,0 +1,9 @@
+@import "/styles/variables.scss";
+
+.actions {
+  display: flex;
+  padding: 20px;
+  background-color: $primary;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}

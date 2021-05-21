@@ -51,7 +51,16 @@ const AdminLayout: React.FC<Props> = (props) => {
               router.pathname.includes("invoices") ? styles.active : null
             }`}
           >
-            Invoices  
+            Invoices
+          </div>
+        </Link>
+        <Link href="/admin/summer">
+          <div
+            className={`${styles.menuItem} ${
+              router.pathname.includes("summer") ? styles.active : null
+            }`}
+          >
+            Summer
           </div>
         </Link>
       </div>
