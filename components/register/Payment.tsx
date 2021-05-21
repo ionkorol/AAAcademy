@@ -1,5 +1,5 @@
 import { useRegistrationData } from "hooks/useRegistrationData";
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
 import { Table } from "react-bootstrap";
 import { PayPalButton } from "react-paypal-button-v2";
 import Image from "next/image";
@@ -59,6 +59,10 @@ const Payment: React.FC<Props> = (props) => {
       alert("Something Went Wrong!");
     }
   };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <div className={styles.container}>

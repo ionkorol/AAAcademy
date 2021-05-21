@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
 import { Form } from "react-bootstrap";
 interface Props {
   setActiveTab: Dispatch<SetStateAction<string>>;
@@ -12,6 +12,7 @@ const Terms: React.FC<Props> = (props) => {
     e.preventDefault();
     setActiveTab("Payment");
   };
+
   return (
     <div>
       <Form onSubmit={handleNext}>
@@ -56,7 +57,7 @@ const Terms: React.FC<Props> = (props) => {
           participating in strenuous activities, and whenever necessary, will
           tailor my/their activities to those within the bounds of my/their
           physical health. This authorization is effective commencing on the
-          21nd day of June, 2020 and expiring on the 25th day of June 2020.
+          14th day of June, 2021 and expiring on the 18th day of June 2021.
         </p>
         <Form.Group>
           <Form.Check type="checkbox" label="I agree" required />

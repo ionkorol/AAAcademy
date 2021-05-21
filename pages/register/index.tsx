@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useRef, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Form, ProgressBar, Tab, Tabs } from "react-bootstrap";
 import { Layout } from "components/common";
 
@@ -52,6 +58,10 @@ const Registration: React.FC<Props> = (props) => {
     }
   };
 
+  useEffect(() => {
+    window.scrollTo(0, 200);
+  }, [activeTab]);
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {};
 
   return (
@@ -59,7 +69,7 @@ const Registration: React.FC<Props> = (props) => {
       <Layout title="Register for Summer Clubs">
         <div className={styles.container}>
           <div className={styles.slider}>
-            <h1>Sign Up</h1>
+            <h1>Summer Registration</h1>
           </div>
           <div className={styles.formContainer}>
             <div className={styles.progress}>
