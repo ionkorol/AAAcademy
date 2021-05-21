@@ -26,7 +26,7 @@ const Payment: React.FC<Props> = (props) => {
         return 350;
 
       default:
-        return 350 + childrenData.length - 2 * 100;
+        return 350 + (childrenData.length - 2) * 100;
     }
   };
 

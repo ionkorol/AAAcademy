@@ -22,9 +22,9 @@ const Terms: React.FC<Props> = (props) => {
           <br></br>FOR GOOD AND VALUABLE CONSIDERATION, I the parent and/or
           legal guardian of the child named above (and the children named on the
           sibling form) and the undersigned hereby indemnifies and saves
-          harmless New Life Church and FCS volunteers from and against any and
+          harmless New Life Church, FCS and AAA volunteers from and against any and
           all claims, demands, actions, suits, losses, costs, charges, expenses,
-          damages and liabilities whatsoever which New Life Church and FCS may
+          damages and liabilities whatsoever which New Life Church, FCS and AAA may
           pay, sustain, suffer or incur by reason of or in connection with Kid’s
           Summer Day Camp, including, without limiting the generality of the
           foregoing, all costs and expenses (including legal expenses) incurred
@@ -37,7 +37,7 @@ const Terms: React.FC<Props> = (props) => {
           <b>Medical Authorization Of Minor</b>
           <br></br>I do hereby solemnly swear that I have legal custody of the
           aforementioned minor child(ren). I grant my authorization and consent
-          for New Life Church/FCS volunteers, (hereafter “Supervising Adult”) to
+          for New Life Church/FCS/AAA volunteers, (hereafter “Supervising Adult”) to
           administer general first aid treatment for any minor injuries or
           illnesses experienced by the minor. If the injury or illness is life
           threatening or in need of emergency treatment, I authorize the
