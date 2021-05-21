@@ -72,7 +72,7 @@ const Invoice: React.FC<Props> = (props) => {
               {data.invoiceDate.monthName} {data.invoiceDate.day}{" "}
               {data.invoiceDate.year}
             </p>
-            {/* <p className="my-2">
+            <p className="my-2">
               {data.paid || !data.subTotal ? null : invoiceTotal ? (
                 <PayPalButton
                   amount={invoiceTotal}
@@ -105,7 +105,7 @@ const Invoice: React.FC<Props> = (props) => {
               ) : (
                 <button onClick={handleFreeInvoice}>Pay Invoice</button>
               )}
-            </p> */}
+            </p>
           </Col>
         </Row>
         <Row className="mb-5">
@@ -254,7 +254,7 @@ const Invoice: React.FC<Props> = (props) => {
         </Row>
         <Row>
           <Col className="d-flex justify-content-between">
-            <Button>Print</Button>
+            <Button onClick={() => window.print()}>Print</Button>
             <Button>Download</Button>
           </Col>
         </Row>

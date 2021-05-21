@@ -7,6 +7,7 @@ import firebaseAdmin from "utils/firebaseAdmin";
 import { ApiResProp, ParentProp } from "utils/interfaces";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { route } from "next/dist/next-server/server/router";
 
 interface Props {
   data: ParentProp;
@@ -104,6 +105,11 @@ const User: React.FC<Props> = (props) => {
   return (
     <AdminLayout>
       <Container>
+        <div className="bg-info p-3">
+          <Link href={`${router.query.parentId}/students/add`}>
+            <Button variant="light">+ ADD</Button>
+          </Link>
+        </div>
         <Table hover striped bordered>
           <thead>
             <tr>
@@ -113,20 +119,26 @@ const User: React.FC<Props> = (props) => {
             </tr>
           </thead>
           <tbody>
-            {data.students.map((student) => (
-              <Link
-                href={`/admin/users/${data.id}/students/${student.id}`}
-                key={student.id}
-              >
-                <tr style={{ cursor: "pointer" }}>
-                  <td>
-                    {student.firstName} {student.lastName}
-                  </td>
-                  <td>{student.dob}</td>
-                  <td>{student.clubs.length}</td>
-                </tr>
-              </Link>
-            ))}
+            {data.students.length ? (
+              data.students.map((student) => (
+                <Link
+                  href={`/admin/users/${data.id}/students/${student.id}`}
+                  key={student.id}
+                >
+                  <tr style={{ cursor: "pointer" }}>
+                    <td>
+                      {student.firstName} {student.lastName}
+                    </td>
+                    <td>{student.dob}</td>
+                    <td>{student.clubs.length}</td>
+                  </tr>
+                </Link>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={3}>No Students on Record</td>
+              </tr>
+            )}
           </tbody>
         </Table>
 

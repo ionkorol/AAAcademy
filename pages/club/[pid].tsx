@@ -59,7 +59,9 @@ const Club: React.FC<Props> = (props) => {
             <div className={styles.text}>
               <h2>DESCRIPTION</h2>
               {data.description ? (
-                <span dangerouslySetInnerHTML={{__html: data.description}}></span>
+                <span
+                  dangerouslySetInnerHTML={{ __html: data.description }}
+                ></span>
               ) : (
                 <span>
                   <p>
@@ -114,28 +116,21 @@ const Club: React.FC<Props> = (props) => {
 export default Club;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { pid } = ctx.query;
   try {
-    const { pid } = ctx.query;
     const res = await fetch(`${process.env.SERVER}/api/clubs/${pid}`);
     const jsonData = await res.json();
-    if (jsonData.status) {
-      return {
-        props: {
-          data: jsonData.data,
-        },
-      };
-    } else {
-      ctx.res.writeHead(301, { Location: "/" });
-      ctx.res.end();
-      return {
-        props: {} as never,
-      };
-    }
-  } catch (error) {
-    ctx.res.writeHead(301, { Location: "/" });
-    ctx.res.end();
     return {
-      props: {} as never,
+      props: {
+        data: jsonData,
+      },
+    };
+  } catch (error) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
     };
   }
 };

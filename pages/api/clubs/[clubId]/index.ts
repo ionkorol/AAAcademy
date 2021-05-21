@@ -7,19 +7,25 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (req.method === "GET") {
     try {
-      const clubSnap = await firebaseAdmin
-        .firestore()
-        .collection("clubs")
-        .doc(clubId as string)
-        .get();
+      const clubData = (
+        await firebaseAdmin
+          .firestore()
+          .collection("clubs")
+          .doc(clubId as string)
+          .get()
+      ).data();
 
-      const clubData = clubSnap.data();
-
-      res.statusCode = 200;
-      res.json({ status: true, data: clubData });
+      const calendarData = await (
+        await fetch(
+          `${process.env.SERVER}/api/clubs/${clubId as string}/calendar`
+        )
+      ).json();
+      res.status(200).json({
+        ...clubData,
+        calendar: calendarData,
+      });
     } catch (error) {
-      res.statusCode = 200;
-      res.json({ status: false, message: error.message });
+      res.status(500).json(error);
     }
   } else if (req.method === "DELETE") {
     try {
@@ -28,28 +34,23 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         .collection("clubs")
         .doc(clubId as string)
         .delete();
-      res.statusCode = 200;
-      res.json({ status: true });
+      res.status(200).end();
     } catch (error) {
-      res.statusCode = 500;
-      res.json({ status: false, error: error.message });
+      res.status(500).json(error);
     }
   } else if (req.method === "PATCH") {
     const clubData: ClubProp = req.body;
     try {
-      const write = await firebaseAdmin
+      await firebaseAdmin
         .firestore()
         .collection("clubs")
         .doc(clubId as string)
         .set({ ...clubData }, { merge: true });
-      res.statusCode = 200;
-      res.json({ status: true });
+      res.status(200).end();
     } catch (error) {
-      res.statusCode = 500;
-      res.json({ status: false, error: error.message });
+      res.status(500).json(error);
     }
   } else {
-    res.statusCode = 200;
-    res.json({ status: false, message: "Not Allowed" });
+    res.status(500).json({ message: "Method Not Allowed" });
   }
 };

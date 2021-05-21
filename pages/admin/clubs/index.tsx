@@ -107,26 +107,15 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { token } = nookies.get(ctx);
   try {
     const { uid } = await firebaseAdmin.auth().verifyIdToken(token);
-    const jsonData = (await (
+    const data = (await (
       await fetch(`${process.env.SERVER}/api/clubs`)
-    ).json()) as ApiResProp;
+    ).json()) as ClubProp[];
 
-    const clubsData = jsonData.data as ClubProp[];
-
-    if (jsonData.status) {
-      return {
-        props: {
-          data: clubsData.sort((a, b) => (a.title < b.title ? -1 : 1)),
-        },
-      };
-    } else {
-      return {
-        redirect: {
-          destination: "/",
-          permanent: false,
-        },
-      };
-    }
+    return {
+      props: {
+        data: data.sort((a, b) => (a.title < b.title ? -1 : 1)),
+      },
+    };
   } catch (error) {
     return {
       redirect: {

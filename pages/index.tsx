@@ -15,6 +15,7 @@ import { GetServerSideProps } from "next";
 import firebaseAdmin from "../utils/firebaseAdmin";
 import { ClubProp } from "../utils/interfaces";
 import { ClubCard } from "../components/ui";
+import Link from "next/link";
 
 interface Props {
   clubsData: ClubProp[];
@@ -27,9 +28,8 @@ const Home: React.FC<Props> = (props) => {
   const [search, setSearch] = useState("");
 
   const [filteredClubs, setFilteredClubs] = useState<ClubProp[]>(clubsData);
-  const [activeCategory, setActiveCategory] = useState<
-    "Active" | "Creative" | "Educational" | "Musical" | null
-  >(null);
+  const [activeCategory, setActiveCategory] =
+    useState<"Active" | "Creative" | "Educational" | "Musical" | null>(null);
 
   const filterClubsByCategory = (category) => {
     setActiveCategory(category);
@@ -52,7 +52,7 @@ const Home: React.FC<Props> = (props) => {
     <Layout title="Home">
       <div className={styles.container}>
         <div className={styles.search}>
-          <form>
+          {/* <form>
             <input
               type="text"
               placeholder="Search Club"
@@ -62,7 +62,21 @@ const Home: React.FC<Props> = (props) => {
             <div className={styles.searchIcon}>
               <FontAwesomeIcon icon={faSearch} size="2x" color="#edbe48" />
             </div>
-          </form>
+          </form> */}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <h1 style={{ color: "white" }}>
+              Register For Summer Classes Right Now
+            </h1>
+            <Link href="/summer">
+              <button>Details</button>
+            </Link>
+          </div>
         </div>
         <div className={styles.categories}>
           <div

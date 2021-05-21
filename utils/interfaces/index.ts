@@ -18,6 +18,16 @@ export interface ClubProp {
   requirements: string[];
   fees: FeeProp[];
   isFull: boolean;
+  calendar: CalendarItem[];
+}
+
+interface CalendarItem {
+  clubId: string;
+  students: {
+    id: string;
+    attended: boolean;
+  }[];
+  date: DateProp;
 }
 
 // Invoice Props

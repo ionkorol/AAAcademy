@@ -3,8 +3,8 @@ import firebaseAdmin from "utils/firebaseAdmin";
 import { ClubProp } from "utils/interfaces";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  // Add Club
   if (req.method === "POST") {
+    // Add Club
     const clubData: ClubProp = req.body;
     try {
       const docRef = await firebaseAdmin
@@ -16,27 +16,21 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         id: docRef.id,
       });
 
-      res.statusCode = 200;
-      res.json({ status: true, data: docRef.id });
+      res.status(200).json({ id: docRef.id });
     } catch (error) {
-      res.statusCode = 500;
-      res.json({ status: false, error: error.message });
+      res.status(500).json(error);
     }
   } else if (req.method === "GET") {
+    // Get Clubs
     try {
       const clubsQuery = await firebaseAdmin
         .firestore()
         .collection("clubs")
         .get();
-      const clubsData = clubsQuery.docs.map((club) => club.data());
-      res.statusCode = 200;
-      res.json({ status: true, data: clubsData });
+      const data = clubsQuery.docs.map((club) => club.data());
+      res.status(200).json(data);
     } catch (error) {
-      res.statusCode = 200;
-      res.json({
-        status: false,
-        error: error.message,
-      });
+      res.status(500).json(error);
     }
   }
 };

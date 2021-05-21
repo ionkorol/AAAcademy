@@ -1,0 +1,144 @@
+@import "/styles/variables.scss";
+
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.slider {
+  display: flex;
+  background-image: url("../../public/slide/img1.jpg");
+  height: 500px;
+  margin-top: -86px;
+  .inner {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    background-color: rgba($quaternary, 0.3);
+    color: white;
+  }
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  margin: 0vh 10vw 5vh 10vw;
+
+  .info {
+    background-color: $light;
+    box-shadow: 0 4px 0 0 $light-dark;
+    border-radius: 5px;
+    display: grid;
+    grid-template-columns: repeat(4, 25%);
+    justify-items: center;
+    margin-top: 2vh;
+    div {
+      display: flex;
+      padding: 20px;
+      text-transform: uppercase;
+      align-items: center;
+
+      span {
+        margin-left: 10px;
+        font-weight: bold;
+      }
+    }
+    .location {
+    }
+    .time {
+    }
+    .contact {
+    }
+    .teacher {
+    }
+
+    @media screen and (max-width: $screen-l) {
+      grid-template-columns: 1fr 1fr;
+      justify-items: flex-start;
+    }
+
+    @media screen and (max-width: $screen-s) {
+      grid-template-columns: 1fr;
+      justify-items: flex-start;
+    }
+  }
+  .description {
+    display: grid;
+    grid-template-columns: 45% 45%;
+    column-gap: 10%;
+    margin-top: 5vh;
+
+    .text {
+      h2 {
+        margin-bottom: 20px;
+      }
+    }
+
+    .reqs {
+      display: flex;
+      flex-direction: column;
+
+      h2 {
+        margin-bottom: 20px;
+      }
+
+      .table {
+        display: flex;
+        flex-direction: column;
+        background-color: $light;
+        box-shadow: 0 4px 0 0 $light-dark;
+        border-radius: 5px;
+
+        .tRow {
+          display: grid;
+          grid-template-columns: auto 100px;
+
+          > div {
+            display: flex;
+            border: 1px solid $light-dark;
+            padding: 10px 30px;
+            height: 100%;
+            align-items: center;
+            text-transform: uppercase;
+          }
+
+          &:first-child {
+            color: white;
+            font-weight: bold;
+            > div {
+              background-color: $primary;
+              &:first-child {
+                border-top-left-radius: 5px;
+              }
+              &:nth-child(2) {
+                border-top-right-radius: 5px;
+              }
+            }
+          }
+          &:last-child {
+            > div {
+              &:first-child {
+                border-bottom-left-radius: 5px;
+              }
+              &:nth-child(2) {
+                border-bottom-right-radius: 5px;
+              }
+            }
+          }
+        }
+      }
+    }
+    @media screen and (max-width: $screen-s) {
+      grid-template-columns: 1fr;
+      justify-items: start;
+      .text {
+        margin-bottom: 50px;
+      }
+      .reqs {
+        margin-bottom: 50px;
+      }
+    }
+  }
+}

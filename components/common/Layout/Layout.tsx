@@ -14,6 +14,7 @@ const Layout: React.FC<Props> = (props) => {
     <div className={styles.container}>
       <Head>
         <title>{title} | Always Active Academy</title>
+        <script src="https://uat2.hpp.converge.eu.elavonaws.com/client/library.js"></script>
       </Head>
       <Navigation />
       <div className={styles.content}>{props.children}</div>

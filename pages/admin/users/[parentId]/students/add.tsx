@@ -1,21 +1,20 @@
-import { AccountLayout } from "components/account";
+import { AdminLayout } from "components/admin";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import { Alert, Col, Form, InputGroup, Row } from "react-bootstrap";
-
-import styles from "RegisterChild.module.scss";
-import { ApiResProp, StudentProp, ParentProp } from "utils/interfaces";
+import { Alert, Form, Row, Col, InputGroup } from "react-bootstrap";
+import firebaseAdmin from "utils/firebaseAdmin";
+import { StudentProp, ApiResProp, ParentProp } from "utils/interfaces";
 
 import nookies from "nookies";
-import firebaseAdmin from "utils/firebaseAdmin";
 
 interface Props {
   data: ParentProp;
 }
 
-const RegisterChild: React.FC<Props> = (props) => {
+const AddStudent: React.FC<Props> = (props) => {
   const { data } = props;
+
   const [error, setError] = useState(null);
 
   const [firstNameError, setFirstNameError] = useState(null);
@@ -58,7 +57,8 @@ const RegisterChild: React.FC<Props> = (props) => {
   };
 
   return (
-    <AccountLayout>
+    <AdminLayout>
+      <h2>Add Child</h2>
       {error ? <Alert variant="danger">{error}</Alert> : null}
       <Form onSubmit={handleSubmit}>
         <Row>
@@ -126,19 +126,20 @@ const RegisterChild: React.FC<Props> = (props) => {
         </Form.Group>
         <button type="submit">Register</button>
       </Form>
-    </AccountLayout>
+    </AdminLayout>
   );
 };
 
-export default RegisterChild;
+export default AddStudent;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { token } = nookies.get(ctx);
+  const { parentId } = ctx.query;
 
   try {
     const { uid } = await firebaseAdmin.auth().verifyIdToken(token);
     const jsonData = (await (
-      await fetch(`${process.env.SERVER}/api/parents/${uid}`)
+      await fetch(`${process.env.SERVER}/api/parents/${parentId}`)
     ).json()) as ApiResProp;
     if (jsonData.status) {
       return {
