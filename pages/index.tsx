@@ -63,16 +63,8 @@ const Home: React.FC<Props> = (props) => {
               <FontAwesomeIcon icon={faSearch} size="2x" color="#edbe48" />
             </div>
           </form> */}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <h1 style={{ color: "white" }}>
-              Register For Summer Classes Right Now
-            </h1>
+          <div className={styles.announcement}>
+            <h1 style={{ color: "white" }}>Register For Summer Classes Now</h1>
             <Link href="/summer">
               <button>Details</button>
             </Link>
@@ -118,7 +110,7 @@ const Home: React.FC<Props> = (props) => {
         </div>
         <div className={styles.clubs}>
           {filteredClubs.map((club) => (
-            <ClubCard data={club} key={club.title} />
+            <ClubCard data={club} key={club.id} />
           ))}
         </div>
         <div className={styles.section}></div>

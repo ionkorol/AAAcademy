@@ -7,7 +7,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const docRef = await firebaseAdmin
       .firestore()
       .collection("summer")
-      .add({ ...data });
+      .add({
+        createdAt: Date.now(),
+        ...data,
+      });
 
     res.status(200).json({ id: docRef.id });
   } else {
